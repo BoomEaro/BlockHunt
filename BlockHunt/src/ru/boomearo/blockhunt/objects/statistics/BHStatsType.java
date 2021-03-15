@@ -2,8 +2,10 @@ package ru.boomearo.blockhunt.objects.statistics;
 
 public enum BHStatsType {
 
-    Wins("Побед", "wins"),
-    Defeat("Поражений", "defeats");
+    SeekersWin("Побед сикеров", "seekersWin"),
+    HidersWin("Побед хайдеров", "hidersWin"),
+    SeekersKills("Убийств сикеров", "seekersKills"),
+    HidersKills("Убийств хайдеров", "hidersKills");
     
     private final String name;
     private final String dbName;

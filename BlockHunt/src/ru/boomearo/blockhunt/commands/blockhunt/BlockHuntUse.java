@@ -44,7 +44,7 @@ public class BlockHuntUse {
         }
         
         try {
-            BHArena newArena = new BHArena(arena, 2, 15, 300, pl.getWorld(), new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), null, null, null);
+            BHArena newArena = new BHArena(arena, 2, 15, 300, pl.getWorld(), new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), null, null, null, null);
             
             BlockHuntManager am = BlockHunt.getInstance().getBlockHuntManager();
             am.addArena(newArena);
@@ -80,9 +80,21 @@ public class BlockHuntUse {
         }
         
 
-        switch (args[0].toLowerCase()) {
+        String s = args[0].toLowerCase();
+        
+        switch (s) {
             case "lobby": {
+                BukkitPlayer bPlayer = BukkitAdapter.adapt(pl);
+                LocalSession ls = WorldEdit.getInstance().getSessionManager().get(bPlayer);
+                Region re = ls.getSelection(ls.getSelectionWorld());
+                if (re == null) {
+                    pl.sendMessage(BlockHuntManager.prefix + "Выделите регион!");
+                    return true;
+                }
+                
                 ar.setLobbyLocation(pl.getLocation().clone());
+                
+                ar.setLobbyRegion(new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()));
                 break;
             }
             case "seeker": {
@@ -94,14 +106,14 @@ public class BlockHuntUse {
                 break;
             }
             default: {
-                cs.sendMessage(BlockHuntManager.prefix + "Аргумент должен быть lobby, seeker или hider.");
+                cs.sendMessage(BlockHuntManager.prefix + "Аргумент должен быть §9lobby, seeker или hider§7.");
                 return true;
             }
         }
         
         trm.saveArenas();
         
-        cs.sendMessage(BlockHuntManager.prefix + "Точка успешно установлена в арене §9" + arena);
+        cs.sendMessage(BlockHuntManager.prefix + "Точка §9" + s + " §7успешно установлена в арене '§9" + arena + "§7'");
         
         return true;
     }

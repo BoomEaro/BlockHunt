@@ -35,6 +35,8 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
     private final IRegion arenaRegion;
     
     private Location lobbyLocation;
+    private IRegion lobbyRegion;
+    
     private Location seekersLocation;
     private Location hidersLocation;
     
@@ -42,7 +44,7 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
     
     private final ConcurrentMap<String, BHPlayer> players = new ConcurrentHashMap<String, BHPlayer>();
     
-    public BHArena(String name, int minPlayers, int maxPlayers, int timeLimit, World world, IRegion arenaRegion, Location lobbyLocation, Location seekersLocation, Location hidersLocation) {
+    public BHArena(String name, int minPlayers, int maxPlayers, int timeLimit, World world, IRegion arenaRegion, Location lobbyLocation, IRegion lobbyRegion, Location seekersLocation, Location hidersLocation) {
         this.name = name;
         this.minPlayers = minPlayers;
         this.maxPlayers = maxPlayers;
@@ -50,6 +52,7 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
         this.world = world;
         this.arenaRegion = arenaRegion;
         this.lobbyLocation = lobbyLocation;
+        this.lobbyRegion = lobbyRegion;
         this.seekersLocation = seekersLocation;
         this.hidersLocation = hidersLocation;
     }
@@ -108,6 +111,10 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
         return this.lobbyLocation;
     }
     
+    public IRegion getLobbyRegion() {
+        return this.lobbyRegion;
+    }
+    
     public Location getSeekersLocation() {
         return this.seekersLocation;
     }
@@ -118,6 +125,10 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
     
     public void setLobbyLocation(Location loc) {
         this.lobbyLocation = loc;
+    }
+    
+    public void setLobbyRegion(IRegion region) {
+        this.lobbyRegion = region; 
     }
     
     public void setSeekersLocation(Location loc) {
@@ -218,6 +229,8 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
         result.put("region", this.arenaRegion);
         
         result.put("lobbyLocation", this.lobbyLocation);
+        result.put("lobbyRegion", this.lobbyRegion);
+        
         result.put("seekersLocation", this.seekersLocation);
         result.put("hidersLocation", this.hidersLocation);
         
@@ -232,6 +245,7 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
         World world = null;
         IRegion region = null;
         Location lobbyLocation = null;
+        IRegion lobbyRegion = null;
         Location seekersLocation = null;
         Location hidersLocation = null;
 
@@ -270,6 +284,11 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
             lobbyLocation = (Location) l;
         }
         
+        Object lr = args.get("lobbyRegion");
+        if (lr != null) {
+            lobbyRegion = (IRegion) lr;
+        }
+        
         Object s = args.get("seekersLocation");
         if (s != null) {
             seekersLocation = (Location) s;
@@ -280,6 +299,6 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
             hidersLocation = (Location) h;
         }
         
-        return new BHArena(name, minPlayers, maxPlayers, timeLimit, world, region, lobbyLocation, seekersLocation, hidersLocation);
+        return new BHArena(name, minPlayers, maxPlayers, timeLimit, world, region, lobbyLocation, lobbyRegion, seekersLocation, hidersLocation);
     }
 }
