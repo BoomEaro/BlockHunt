@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.comphenix.protocol.ProtocolLibrary;
 import com.earth2me.essentials.spawn.EssentialsSpawn;
 
 import ru.boomearo.blockhunt.commands.blockhunt.CmdExecutorBlockHunt;
@@ -15,6 +16,7 @@ import ru.boomearo.blockhunt.database.sections.SectionStats;
 import ru.boomearo.blockhunt.listeners.ArenaListener;
 import ru.boomearo.blockhunt.listeners.PlayerButtonListener;
 import ru.boomearo.blockhunt.listeners.PlayerListener;
+import ru.boomearo.blockhunt.listeners.packet.PacketBlockFormAdapter;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.region.CuboidRegion;
@@ -38,14 +40,12 @@ public class BlockHunt extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        this.essSpawn = (EssentialsSpawn) Bukkit.getPluginManager()
-                .getPlugin("EssentialsSpawn");
+        this.essSpawn = (EssentialsSpawn) Bukkit.getPluginManager().getPlugin("EssentialsSpawn");
 
         ConfigurationSerialization.registerClass(CuboidRegion.class);
         ConfigurationSerialization.registerClass(BHArena.class);
 
-        File configFile = new File(
-                getDataFolder() + File.separator + "config.yml");
+        File configFile = new File(getDataFolder() + File.separator + "config.yml");
         if (!configFile.exists()) {
             getLogger().info("Конфиг не найден, создаю новый...");
             saveDefaultConfig();
@@ -59,21 +59,20 @@ public class BlockHunt extends JavaPlugin {
         loadDataFromDatabase();
 
         try {
-            GameControl.getInstance().getGameManager()
-                    .registerGame(this.getClass(), this.arenaManager);
-        } catch (ConsoleGameException e) {
+            GameControl.getInstance().getGameManager().registerGame(this.getClass(), this.arenaManager);
+        } 
+        catch (ConsoleGameException e) {
             e.printStackTrace();
         }
 
         getCommand("blockhunt").setExecutor(new CmdExecutorBlockHunt());
 
-        getServer().getPluginManager().registerEvents(new ArenaListener(),
-                this);
+        getServer().getPluginManager().registerEvents(new ArenaListener(), this);
 
-        getServer().getPluginManager().registerEvents(new PlayerListener(),
-                this);
-        getServer().getPluginManager()
-                .registerEvents(new PlayerButtonListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerButtonListener(), this);
+        
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketBlockFormAdapter());
 
         if (this.pmr == null) {
             this.pmr = new ArenasRunnable();
@@ -83,19 +82,22 @@ public class BlockHunt extends JavaPlugin {
     }
 
     public void onDisable() {
+        ProtocolLibrary.getProtocolManager().removePacketListeners(this);
+        
         try {
             getLogger().info("Отключаюсь от базы данных");
             Sql.getInstance().Disconnect();
             getLogger().info("Успешно отключился от базы данных");
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             e.printStackTrace();
             getLogger().info("Не удалось отключиться от базы данных...");
         }
 
         try {
-            GameControl.getInstance().getGameManager()
-                    .unregisterGame(this.getClass());
-        } catch (ConsoleGameException e) {
+            GameControl.getInstance().getGameManager().unregisterGame(this.getClass());
+        } 
+        catch (ConsoleGameException e) {
             e.printStackTrace();
         }
 
@@ -116,13 +118,13 @@ public class BlockHunt extends JavaPlugin {
     private void loadDataBase() {
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
-
         }
         try {
             for (BHStatsType type : BHStatsType.values()) {
                 Sql.getInstance().createNewDatabaseStatsData(type);
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -138,7 +140,8 @@ public class BlockHunt extends JavaPlugin {
                             new StatsPlayer(stats.name, stats.value));
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -191,7 +194,7 @@ public class BlockHunt extends JavaPlugin {
                                                     pBlock.getLocation(),
                                                     block.getType(),
                                                     (byte) block
-                                                            .getDurability());
+                                                    .getDurability());
                                         }
                                     }
 
@@ -205,19 +208,19 @@ public class BlockHunt extends JavaPlugin {
                                         MessageM.sendFMessage(player,
                                                 ConfigC.normal_ingameNowSolid,
                                                 "block-" + block.getType()
-                                                        .name()
-                                                        .replaceAll("_", "")
-                                                        .replaceAll("BLOCK", "")
-                                                        .toLowerCase() + ":"
-                                                        + block.getDurability());
+                                                .name()
+                                                .replaceAll("_", "")
+                                                .replaceAll("BLOCK", "")
+                                                .toLowerCase() + ":"
+                                                + block.getDurability());
                                     } else {
                                         MessageM.sendFMessage(player,
                                                 ConfigC.normal_ingameNowSolid,
                                                 "block-" + block.getType()
-                                                        .name()
-                                                        .replaceAll("_", "")
-                                                        .replaceAll("BLOCK", "")
-                                                        .toLowerCase());
+                                                .name()
+                                                .replaceAll("_", "")
+                                                .replaceAll("BLOCK", "")
+                                                .toLowerCase());
                                     }
                                 }
                                 for (Player pl : Bukkit.getOnlinePlayers()) {

@@ -235,31 +235,43 @@ public class PlayerListener implements Listener {
         
         Action a = e.getAction();
         
-        if (a == Action.LEFT_CLICK_BLOCK) {
-            Block b = e.getClickedBlock();
-            if (b == null) {
-                return;
-            }
-            
-            IGameState state = tp.getArena().getState();
-            if (state instanceof RunningState) {
-                RunningState rs = (RunningState) state;
-                
-                SolidBlock sb = rs.getSolidBlockByLocation(b.getLocation());
-                if (sb != null) {
-                    if (!sb.getPlayer().getName().equals(tp.getName())) {
-                        IPlayerType type = sb.getPlayer().getPlayerType();
-                        if (type instanceof HiderPlayer) {
-                            HiderPlayer hp = (HiderPlayer) type;
-                            hp.setBlockLocation(new Location(sb.getPlayer().getPlayer().getWorld(), 0, 0, 0));
-                            rs.undisguise(sb.getPlayer());
-                        }
-                    }
-                }
-            }
-            
+        if (a != Action.LEFT_CLICK_BLOCK) {
+            return;
         }
+        
+        Block b = e.getClickedBlock();
+        if (b == null) {
+            return;
+        }
+        
+        IGameState state = tp.getArena().getState();
+        if (!(state instanceof RunningState)) {
+            return;
+        }
+        
+        
+        RunningState rs = (RunningState) state;
+        
+        SolidBlock sb = rs.getSolidBlockByLocation(b.getLocation());
+        if (sb == null) {
+            return;
+        }
+        
+        //Игнорим если хайдеры не тыкали друг друга
+        if (sb.getPlayer().getPlayerType().getClass() == tp.getPlayerType().getClass()) {
+            return;
+        }
+        
+        IPlayerType type = sb.getPlayer().getPlayerType();
+        if (!(type instanceof HiderPlayer)) {
+            return;
+        }
+        
+        HiderPlayer hp = (HiderPlayer) type;
+        hp.setBlockLocation(new Location(sb.getPlayer().getPlayer().getWorld(), 0, 0, 0));
+        rs.undisguise(sb.getPlayer());
     }
+    
     
     @EventHandler
     public void onFoodLevelChangeEvent(FoodLevelChangeEvent e) {

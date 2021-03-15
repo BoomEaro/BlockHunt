@@ -161,6 +161,7 @@ public final class BlockHuntManager implements IGameManager {
             RunningState rs = (RunningState) state;
             rs.undisguise(player);
         }
+        
         pl.sendMessage(prefix + "Вы покинули игру!");
         
         arena.sendMessages(prefix + "Игрок §9" + pl.getName() + " §7покинул игру! " + getRemainPlayersArena(arena, null), pl.getName());

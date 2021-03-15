@@ -119,6 +119,7 @@ public class HiderPlayer implements IPlayerType {
                 }
                 
                 rs.disguise(player, block);
+                
                 if (!this.solid) {
                     pl.sendMessage("Теперь вы твердый блок :)");
                     pl.playSound(player.getPlayer().getLocation(), Sound.ENTITY_BAT_AMBIENT, 100, 1.5f);

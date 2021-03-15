@@ -139,7 +139,7 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
         this.hidersLocation = loc;
     }
     
-    public void setState(IGameState state) {
+    public void setState(IGameState state) {   
         //Устанавливаем новое
         this.state = state;
         

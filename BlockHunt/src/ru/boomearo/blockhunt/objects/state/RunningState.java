@@ -193,7 +193,7 @@ public class RunningState implements IRunningState, ICountable {
             tp.setPlayerType(sp);
             
             //Если умирает хайдер и это оказывается последний
-            if (this.arena.getAllPlayersType(HiderPlayer.class).size() <= 1) {
+            if (this.arena.getAllPlayersType(HiderPlayer.class).size() <= 0) {
                 this.arena.sendMessages("Последний хайдер " + tp.getName() + " мертв! Сикеры победили!");
                 
                 this.arena.setState(new EndingState(this.arena));
