@@ -1,0 +1,11 @@
+name: Spleef
+main: ru.boomearo.spleef.Spleef
+version: 0.1
+author: BoomEaro
+description: spleef
+api-version: 1.13
+depend: [FastAsyncWorldEdit, EssentialsSpawn, GameControl]
+commands:
+  spleef:
+    usage: /spleef
+    description: spleef
