@@ -1,11 +1,12 @@
-name: Spleef
-main: ru.boomearo.spleef.Spleef
+name: BlockHunt
+main: ru.boomearo.blockhunt.BlockHunt
 version: 0.1
 author: BoomEaro
-description: spleef
+description: blockhunt
 api-version: 1.13
 depend: [FastAsyncWorldEdit, EssentialsSpawn, GameControl]
 commands:
-  spleef:
-    usage: /spleef
-    description: spleef
+  blockhunt:
+    usage: /blockhunt
+    aliases: [bs]
+    description: blockhunt
