@@ -1,11 +1,8 @@
 package ru.boomearo.blockhunt.objects;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,12 +14,6 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
-
-import com.boydti.fawe.FaweAPI;
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.math.transform.Transform;
 
 import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
@@ -42,26 +33,25 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
     
     private final World world;
     private final IRegion arenaRegion;
-    private final ConcurrentMap<Integer, SpleefTeam> teams;
     
-    private final Location arenaCenter;
+    private Location lobbyLocation;
+    private Location seekersLocation;
+    private Location hidersLocation;
     
-    private final Clipboard clipboard;
- 
     private volatile IGameState state = new WaitingState(this);
     
     private final ConcurrentMap<String, BHPlayer> players = new ConcurrentHashMap<String, BHPlayer>();
     
-    public BHArena(String name, int minPlayers, int maxPlayers, int timeLimit, World world, IRegion arenaRegion, ConcurrentMap<Integer, SpleefTeam> teams, Location arenaCenter, Clipboard clipboard) {
+    public BHArena(String name, int minPlayers, int maxPlayers, int timeLimit, World world, IRegion arenaRegion, Location lobbyLocation, Location seekersLocation, Location hidersLocation) {
         this.name = name;
         this.minPlayers = minPlayers;
         this.maxPlayers = maxPlayers;
         this.timelimit = timeLimit;
         this.world = world;
         this.arenaRegion = arenaRegion;
-        this.teams = teams;
-        this.arenaCenter = arenaCenter;
-        this.clipboard = clipboard;
+        this.lobbyLocation = lobbyLocation;
+        this.seekersLocation = seekersLocation;
+        this.hidersLocation = hidersLocation;
     }
     
     @Override
@@ -91,21 +81,7 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
     
     @Override
     public void regen() {
-        if (this.clipboard == null) {
-            return;
-        }
-        
-        try {
-            Location loc = this.arenaCenter;
-            EditSession editSession = this.clipboard.paste(FaweAPI.getWorld(this.world.getName()), BlockVector3.at(loc.getX(), loc.getY(), loc.getZ()), true, true, (Transform) null);
-            editSession.flushQueue();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            setState(new WaitingState(this));
-        }
+        throw new UnsupportedOperationException("Данная арена не требуется в регенерации.");
     }
     
     public int getMinPlayers() {
@@ -128,31 +104,30 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
         return this.arenaRegion;
     }
     
-    public SpleefTeam getTeamById(int id) {
-        return this.teams.get(id);
+    public Location getLobbyLocation() {
+        return this.lobbyLocation;
     }
     
-    public Collection<SpleefTeam> getAllTeams() {
-        return this.teams.values();
+    public Location getSeekersLocation() {
+        return this.seekersLocation;
     }
     
-    public SpleefTeam getFreeTeam() {
-        for (SpleefTeam team : this.teams.values()) {
-            if (team.getPlayer() == null) {
-                return team;
-            }
-        }
-        return null;
+    public Location getHidersLocation() {
+        return this.hidersLocation;
     }
     
-    public Location getArenaCenter() {
-        return this.arenaCenter;
+    public void setLobbyLocation(Location loc) {
+        this.lobbyLocation = loc;
     }
     
-    public Clipboard getClipboard() {
-        return this.clipboard;
+    public void setSeekersLocation(Location loc) {
+        this.seekersLocation = loc;
     }
-
+    
+    public void setHidersLocation(Location loc) {
+        this.hidersLocation = loc;
+    }
+    
     public void setState(IGameState state) {
         //Устанавливаем новое
         this.state = state;
@@ -242,14 +217,13 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
         result.put("world", this.world.getName());
         result.put("region", this.arenaRegion);
         
-        List<SpleefTeam> t = new ArrayList<SpleefTeam>(this.teams.values());
-        result.put("teams", t);
-        result.put("arenaCenter", this.arenaCenter);
+        result.put("lobbyLocation", this.lobbyLocation);
+        result.put("seekersLocation", this.seekersLocation);
+        result.put("hidersLocation", this.hidersLocation);
         
         return result;
     }
-    
-    @SuppressWarnings("unchecked")
+
     public static BHArena deserialize(Map<String, Object> args) {
         String name = null;
         int minPlayers = 2;
@@ -257,8 +231,9 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
         int timeLimit = 300;
         World world = null;
         IRegion region = null;
-        List<SpleefTeam> teams = new ArrayList<SpleefTeam>();
-        Location arenaCenter = null;
+        Location lobbyLocation = null;
+        Location seekersLocation = null;
+        Location hidersLocation = null;
 
         Object na = args.get("name");
         if (na != null) {
@@ -290,35 +265,21 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
             region = (IRegion) re;
         }
 
-        Object sp = args.get("teams");
-        if (sp != null) {
-            teams = (List<SpleefTeam>) sp;
-        }
-
-        Object ac = args.get("arenaCenter");
-        if (ac != null) {
-            arenaCenter = (Location) ac;
-        }
-
-
-        Clipboard cb = null;
-        try {
-            File schem = new File(BlockHunt.getInstance().getSchematicDir(), name + ".schem");
-            if (schem.exists() && schem.isFile()) {
-                cb = FaweAPI.load(schem);
-            }
-        } 
-        catch (Exception e) {
-            e.printStackTrace();
+        Object l = args.get("lobbyLocation");
+        if (l != null) {
+            lobbyLocation = (Location) l;
         }
         
-        ConcurrentMap<Integer, SpleefTeam> nTeams = new ConcurrentHashMap<Integer, SpleefTeam>();
-        for (SpleefTeam team : teams) {
-            nTeams.put(team.getId(), team);
+        Object s = args.get("seekersLocation");
+        if (s != null) {
+            seekersLocation = (Location) s;
         }
         
-        return new BHArena(name, minPlayers, maxPlayers, timeLimit, world, region, nTeams, arenaCenter, cb);
+        Object h = args.get("hidersLocation");
+        if (h != null) {
+            hidersLocation = (Location) h;
+        }
+        
+        return new BHArena(name, minPlayers, maxPlayers, timeLimit, world, region, lobbyLocation, seekersLocation, hidersLocation);
     }
-
-
 }

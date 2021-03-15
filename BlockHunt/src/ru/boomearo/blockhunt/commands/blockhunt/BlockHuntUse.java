@@ -1,8 +1,6 @@
 package ru.boomearo.blockhunt.commands.blockhunt;
 
 import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -17,7 +15,6 @@ import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.commands.CmdInfo;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.BHArena;
-import ru.boomearo.blockhunt.objects.SpleefTeam;
 import ru.boomearo.blockhunt.objects.region.CuboidRegion;
 import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
@@ -26,7 +23,7 @@ import ru.boomearo.gamecontrol.exceptions.PlayerGameException;
 public class BlockHuntUse {
 
 
-    @CmdInfo(name = "createarena", description = "Создать арену с указанным названием.", usage = "/spleef createarena <название>", permission = "spleef.admin")
+    @CmdInfo(name = "createarena", description = "Создать арену с указанным названием.", usage = "/blockhunt createarena <название>", permission = "blockhunt.admin")
     public boolean createarena(CommandSender cs, String[] args) {
         if (!(cs instanceof Player)) {
             cs.sendMessage("Данная команда только для игроков.");
@@ -45,24 +42,16 @@ public class BlockHuntUse {
             pl.sendMessage(BlockHuntManager.prefix + "Выделите регион!");
             return true;
         }
-
-        ConcurrentMap<Integer, SpleefTeam> teams = new ConcurrentHashMap<Integer, SpleefTeam>();
-        
-        int maxPlayers = 15;
-        
-        for (int i = 1; i <= maxPlayers; i++) {
-            teams.put(i, new SpleefTeam(i, null));
-        }
         
         try {
-            BHArena newArena = new BHArena(arena, 2, maxPlayers, 300, pl.getWorld(), new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), teams, pl.getLocation(), null);
+            BHArena newArena = new BHArena(arena, 2, 15, 300, pl.getWorld(), new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), null, null, null);
             
             BlockHuntManager am = BlockHunt.getInstance().getBlockHuntManager();
             am.addArena(newArena);
 
             am.saveArenas();
 
-            pl.sendMessage(BlockHuntManager.prefix + "Арена '§b" + arena + "§7' успешно создана!");
+            pl.sendMessage(BlockHuntManager.prefix + "Арена '§9" + arena + "§7' успешно создана!");
         }
         catch (Exception e) {
             pl.sendMessage(e.getMessage());
@@ -71,7 +60,7 @@ public class BlockHuntUse {
         return true;
     }
     
-    @CmdInfo(name = "setspawnpoint", description = "Установить точку спавна в указанной арене указанной команде.", usage = "/spleef setspawnpoint <арена> <ид>", permission = "spleef.admin")
+    @CmdInfo(name = "setpoint", description = "Установить указанную точку указанной арене.", usage = "/blockhunt setpoint <lobby/seeker/hider> <арена>", permission = "blockhunt.admin")
     public boolean setspawnpoint(CommandSender cs, String[] args) {
         if (!(cs instanceof Player)) {
             cs.sendMessage("Данная команда только для игроков.");
@@ -80,7 +69,7 @@ public class BlockHuntUse {
         if (args.length < 2 || args.length > 2) {
             return false;
         }
-        String arena = args[0];
+        String arena = args[1];
         Player pl = (Player) cs;
 
         BlockHuntManager trm = BlockHunt.getInstance().getBlockHuntManager();
@@ -90,32 +79,34 @@ public class BlockHuntUse {
             return true;
         }
         
-        Integer id = null;
-        try {
-            id = Integer.parseInt(args[1]);
+
+        switch (args[0].toLowerCase()) {
+            case "lobby": {
+                ar.setLobbyLocation(pl.getLocation().clone());
+                break;
+            }
+            case "seeker": {
+                ar.setSeekersLocation(pl.getLocation().clone());
+                break;
+            }
+            case "hider": {
+                ar.setHidersLocation(pl.getLocation().clone());
+                break;
+            }
+            default: {
+                cs.sendMessage(BlockHuntManager.prefix + "Аргумент должен быть lobby, seeker или hider.");
+                return true;
+            }
         }
-        catch (Exception e) {}
-        if (id == null) {
-            cs.sendMessage(BlockHuntManager.prefix + "Аргумент должен быть цифрой!");
-            return true;
-        }
-        
-        SpleefTeam team = ar.getTeamById(id);
-        if (team == null) {
-            cs.sendMessage(BlockHuntManager.prefix + "Команда §b" + id + " §7не найдена!");
-            return true;
-        }
-        
-        team.setSpawnPoint(pl.getLocation().clone());
         
         trm.saveArenas();
         
-        cs.sendMessage(BlockHuntManager.prefix + "Спавн поинт §b" + id + " §7успешно добавлен!");
+        cs.sendMessage(BlockHuntManager.prefix + "Точка успешно установлена в арене §9" + arena);
         
         return true;
     }
 
-    @CmdInfo(name = "join", description = "Присоединиться к указанной арене.", usage = "/spleef join <арена>", permission = "")
+    @CmdInfo(name = "join", description = "Присоединиться к указанной арене.", usage = "/blockhunt join <арена>", permission = "")
     public boolean join(CommandSender cs, String[] args) {
         if (!(cs instanceof Player)) {
             cs.sendMessage("Данная команда только для игроков.");
@@ -131,7 +122,7 @@ public class BlockHuntUse {
             GameControl.getInstance().getGameManager().joinGame(pl, BlockHunt.class, arena);
         } 
         catch (PlayerGameException e) {
-            pl.sendMessage(BlockHuntManager.prefix + "§bОшибка: §7" + e.getMessage());
+            pl.sendMessage(BlockHuntManager.prefix + "§9Ошибка: §7" + e.getMessage());
         }
         catch (ConsoleGameException e) {
             e.printStackTrace();
@@ -140,7 +131,7 @@ public class BlockHuntUse {
         return true;
     }
         
-    @CmdInfo(name = "leave", description = "Покинуть игру.", usage = "/spleef leave", permission = "")
+    @CmdInfo(name = "leave", description = "Покинуть игру.", usage = "/blockhunt leave", permission = "")
     public boolean leave(CommandSender cs, String[] args) {
         if (!(cs instanceof Player)) {
             cs.sendMessage("Данная команда только для игроков.");
@@ -155,7 +146,7 @@ public class BlockHuntUse {
             GameControl.getInstance().getGameManager().leaveGame(pl);
         } 
         catch (PlayerGameException e) {
-            pl.sendMessage(BlockHuntManager.prefix + "§bОшибка: §7" + e.getMessage());
+            pl.sendMessage(BlockHuntManager.prefix + "§9Ошибка: §7" + e.getMessage());
         }
         catch (ConsoleGameException e) {
             e.printStackTrace();
@@ -164,7 +155,7 @@ public class BlockHuntUse {
         return true;
     }
     
-    @CmdInfo(name = "list", description = "Показать список всех доступных арен.", usage = "/spleef list", permission = "")
+    @CmdInfo(name = "list", description = "Показать список всех доступных арен.", usage = "/blockhunt list", permission = "")
     public boolean list(CommandSender cs, String[] args) {
         if (args.length < 0 || args.length > 0) {
             return false;
@@ -178,7 +169,7 @@ public class BlockHuntUse {
         final String sep = BlockHuntManager.prefix + "§8============================";
         cs.sendMessage(sep);
         for (BHArena arena : arenas) {
-            cs.sendMessage(BlockHuntManager.prefix + "Арена: '§b" + arena.getName() + "§7'. Статус: " + arena.getState().getName() + "§7. Игроков: " + BlockHuntManager.getRemainPlayersArena(arena));
+            cs.sendMessage(BlockHuntManager.prefix + "Арена: '§9" + arena.getName() + "§7'. Статус: " + arena.getState().getName() + "§7. Игроков: " + BlockHuntManager.getRemainPlayersArena(arena));
         }
         cs.sendMessage(sep);
         

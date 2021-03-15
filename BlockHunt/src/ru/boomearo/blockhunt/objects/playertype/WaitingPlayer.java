@@ -5,14 +5,15 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.PlayerInventory;
 
 import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.objects.BHPlayer;
-import ru.boomearo.blockhunt.objects.SpleefTeam;
+import ru.boomearo.blockhunt.objects.ItemButton;
 import ru.boomearo.blockhunt.utils.ExpFix;
 import ru.boomearo.gamecontrol.GameControl;
 
-public class SpectatingPlayer implements IPlayerType {
+public class WaitingPlayer implements IPlayerType {
 
     @Override
     public void preparePlayer(BHPlayer player) {
@@ -32,16 +33,22 @@ public class SpectatingPlayer implements IPlayerType {
         pl.setFoodLevel(20);
         pl.setHealth(pl.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
         
-        pl.setGameMode(GameMode.SPECTATOR);
+        pl.setGameMode(GameMode.ADVENTURE);
+        pl.setFlying(false);
+        pl.setAllowFlight(false);
         
         ExpFix.setTotalExperience(player.getPlayer(), 0);
         
-        pl.getInventory().clear();
+        PlayerInventory inv = pl.getInventory();
+        inv.clear();
         
-        SpleefTeam team = player.getTeam();
-        Location loc = team.getSpawnPoint();
+        ItemButton leave = ItemButton.Leave;
+        inv.setItem(leave.getSlot(), leave.getItem());
+        
+        Location loc = player.getArena().getLobbyLocation();
         if (loc != null) {
             GameControl.getInstance().asyncTeleport(pl, loc);
         }
     }
+
 }

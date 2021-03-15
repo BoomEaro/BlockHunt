@@ -18,15 +18,12 @@ import ru.boomearo.blockhunt.listeners.PlayerListener;
 import ru.boomearo.blockhunt.listeners.SpectatorListener;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.BHArena;
-import ru.boomearo.blockhunt.objects.SpleefTeam;
 import ru.boomearo.blockhunt.objects.region.CuboidRegion;
-import ru.boomearo.blockhunt.objects.state.RegenState;
 import ru.boomearo.blockhunt.objects.statistics.BHStatsData;
 import ru.boomearo.blockhunt.objects.statistics.BHStatsType;
 import ru.boomearo.blockhunt.runnable.ArenasRunnable;
 import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
-import ru.boomearo.gamecontrol.objects.states.IGameState;
 import ru.boomearo.gamecontrol.objects.statistics.StatsPlayer;
 
 public class BlockHunt extends JavaPlugin {
@@ -46,7 +43,6 @@ public class BlockHunt extends JavaPlugin {
         
         ConfigurationSerialization.registerClass(CuboidRegion.class);
         ConfigurationSerialization.registerClass(BHArena.class);
-        ConfigurationSerialization.registerClass(SpleefTeam.class);
         
         File configFile = new File(getDataFolder() + File.separator + "config.yml");
         if(!configFile.exists()) {
@@ -102,19 +98,9 @@ public class BlockHunt extends JavaPlugin {
         catch (ConsoleGameException e) {
             e.printStackTrace();
         }
-
-        for (BHArena ar : this.arenaManager.getAllArenas()) {
-            IGameState state = ar.getState();
-            //Если выключение сервера застал в момент регенерации, то ничего не делаем
-            if (state instanceof RegenState) {
-                continue;
-            }
-            ar.regen();
-        }
         
         ConfigurationSerialization.unregisterClass(CuboidRegion.class);
         ConfigurationSerialization.unregisterClass(BHArena.class);
-        ConfigurationSerialization.unregisterClass(SpleefTeam.class);
         
         getLogger().info("Плагин успешно выключен.");
     }
@@ -126,11 +112,7 @@ public class BlockHunt extends JavaPlugin {
     public EssentialsSpawn getEssentialsSpawn() {
         return this.essSpawn;
     }
-    
-    public File getSchematicDir() {
-        return new File(this.getDataFolder(), File.separator + "schematics" + File.separator);
-    }
-    
+
     private void loadDataBase() {
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir(); 

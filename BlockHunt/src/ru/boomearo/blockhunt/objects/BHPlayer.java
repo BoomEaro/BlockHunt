@@ -13,14 +13,12 @@ public class BHPlayer implements IGamePlayer {
     private IPlayerType playerType;
    
     private BHArena where;
-    private SpleefTeam team;
     
-    public BHPlayer(String name, Player player, IPlayerType playerType, BHArena where, SpleefTeam team) {
+    public BHPlayer(String name, Player player, IPlayerType playerType, BHArena where) {
         this.name = name;
         this.player = player;
         this.playerType = playerType;
         this.where = where;
-        this.team = team;
     }
     
     @Override
@@ -36,10 +34,6 @@ public class BHPlayer implements IGamePlayer {
     @Override
     public BHArena getArena() {
         return this.where;
-    }
-    
-    public SpleefTeam getTeam() {
-        return this.team;
     }
     
     public IPlayerType getPlayerType() {

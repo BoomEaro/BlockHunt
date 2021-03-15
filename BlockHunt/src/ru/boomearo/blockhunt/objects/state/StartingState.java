@@ -5,12 +5,11 @@ import org.bukkit.Sound;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
-import ru.boomearo.blockhunt.objects.playertype.PlayingPlayer;
 import ru.boomearo.gamecontrol.objects.states.ICountable;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
 import ru.boomearo.gamecontrol.utils.DateUtil;
 
-public class StartingState implements IGameState, ICountable {
+public class StartingState implements IGameState, ICountable, AllowJoin {
 
     private final BHArena arena;
     
@@ -48,7 +47,7 @@ public class StartingState implements IGameState, ICountable {
         }
         
         //Если на арене вообще нет игроков то переходим в ожидание. (малоли)
-        if (this.arena.getAllPlayersType(PlayingPlayer.class).size() <= 0) {
+        if (this.arena.getAllPlayers().size() <= 0) {
             this.arena.setState(new WaitingState(this.arena));
             return;
         }
@@ -76,7 +75,7 @@ public class StartingState implements IGameState, ICountable {
             if (this.count <= 0) {
                 
                 //Если игроков не достаточно для игры, то возвращаемся в ожидание
-                if (this.arena.getAllPlayersType(PlayingPlayer.class).size() < this.arena.getMinPlayers()) {
+                if (this.arena.getAllPlayers().size() < this.arena.getMinPlayers()) {
                     this.arena.sendMessages(BlockHuntManager.prefix + "Не достаточно игроков для старта!");
                     this.arena.setState(new WaitingState(this.arena));
                     return;
@@ -89,12 +88,12 @@ public class StartingState implements IGameState, ICountable {
             
             arena.sendLevels(this.count);
             if (this.count <= 5) {
-                arena.sendMessages(BlockHuntManager.prefix + "Игра начнется через §b" + DateUtil.formatedTime(this.count, false));
+                arena.sendMessages(BlockHuntManager.prefix + "Игра начнется через §9" + DateUtil.formatedTime(this.count, false));
                 arena.sendSounds(Sound.BLOCK_NOTE_BLOCK_PLING, 999, 2);
             }
             else {
                 if ((this.count % 5) == 0){
-                    arena.sendMessages(BlockHuntManager.prefix + "Игра начнется через §b" + DateUtil.formatedTime(this.count, false));
+                    arena.sendMessages(BlockHuntManager.prefix + "Игра начнется через §9" + DateUtil.formatedTime(this.count, false));
                     arena.sendSounds(Sound.BLOCK_NOTE_BLOCK_PLING, 999, 2);
                 }
             }

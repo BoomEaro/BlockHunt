@@ -31,9 +31,9 @@ public class CmdExecutorBlockHunt extends AbstractExecutor {
 	public List<String> onTabComplete(CommandSender arg0, Command arg1, String arg2, String[] arg3) {
         if (arg3.length == 1) {
             List<String> ss = new ArrayList<String>(Arrays.asList("join", "leave", "list"));
-            if (arg0.hasPermission("spleef.admin")) {
+            if (arg0.hasPermission("blockhunt.admin")) {
                 ss.add("createarena");
-                ss.add("setspawnpoint");
+                ss.add("setpoint");
             }
             List<String> matches = new ArrayList<>();
             String search = arg3[0].toLowerCase();

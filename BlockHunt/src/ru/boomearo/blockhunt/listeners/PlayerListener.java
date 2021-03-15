@@ -1,8 +1,6 @@
 package ru.boomearo.blockhunt.listeners;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,10 +19,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.BHPlayer;
-import ru.boomearo.blockhunt.objects.SpleefTeam;
-import ru.boomearo.blockhunt.objects.playertype.LosePlayer;
 import ru.boomearo.blockhunt.objects.state.RunningState;
-import ru.boomearo.blockhunt.objects.state.RunningState.BlockOwner;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
 
 public class PlayerListener implements Listener {
@@ -35,9 +30,11 @@ public class PlayerListener implements Listener {
         
         BHPlayer tp = BlockHunt.getInstance().getBlockHuntManager().getGamePlayer(pl.getName());
         if (tp != null) {
-            LosePlayer lp = new LosePlayer();
-            tp.setPlayerType(lp);
-            
+            IGameState state = tp.getArena().getState();
+            if (state instanceof RunningState) {
+                RunningState rs = (RunningState) state;
+                rs.handleDeath(tp);
+            }
             e.setDroppedExp(0);
             e.getDrops().clear();
         }
@@ -49,11 +46,19 @@ public class PlayerListener implements Listener {
         
         BHPlayer tp = BlockHunt.getInstance().getBlockHuntManager().getGamePlayer(pl.getName());
         if (tp != null) {
-            SpleefTeam team = tp.getTeam();
-            Location loc = team.getSpawnPoint();
+            Location loc = null;
+            IGameState state = tp.getArena().getState();
+            if (state instanceof RunningState) {
+                loc = tp.getArena().getSeekersLocation();
+            }
+            else {
+                loc = tp.getArena().getLobbyLocation();
+            }
+            
             if (loc != null) {
                 e.setRespawnLocation(loc);
             }
+            
             tp.getPlayerType().preparePlayer(tp);
         }
     }
@@ -66,7 +71,7 @@ public class PlayerListener implements Listener {
         Player pl = e.getPlayer();
         
         String msg = e.getMessage();
-        if (msg.equalsIgnoreCase("/spleef leave")) {
+        if (msg.equalsIgnoreCase("/blockhunt leave") || msg.equalsIgnoreCase("/bh leave")) {
             return;
         }
         
@@ -98,32 +103,10 @@ public class PlayerListener implements Listener {
         if (e.isCancelled()) {
             return;
         }
-        Player pl = e.getPlayer();
         
+        Player pl = e.getPlayer();
         BHPlayer tp = BlockHunt.getInstance().getBlockHuntManager().getGamePlayer(pl.getName());
         if (tp != null) {
-            
-            //Если игрок ломает в арене этот блок то позволяем
-            //И если на арене идет игра то делаем
-            Block b = e.getBlock();
-            if (b.getType() == Material.SNOW_BLOCK) {
-                
-                IGameState state = tp.getArena().getState();
-                if (state instanceof RunningState) {
-                    RunningState rs = (RunningState) state;
-                    
-                    BlockOwner bo = rs.getBlockByLocation(b.getLocation());
-                    if (bo == null) {
-                        rs.addBlock(b, pl.getName());
-                    }
-                    
-                    e.setExpToDrop(0);
-                    e.setDropItems(false);
-                    
-                    return;
-                }
-            }
-            
             e.setCancelled(true);
         }
     }

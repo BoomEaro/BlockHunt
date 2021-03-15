@@ -8,5 +8,5 @@ depend: [FastAsyncWorldEdit, EssentialsSpawn, GameControl]
 commands:
   blockhunt:
     usage: /blockhunt
-    aliases: [bs]
+    aliases: [bh]
     description: blockhunt

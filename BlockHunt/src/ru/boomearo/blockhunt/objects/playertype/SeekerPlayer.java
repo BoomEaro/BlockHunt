@@ -3,20 +3,20 @@ package ru.boomearo.blockhunt.objects.playertype;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.objects.BHPlayer;
 import ru.boomearo.blockhunt.objects.ItemButton;
-import ru.boomearo.blockhunt.objects.SpleefTeam;
 import ru.boomearo.blockhunt.utils.ExpFix;
 import ru.boomearo.gamecontrol.GameControl;
 
-public class PlayingPlayer implements IPlayerType {
-    
-    private String killer;
+public class SeekerPlayer implements IPlayerType {
     
     @Override
     public void preparePlayer(BHPlayer player) {
@@ -28,14 +28,6 @@ public class PlayingPlayer implements IPlayerType {
                 task(player);
             });
         }
-    }
-    
-    public String getKiller() {
-        return this.killer;
-    }
-    
-    public void setKiller(String killer) {
-        this.killer = killer;
     }
     
     private void task(BHPlayer player) {
@@ -53,14 +45,19 @@ public class PlayingPlayer implements IPlayerType {
         PlayerInventory inv = pl.getInventory();
         inv.clear();
         
-        for (ItemButton ib : ItemButton.values()) {
-            inv.setItem(ib.getSlot(), ib.getItem());
-        }
-
+        ItemButton leave = ItemButton.Leave;
+        inv.setItem(leave.getSlot(), leave.getItem());
+        
+        inv.setItem(EquipmentSlot.HEAD, new ItemStack(Material.IRON_HELMET, 1));
+        inv.setItem(EquipmentSlot.CHEST, new ItemStack(Material.IRON_CHESTPLATE, 1));
+        inv.setItem(EquipmentSlot.LEGS, new ItemStack(Material.IRON_LEGGINGS, 1));
+        inv.setItem(EquipmentSlot.FEET, new ItemStack(Material.IRON_BOOTS, 1));
+        
+        inv.setItem(0, new ItemStack(Material.DIAMOND_SWORD, 1));
+        
         inv.setHeldItemSlot(0);
         
-        SpleefTeam team = player.getTeam();
-        Location loc = team.getSpawnPoint();
+        Location loc = player.getArena().getSeekersLocation();
         if (loc != null) {
             GameControl.getInstance().asyncTeleport(pl, loc);
         }

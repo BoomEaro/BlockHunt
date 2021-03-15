@@ -3,8 +3,6 @@ package ru.boomearo.blockhunt.objects.state;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
-import ru.boomearo.blockhunt.objects.playertype.LosePlayer;
-import ru.boomearo.blockhunt.objects.playertype.PlayingPlayer;
 import ru.boomearo.gamecontrol.objects.states.ICountable;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
 import ru.boomearo.gamecontrol.utils.DateUtil;
@@ -34,13 +32,6 @@ public class EndingState implements IGameState, ICountable {
     @Override
     public void initState() {
         this.arena.sendMessages(BlockHuntManager.prefix + "Игра закончена!");
-        
-        for (BHPlayer tp : this.arena.getAllPlayers()) {
-            if (tp.getPlayerType() instanceof PlayingPlayer) {
-                tp.setPlayerType(new LosePlayer());
-            }
-            tp.getPlayerType().preparePlayer(tp);
-        }
     }
     
     @Override
@@ -71,11 +62,11 @@ public class EndingState implements IGameState, ICountable {
             this.cd = 20;
             
             if (this.count <= 0) {
-                arena.setState(new RegenState(arena));
+                arena.setState(new  WaitingState(arena));
                 return;
             }
             
-            arena.sendMessages(BlockHuntManager.prefix + "Следующая игра начнется через §b" + DateUtil.formatedTime(this.count, false));
+            arena.sendMessages(BlockHuntManager.prefix + "Следующая игра начнется через §9" + DateUtil.formatedTime(this.count, false));
             
             this.count--;
             
