@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -37,7 +38,11 @@ public class BlockHuntUse {
         
         BukkitPlayer bPlayer = BukkitAdapter.adapt(pl);
         LocalSession ls = WorldEdit.getInstance().getSessionManager().get(bPlayer);
-        Region re = ls.getSelection(ls.getSelectionWorld());
+        Region re = null;
+        try {
+            re = ls.getSelection(ls.getSelectionWorld());   
+        }
+        catch (IncompleteRegionException e) {}
         if (re == null) {
             pl.sendMessage(BlockHuntManager.prefix + "Выделите регион!");
             return true;
@@ -86,7 +91,11 @@ public class BlockHuntUse {
             case "lobby": {
                 BukkitPlayer bPlayer = BukkitAdapter.adapt(pl);
                 LocalSession ls = WorldEdit.getInstance().getSessionManager().get(bPlayer);
-                Region re = ls.getSelection(ls.getSelectionWorld());
+                Region re = null;
+                try {
+                    re = ls.getSelection(ls.getSelectionWorld());   
+                }
+                catch (IncompleteRegionException e) {}
                 if (re == null) {
                     pl.sendMessage(BlockHuntManager.prefix + "Выделите регион!");
                     return true;
@@ -181,7 +190,7 @@ public class BlockHuntUse {
         final String sep = BlockHuntManager.prefix + "§8============================";
         cs.sendMessage(sep);
         for (BHArena arena : arenas) {
-            cs.sendMessage(BlockHuntManager.prefix + "Арена: '§9" + arena.getName() + "§7'. Статус: " + arena.getState().getName() + "§7. Игроков: " + BlockHuntManager.getRemainPlayersArena(arena));
+            cs.sendMessage(BlockHuntManager.prefix + "Арена: '§9" + arena.getName() + "§7'. Статус: " + arena.getState().getName() + "§7. Игроков: " + BlockHuntManager.getRemainPlayersArena(arena, null));
         }
         cs.sendMessage(sep);
         

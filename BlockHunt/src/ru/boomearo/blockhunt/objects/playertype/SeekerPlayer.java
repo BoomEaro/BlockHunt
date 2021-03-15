@@ -1,6 +1,5 @@
 package ru.boomearo.blockhunt.objects.playertype;
 
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,27 +9,21 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import ru.boomearo.blockhunt.BlockHunt;
+import ru.boomearo.blockhunt.managers.BlockHuntManager;
+import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
 import ru.boomearo.blockhunt.objects.ItemButton;
+import ru.boomearo.blockhunt.objects.state.RunningState;
 import ru.boomearo.blockhunt.utils.ExpFix;
 import ru.boomearo.gamecontrol.GameControl;
+import ru.boomearo.gamecontrol.utils.DateUtil;
 
 public class SeekerPlayer implements IPlayerType {
     
+    private SeekerRespawn respawn = null;
+    
     @Override
     public void preparePlayer(BHPlayer player) {
-        if (Bukkit.isPrimaryThread()) {
-            task(player);
-        }
-        else {
-            Bukkit.getScheduler().runTask(BlockHunt.getInstance(), () -> {
-                task(player);
-            });
-        }
-    }
-    
-    private void task(BHPlayer player) {
         Player pl = player.getPlayer();
         
         pl.setFoodLevel(20);
@@ -60,6 +53,61 @@ public class SeekerPlayer implements IPlayerType {
         Location loc = player.getArena().getSeekersLocation();
         if (loc != null) {
             GameControl.getInstance().asyncTeleport(pl, loc);
+        }
+    }
+    
+    public SeekerRespawn getSeekerRespawn() {
+        return this.respawn;
+    }
+    
+    public void setSeekerRespawn(SeekerRespawn respawn) {
+        this.respawn = respawn;
+    }
+    
+    public static class SeekerRespawn {
+        
+        //сколько ждать секунд перед телепортацией
+        private int count = RunningState.seekerSpawnTime;
+
+        private int cd = 20;
+        
+        private SeekerPlayer sp;
+        
+        public SeekerRespawn(SeekerPlayer sp) {
+            this.sp = sp;
+        }
+        
+        public void autoHandle(BHPlayer player) {
+            if (this.cd <= 0) {
+                this.cd = 20;
+                
+                Player pl = player.getPlayer();
+                
+                if (this.count <= 0) {
+                    this.sp.setSeekerRespawn(null);
+                    
+                    BHArena arena = player.getArena();
+                    Location loc = player.getArena().getHidersLocation();
+                    if (loc != null) {
+                        GameControl.getInstance().asyncTeleport(pl, loc);
+                    }
+                    pl.sendMessage("Вы были заспавнены!");
+                    arena.sendMessages("Сикер " + player.getName() + " был заспавнен!", player.getName());
+                    return;
+                }
+                
+                if (this.count <= 5) {
+                    pl.sendMessage(BlockHuntManager.prefix + "Вы будете заспавнены через §9" + DateUtil.formatedTime(this.count, false));
+                }
+                else {
+                    if ((this.count % 5) == 0){
+                        pl.sendMessage(BlockHuntManager.prefix + "Вы будете заспавнены через §9" + DateUtil.formatedTime(this.count, false));
+                    }
+                }
+                
+                this.count--;
+            }
+            this.cd--;
         }
     }
     

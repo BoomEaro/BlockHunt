@@ -13,7 +13,7 @@ import ru.boomearo.gamecontrol.exceptions.GameControlException;
 
 public enum ItemButton {
 
-    Dig(createDigButton(), 0, null),
+    HiderSword(createHiderSwordButton(), 0, null),
     
     Leave(createLeaveButton(), 8, new ButtonClick() {
 
@@ -62,10 +62,10 @@ public enum ItemButton {
         return item;
     }
     
-    private static ItemStack createDigButton() {
-        ItemStack item = new ItemStack(Material.DIAMOND_SHOVEL, 1);
+    private static ItemStack createHiderSwordButton() {
+        ItemStack item = new ItemStack(Material.WOODEN_SWORD, 1);
         ItemMeta meta = item.getItemMeta();
-        meta.addEnchant(Enchantment.DURABILITY, 10, true);
+        meta.addEnchant(Enchantment.KNOCKBACK, 1, true);
         meta.addItemFlags(ItemFlag.values());
         item.setItemMeta(meta);
         return item;

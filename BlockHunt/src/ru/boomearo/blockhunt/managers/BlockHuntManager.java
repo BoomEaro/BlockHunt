@@ -16,9 +16,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
-import ru.boomearo.blockhunt.objects.playertype.SeekerPlayer;
+import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
 import ru.boomearo.blockhunt.objects.playertype.WaitingPlayer;
 import ru.boomearo.blockhunt.objects.state.AllowJoin;
+import ru.boomearo.blockhunt.objects.state.RunningState;
 import ru.boomearo.blockhunt.utils.ExpFix;
 import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
@@ -108,7 +109,7 @@ public final class BlockHuntManager implements IGameManager {
             pl.sendMessage(prefix + "Ожидание §9" + (tmpArena.getMinPlayers() - currCount) + " §7игроков для начала игры...");
         } 
         
-        tmpArena.sendMessages(prefix + "Игрок §9" + pl.getName() + " §7присоединился к игре! " + getRemainPlayersArena(tmpArena), pl.getName());
+        tmpArena.sendMessages(prefix + "Игрок §9" + pl.getName() + " §7присоединился к игре! " + getRemainPlayersArena(tmpArena, null), pl.getName());
         
         return newTp;
     }
@@ -131,16 +132,18 @@ public final class BlockHuntManager implements IGameManager {
         this.players.remove(pl.getName());
 
         if (Bukkit.isPrimaryThread()) {
-            handlePlayerLeave(pl, arena);
+            handlePlayerLeave(tmpPlayer, arena);
         }
         else {
             Bukkit.getScheduler().runTask(BlockHunt.getInstance(), () -> {
-                handlePlayerLeave(pl, arena);
+                handlePlayerLeave(tmpPlayer, arena);
             });
         }
     }
 
-    private static void handlePlayerLeave(Player pl, BHArena arena) {
+    private static void handlePlayerLeave(BHPlayer player, BHArena arena) {
+        Player pl = player.getPlayer();
+        
         Location loc = BlockHunt.getInstance().getEssentialsSpawn().getSpawn("default");
         if (loc != null) {
             GameControl.getInstance().asyncTeleport(pl, loc);
@@ -152,9 +155,15 @@ public final class BlockHuntManager implements IGameManager {
         
         pl.getInventory().clear();
         
+        //Если вышли во время игры то снимаем маскировку, не влияет если игрок был сикером
+        IGameState state = arena.getState();
+        if (state instanceof RunningState) {
+            RunningState rs = (RunningState) state;
+            rs.undisguise(player);
+        }
         pl.sendMessage(prefix + "Вы покинули игру!");
         
-        arena.sendMessages(prefix + "Игрок §9" + pl.getName() + " §7покинул игру! " + getRemainPlayersArena(arena), pl.getName());
+        arena.sendMessages(prefix + "Игрок §9" + pl.getName() + " §7покинул игру! " + getRemainPlayersArena(arena, null), pl.getName());
     }
     
     @Override
@@ -243,7 +252,7 @@ public final class BlockHuntManager implements IGameManager {
         this.arenas.remove(name);
     }
     
-    public static String getRemainPlayersArena(BHArena arena) {
-        return "§8[§f" + arena.getAllPlayersType(SeekerPlayer.class).size() + "§7/§9" + arena.getMaxPlayers() + "§8]";
+    public static String getRemainPlayersArena(BHArena arena, Class<? extends IPlayerType> clazz) {
+        return "§8[§f" + (clazz != null ? arena.getAllPlayersType(clazz).size() : arena.getAllPlayers().size()) + "§7/§9" + arena.getMaxPlayers() + "§8]";
     }
 }

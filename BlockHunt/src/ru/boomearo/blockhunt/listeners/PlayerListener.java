@@ -1,14 +1,19 @@
 package ru.boomearo.blockhunt.listeners;
 
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -18,8 +23,12 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 
 import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
+import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
+import ru.boomearo.blockhunt.objects.playertype.HiderPlayer;
+import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
 import ru.boomearo.blockhunt.objects.state.RunningState;
+import ru.boomearo.blockhunt.objects.state.RunningState.SolidBlock;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
 
 public class PlayerListener implements Listener {
@@ -87,6 +96,9 @@ public class PlayerListener implements Listener {
         if (e.isCancelled()) {
             return;
         }
+        if (e.getCause() == DamageCause.ENTITY_ATTACK) {
+            return;
+        }
         Entity en = e.getEntity();
         if (en instanceof Player) {
             Player pl = (Player) en;
@@ -96,6 +108,82 @@ public class PlayerListener implements Listener {
                 e.setCancelled(true);
             }
         }
+    }
+    
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent e) {
+        if (e.isCancelled()) {
+            return;
+        }
+        
+        Player damager = null;
+
+        if (e.getDamager() instanceof Player) {
+            damager = (Player) e.getDamager();
+        }
+        else if (e.getDamager() instanceof Projectile) {
+            Projectile proj = (Projectile) e.getDamager();
+
+            if (proj.getShooter() instanceof Player) {
+                damager = (Player) proj.getShooter();
+            }
+        }
+
+        if (damager == null) {
+            return;
+        }
+        
+        if (damager == e.getEntity()) {
+            return;
+        }
+        
+        BlockHuntManager manager = BlockHunt.getInstance().getBlockHuntManager();
+        BHPlayer bhDamager = manager.getGamePlayer(damager.getName());
+        if (bhDamager == null) {
+            return;
+        }
+        
+        Entity entity = e.getEntity();
+        if (entity.isDead()) {
+            return;
+        }
+        
+        if (!(entity instanceof Player)) {
+            return;
+        }
+        
+        Player player = (Player) entity;
+        
+        BHPlayer bhPlayer = manager.getGamePlayer(player.getName());
+        if (bhPlayer == null) {
+            return;
+        }
+        
+        BHArena arena = bhPlayer.getArena();
+        IGameState state = arena.getState();
+        //В любом случае отменяем ивент
+        if (!(state instanceof RunningState)) {
+            e.setCancelled(true);
+            return;
+        }
+        
+        //Если дамагает атакует союзника то отменяем ивент
+        if (bhDamager.getPlayerType().getClass() == bhPlayer.getPlayerType().getClass()) {
+            e.setCancelled(true);
+            return;
+        }
+        
+        RunningState rs = (RunningState) state;
+        
+        //Когда сущность точно умрет
+        double newHealth = player.getHealth() - e.getFinalDamage();
+        if (newHealth <= 0) {
+            
+            rs.handleDeath(bhPlayer);
+            
+            e.setCancelled(true);
+        }
+        
     }
     
     @EventHandler
@@ -137,14 +225,39 @@ public class PlayerListener implements Listener {
     
     @EventHandler
     public void onPlayerInteractEvent(PlayerInteractEvent e) {
-        if (e.getAction() != Action.PHYSICAL) {
+        Player pl = e.getPlayer();
+        BHPlayer tp = BlockHunt.getInstance().getBlockHuntManager().getGamePlayer(pl.getName());
+        if (tp == null) {
             return;
         }
         
-        Player pl = e.getPlayer();
-        BHPlayer tp = BlockHunt.getInstance().getBlockHuntManager().getGamePlayer(pl.getName());
-        if (tp != null) {
-            e.setCancelled(true);
+        e.setCancelled(true);
+        
+        Action a = e.getAction();
+        
+        if (a == Action.LEFT_CLICK_BLOCK) {
+            Block b = e.getClickedBlock();
+            if (b == null) {
+                return;
+            }
+            
+            IGameState state = tp.getArena().getState();
+            if (state instanceof RunningState) {
+                RunningState rs = (RunningState) state;
+                
+                SolidBlock sb = rs.getSolidBlockByLocation(b.getLocation());
+                if (sb != null) {
+                    if (!sb.getPlayer().getName().equals(tp.getName())) {
+                        IPlayerType type = sb.getPlayer().getPlayerType();
+                        if (type instanceof HiderPlayer) {
+                            HiderPlayer hp = (HiderPlayer) type;
+                            hp.setBlockLocation(new Location(sb.getPlayer().getPlayer().getWorld(), 0, 0, 0));
+                            rs.undisguise(sb.getPlayer());
+                        }
+                    }
+                }
+            }
+            
         }
     }
     
