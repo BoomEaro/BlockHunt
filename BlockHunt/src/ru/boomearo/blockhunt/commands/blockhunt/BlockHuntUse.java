@@ -1,7 +1,10 @@
 package ru.boomearo.blockhunt.commands.blockhunt;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -49,14 +52,17 @@ public class BlockHuntUse {
         }
         
         try {
-            BHArena newArena = new BHArena(arena, 2, 15, 300, pl.getWorld(), new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), null, null, null, null);
+            List<Material> bl = new ArrayList<Material>();
+            bl.add(Material.STONE);
+            
+            BHArena newArena = new BHArena(arena, 2, 15, 300, pl.getWorld(), new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), null, null, null, null, bl);
             
             BlockHuntManager am = BlockHunt.getInstance().getBlockHuntManager();
             am.addArena(newArena);
 
             am.saveArenas();
 
-            pl.sendMessage(BlockHuntManager.prefix + "Арена '§9" + arena + "§7' успешно создана!");
+            pl.sendMessage(BlockHuntManager.prefix + "Арена '§e" + arena + "§b' успешно создана!");
         }
         catch (Exception e) {
             pl.sendMessage(e.getMessage());
@@ -80,7 +86,7 @@ public class BlockHuntUse {
         BlockHuntManager trm = BlockHunt.getInstance().getBlockHuntManager();
         BHArena ar = trm.getGameArena(arena);
         if (ar == null) {
-            cs.sendMessage(BlockHuntManager.prefix + "Арена '§b" + arena + "§7' не найдена!");
+            cs.sendMessage(BlockHuntManager.prefix + "Арена '§e" + arena + "§b' не найдена!");
             return true;
         }
         
@@ -115,14 +121,14 @@ public class BlockHuntUse {
                 break;
             }
             default: {
-                cs.sendMessage(BlockHuntManager.prefix + "Аргумент должен быть §9lobby, seeker или hider§7.");
+                cs.sendMessage(BlockHuntManager.prefix + "Аргумент должен быть §elobby, seeker или hider§b.");
                 return true;
             }
         }
         
         trm.saveArenas();
         
-        cs.sendMessage(BlockHuntManager.prefix + "Точка §9" + s + " §7успешно установлена в арене '§9" + arena + "§7'");
+        cs.sendMessage(BlockHuntManager.prefix + "Точка §e" + s + " §bуспешно установлена в арене '§e" + arena + "§b'");
         
         return true;
     }
@@ -143,7 +149,7 @@ public class BlockHuntUse {
             GameControl.getInstance().getGameManager().joinGame(pl, BlockHunt.class, arena);
         } 
         catch (PlayerGameException e) {
-            pl.sendMessage(BlockHuntManager.prefix + "§9Ошибка: §7" + e.getMessage());
+            pl.sendMessage(BlockHuntManager.prefix + "§eОшибка: §b" + e.getMessage());
         }
         catch (ConsoleGameException e) {
             e.printStackTrace();
@@ -167,7 +173,7 @@ public class BlockHuntUse {
             GameControl.getInstance().getGameManager().leaveGame(pl);
         } 
         catch (PlayerGameException e) {
-            pl.sendMessage(BlockHuntManager.prefix + "§9Ошибка: §7" + e.getMessage());
+            pl.sendMessage(BlockHuntManager.prefix + "§eОшибка: §b" + e.getMessage());
         }
         catch (ConsoleGameException e) {
             e.printStackTrace();
@@ -190,7 +196,7 @@ public class BlockHuntUse {
         final String sep = BlockHuntManager.prefix + "§8============================";
         cs.sendMessage(sep);
         for (BHArena arena : arenas) {
-            cs.sendMessage(BlockHuntManager.prefix + "Арена: '§9" + arena.getName() + "§7'. Статус: " + arena.getState().getName() + "§7. Игроков: " + BlockHuntManager.getRemainPlayersArena(arena, null));
+            cs.sendMessage(BlockHuntManager.prefix + "Арена: '§e" + arena.getName() + "§7'. Статус: " + arena.getState().getName() + "§7. Игроков: " + BlockHuntManager.getRemainPlayersArena(arena, null));
         }
         cs.sendMessage(sep);
         

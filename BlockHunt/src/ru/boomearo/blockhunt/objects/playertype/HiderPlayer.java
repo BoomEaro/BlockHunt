@@ -6,11 +6,15 @@ import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import me.libraryaddict.disguise.DisguiseAPI;
+import me.libraryaddict.disguise.disguisetypes.Disguise;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
+import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
 import ru.boomearo.blockhunt.objects.ItemButton;
@@ -19,6 +23,8 @@ import ru.boomearo.blockhunt.utils.ExpFix;
 import ru.boomearo.gamecontrol.GameControl;
 
 public class HiderPlayer implements IPlayerType {
+    
+    private Material hideBlock = null;
     
     //сколько ждать секунд перед выдачей меча
     private int countSword = RunningState.hiderSwordTime;
@@ -50,6 +56,8 @@ public class HiderPlayer implements IPlayerType {
         ItemButton leave = ItemButton.Leave;
         inv.setItem(leave.getSlot(), leave.getItem());
         
+        inv.setItem(EquipmentSlot.HEAD, new ItemStack(this.hideBlock, 1));
+        
         inv.setHeldItemSlot(0);
         
         Location loc = player.getArena().getHidersLocation();
@@ -61,7 +69,17 @@ public class HiderPlayer implements IPlayerType {
             DisguiseAPI.undisguiseToAll(pl);
         }
         
-        DisguiseAPI.disguiseToAll(pl, new MiscDisguise(DisguiseType.FALLING_BLOCK, Material.STONE));
+        Disguise d = new MiscDisguise(DisguiseType.FALLING_BLOCK, this.hideBlock);
+        d.setNotifyBar(null);
+        DisguiseAPI.disguiseToAll(pl, d);
+    }
+    
+    public Material getHideBlock() {
+        return this.hideBlock;
+    }
+    
+    public void setHideBlock(Material block) {
+        this.hideBlock = block;
     }
     
     public Location getBlockLocation() {
@@ -117,15 +135,18 @@ public class HiderPlayer implements IPlayerType {
                 Block block = curr.getBlock();
                 Material t = block.getType();
                 if (!(t == Material.AIR || t == Material.WATER)) {
-                    pl.sendMessage("Вы не можете стать твердым здесь!");
+                    pl.sendMessage(BlockHuntManager.prefix + "§cВы не можете стать твердым здесь!");
                     return;
                 }
                 
-                arena.makeSolid(player, block);
+                arena.makeSolid(player, this, block);
                 return;
             }
             
-            pl.sendMessage("До становления тведым блоком осталось " + this.countBlock);
+            
+            pl.getInventory().setItem(6, new ItemStack(this.hideBlock, this.countBlock));
+            
+            //pl.sendMessage("До становления тведым блоком осталось " + this.countBlock);
             
             this.countBlock--;
         }
@@ -148,7 +169,7 @@ public class HiderPlayer implements IPlayerType {
                 ItemButton ib = ItemButton.HiderSword;
                 pl.getInventory().setItem(ib.getSlot(), ib.getItem());
                 
-                pl.sendMessage("Вам был выдан меч!");
+                pl.sendMessage(BlockHuntManager.prefix + "Вам был выдан меч!");
                 return;
             }
 

@@ -49,7 +49,12 @@ public class PacketBlockFormAdapter extends PacketAdapter {
             return;
         }
         
-        pc.getBlockData().writeSafely(0, WrappedBlockData.createData(Material.STONE));
+        
+        Material mat = sb.getHiderPlayer().getHideBlock();
+        if (mat == null) {
+            return;
+        }
+        pc.getBlockData().writeSafely(0, WrappedBlockData.createData(mat));
         //BlockHunt.getInstance().getLogger().info("test " + pl.getName() + " " + loc + " " + mat);
     }
 }

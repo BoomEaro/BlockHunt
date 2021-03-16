@@ -1,8 +1,10 @@
 package ru.boomearo.blockhunt.objects;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,6 +20,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
 import me.libraryaddict.disguise.DisguiseAPI;
+import me.libraryaddict.disguise.disguisetypes.Disguise;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
 import ru.boomearo.blockhunt.BlockHunt;
@@ -25,6 +28,7 @@ import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.playertype.HiderPlayer;
 import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
 import ru.boomearo.blockhunt.objects.state.WaitingState;
+import ru.boomearo.blockhunt.utils.RandomUtil;
 import ru.boomearo.gamecontrol.objects.IGameArena;
 import ru.boomearo.gamecontrol.objects.IRegion;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
@@ -46,6 +50,8 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
     private Location seekersLocation;
     private Location hidersLocation;
     
+    private final List<Material> hideBlocks;
+    
     private volatile IGameState state = new WaitingState(this);
     
     private final ConcurrentMap<String, BHPlayer> players = new ConcurrentHashMap<String, BHPlayer>();
@@ -53,7 +59,7 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
     private final ConcurrentMap<String, SolidPlayer> hiddenLocs = new ConcurrentHashMap<String, SolidPlayer>();
     private final ConcurrentMap<String, SolidPlayer> hiddenPlayers = new ConcurrentHashMap<String, SolidPlayer>();
     
-    public BHArena(String name, int minPlayers, int maxPlayers, int timeLimit, World world, IRegion arenaRegion, Location lobbyLocation, IRegion lobbyRegion, Location seekersLocation, Location hidersLocation) {
+    public BHArena(String name, int minPlayers, int maxPlayers, int timeLimit, World world, IRegion arenaRegion, Location lobbyLocation, IRegion lobbyRegion, Location seekersLocation, Location hidersLocation, List<Material> hideBlocks) {
         this.name = name;
         this.minPlayers = minPlayers;
         this.maxPlayers = maxPlayers;
@@ -64,6 +70,7 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
         this.lobbyRegion = lobbyRegion;
         this.seekersLocation = seekersLocation;
         this.hidersLocation = hidersLocation;
+        this.hideBlocks = hideBlocks;
     }
     
     @Override
@@ -146,6 +153,18 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
     
     public void setHidersLocation(Location loc) {
         this.hidersLocation = loc;
+    }
+    
+    public List<Material> getAllHideBlocks() {
+        return this.hideBlocks;
+    }
+    
+    public Material getRandomHideBlock() {
+        if (this.hideBlocks.isEmpty()) {
+            return Material.STONE;
+        }
+        
+        return this.hideBlocks.get(RandomUtil.getRandomNumberRange(0, (this.hideBlocks.size() - 1)));
     }
     
     public void setState(IGameState state) {   
@@ -243,9 +262,17 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
         result.put("seekersLocation", this.seekersLocation);
         result.put("hidersLocation", this.hidersLocation);
         
+        List<String> bl = new ArrayList<String>();
+        for (Material mat : this.hideBlocks) {
+            bl.add(mat.name());
+        }
+        
+        result.put("hideBlocks", bl);
+        
         return result;
     }
 
+    @SuppressWarnings("unchecked")
     public static BHArena deserialize(Map<String, Object> args) {
         String name = null;
         int minPlayers = 2;
@@ -257,6 +284,7 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
         IRegion lobbyRegion = null;
         Location seekersLocation = null;
         Location hidersLocation = null;
+        List<String> hideBlocks = new ArrayList<String>();
 
         Object na = args.get("name");
         if (na != null) {
@@ -308,21 +336,40 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
             hidersLocation = (Location) h;
         }
         
-        return new BHArena(name, minPlayers, maxPlayers, timeLimit, world, region, lobbyLocation, lobbyRegion, seekersLocation, hidersLocation);
+        Object hb = args.get("hideBlocks");
+        if (hb != null) {
+            hideBlocks = (List<String>) hb;
+        }
+        
+        List<Material> hiB = new ArrayList<Material>();
+        for (String sss : hideBlocks) {
+            Material mat = null;
+            try {
+                mat = Material.valueOf(sss);
+            }
+            catch (Exception e) {}
+            if (mat == null) {
+                continue;
+            }
+            
+            hiB.add(mat);
+        }
+        
+        return new BHArena(name, minPlayers, maxPlayers, timeLimit, world, region, lobbyLocation, lobbyRegion, seekersLocation, hidersLocation, hiB);
     }
     
     
-    public void makeSolid(BHPlayer player, Block old) {
+    public void makeSolid(BHPlayer player, HiderPlayer hp, Block old) {
         Player pl = player.getPlayer();
         SolidPlayer bs = getSolidPlayerByLocation(old.getLocation());
         if (bs != null) {
             if (!bs.getPlayer().getName().equals(player.getName())) {
-                pl.sendMessage("В данном месте уже кто то замаскирован!");
+                pl.sendMessage(BlockHuntManager.prefix + "§cВ данном месте уже кто то замаскирован!");
             }
             return;
         }
         
-        addSolidPlayer(new SolidPlayer(player, old.getLocation(), old.getType()));
+        addSolidPlayer(new SolidPlayer(player, hp, old.getLocation(), old.getType()));
         
         if (DisguiseAPI.isDisguised(pl)) {
             DisguiseAPI.undisguiseToAll(pl);
@@ -334,11 +381,11 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
             }
             Player pp = pla.getPlayer();
             pp.hidePlayer(BlockHunt.getInstance(), player.getPlayer());
-            pp.sendBlockChange(old.getLocation(), Bukkit.createBlockData(Material.STONE));
+            pp.sendBlockChange(old.getLocation(), Bukkit.createBlockData(hp.getHideBlock()));
         }
         
-        pl.sendMessage("Теперь вы твердый блок :)");
-        pl.playSound(player.getPlayer().getLocation(), Sound.ENTITY_BAT_AMBIENT, 100, 1.5f);
+        pl.sendMessage(BlockHuntManager.prefix + "Теперь вы твердый блок!");
+        pl.playSound(player.getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 100, 1.5f);
 
     }
 
@@ -366,9 +413,11 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
             DisguiseAPI.undisguiseToAll(pl);
         }
         
-        DisguiseAPI.disguiseToAll(pl, new MiscDisguise(DisguiseType.FALLING_BLOCK, Material.STONE));
+        Disguise d = new MiscDisguise(DisguiseType.FALLING_BLOCK, hp.getHideBlock());
+        d.setNotifyBar(null);
+        DisguiseAPI.disguiseToAll(pl, d);
         
-        pl.sendMessage("Вы больше не твердый блок.");
+        pl.sendMessage(BlockHuntManager.prefix + "Вы больше не твердый блок.");
         pl.playSound(player.getPlayer().getLocation(), Sound.ENTITY_BAT_AMBIENT, 100, 1.5f);
     }
     
@@ -405,6 +454,9 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
         this.hiddenPlayers.remove(name);
     }
     
+    public Collection<SolidPlayer> getAllSolidPlayers() {
+        return this.hiddenPlayers.values();
+    }
     
     public static String convertLocToString(Location loc) {
         return loc.getBlockX() + "|" + loc.getBlockY() + "|" +  loc.getBlockZ();

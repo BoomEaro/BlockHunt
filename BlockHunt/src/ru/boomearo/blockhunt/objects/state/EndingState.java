@@ -66,7 +66,7 @@ public class EndingState implements IGameState, ICountable {
                 return;
             }
             
-            arena.sendMessages(BlockHuntManager.prefix + "Следующая игра начнется через §9" + DateUtil.formatedTime(this.count, false));
+            arena.sendMessages(BlockHuntManager.prefix + "Следующая игра начнется через §e" + DateUtil.formatedTime(this.count, false));
             
             this.count--;
             

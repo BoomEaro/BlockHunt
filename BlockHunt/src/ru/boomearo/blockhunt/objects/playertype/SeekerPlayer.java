@@ -91,17 +91,17 @@ public class SeekerPlayer implements IPlayerType {
                     if (loc != null) {
                         GameControl.getInstance().asyncTeleport(pl, loc);
                     }
-                    pl.sendMessage("Вы были заспавнены!");
-                    arena.sendMessages("Сикер " + player.getName() + " был заспавнен!", player.getName());
+                    pl.sendMessage(BlockHuntManager.prefix + "Вы были заспавнены!");
+                    arena.sendMessages(BlockHuntManager.prefix + "§cСикер §e" + player.getName() + " §bбыл заспавнен!", player.getName());
                     return;
                 }
                 
                 if (this.count <= 5) {
-                    pl.sendMessage(BlockHuntManager.prefix + "Вы будете заспавнены через §9" + DateUtil.formatedTime(this.count, false));
+                    pl.sendMessage(BlockHuntManager.prefix + "Вы будете заспавнены через §e" + DateUtil.formatedTime(this.count, false));
                 }
                 else {
                     if ((this.count % 5) == 0){
-                        pl.sendMessage(BlockHuntManager.prefix + "Вы будете заспавнены через §9" + DateUtil.formatedTime(this.count, false));
+                        pl.sendMessage(BlockHuntManager.prefix + "Вы будете заспавнены через §e" + DateUtil.formatedTime(this.count, false));
                     }
                 }
                 

@@ -76,7 +76,7 @@ public class StartingState implements IGameState, ICountable, AllowJoin {
                 
                 //Если игроков не достаточно для игры, то возвращаемся в ожидание
                 if (this.arena.getAllPlayers().size() < this.arena.getMinPlayers()) {
-                    this.arena.sendMessages(BlockHuntManager.prefix + "Не достаточно игроков для старта!");
+                    this.arena.sendMessages(BlockHuntManager.prefix + "§cНе достаточно игроков для старта!");
                     this.arena.setState(new WaitingState(this.arena));
                     return;
                 }
@@ -88,12 +88,12 @@ public class StartingState implements IGameState, ICountable, AllowJoin {
             
             arena.sendLevels(this.count);
             if (this.count <= 5) {
-                arena.sendMessages(BlockHuntManager.prefix + "Игра начнется через §9" + DateUtil.formatedTime(this.count, false));
+                arena.sendMessages(BlockHuntManager.prefix + "Игра начнется через §e" + DateUtil.formatedTime(this.count, false));
                 arena.sendSounds(Sound.BLOCK_NOTE_BLOCK_PLING, 999, 2);
             }
             else {
                 if ((this.count % 5) == 0){
-                    arena.sendMessages(BlockHuntManager.prefix + "Игра начнется через §9" + DateUtil.formatedTime(this.count, false));
+                    arena.sendMessages(BlockHuntManager.prefix + "Игра начнется через §e" + DateUtil.formatedTime(this.count, false));
                     arena.sendSounds(Sound.BLOCK_NOTE_BLOCK_PLING, 999, 2);
                 }
             }

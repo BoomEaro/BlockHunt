@@ -38,7 +38,7 @@ public final class BlockHuntManager implements IGameManager {
     private final BlockHuntStatistics stats = new BlockHuntStatistics();
     
     public static final String gameNameDys = "§8[§9BlockHunt§8]";
-    public static final String prefix = gameNameDys + ": §7";
+    public static final String prefix = gameNameDys + ": §b";
     
     public static final double winReward = 5;
 
@@ -74,18 +74,18 @@ public final class BlockHuntManager implements IGameManager {
 
         BHArena tmpArena = this.arenas.get(arena);
         if (tmpArena == null) {
-            throw new PlayerGameException("Арена §7'§9" + arena + "§7' не найдена!");
+            throw new PlayerGameException("Арена §b'§e" + arena + "§b' не найдена!");
         }
 
         int count = tmpArena.getAllPlayers().size();
         if (count >= tmpArena.getMaxPlayers()) {
-            throw new PlayerGameException("Арена §7'§9" + arena + "§7' переполнена!");
+            throw new PlayerGameException("Арена §b'§e" + arena + "§b' переполнена!");
         }
 
         IGameState state = tmpArena.getState();
 
         if (!(state instanceof AllowJoin)) {
-            throw new PlayerGameException("В арене §7'§9" + arena + "§7' уже идет игра!");
+            throw new PlayerGameException("В арене §b'§e" + arena + "§b' уже идет игра!");
         }
         
         WaitingPlayer type = new WaitingPlayer();
@@ -102,15 +102,15 @@ public final class BlockHuntManager implements IGameManager {
         //Обрабатываем игрока
         type.preparePlayer(newTp);
         
-        pl.sendMessage(prefix + "Вы присоединились к арене §7'§9" + arena + "§7'!");
-        pl.sendMessage(prefix + "Чтобы покинуть игру, используйте §9Магма крем §7или команду §9/bh leave§7.");
+        pl.sendMessage(prefix + "Вы присоединились к арене §b'§e" + arena + "§b'!");
+        pl.sendMessage(prefix + "Чтобы покинуть игру, используйте §eМагма крем §bили команду §e/bh leave§b.");
         
         int currCount = tmpArena.getAllPlayers().size();
         if (currCount < tmpArena.getMinPlayers()) {
-            pl.sendMessage(prefix + "Ожидание §9" + (tmpArena.getMinPlayers() - currCount) + " §7игроков для начала игры...");
+            pl.sendMessage(prefix + "Ожидание §e" + (tmpArena.getMinPlayers() - currCount) + " §bигроков для начала игры...");
         } 
         
-        tmpArena.sendMessages(prefix + "Игрок §9" + pl.getName() + " §7присоединился к игре! " + getRemainPlayersArena(tmpArena, null), pl.getName());
+        tmpArena.sendMessages(prefix + "Игрок §e" + pl.getName() + " §bприсоединился к игре! " + getRemainPlayersArena(tmpArena, null), pl.getName());
         
         return newTp;
     }
@@ -172,7 +172,8 @@ public final class BlockHuntManager implements IGameManager {
 
         pl.sendMessage(prefix + "Вы покинули игру!");
         
-        arena.sendMessages(prefix + "Игрок §9" + pl.getName() + " §7покинул игру! " + getRemainPlayersArena(arena, null), pl.getName());
+        //TODO написать здесь кто именно покинул игру
+        arena.sendMessages(prefix + "Игрок §e" + pl.getName() + " §bпокинул игру! " + getRemainPlayersArena(arena, null), pl.getName());
     }
     
     @Override
@@ -262,6 +263,6 @@ public final class BlockHuntManager implements IGameManager {
     }
     
     public static String getRemainPlayersArena(BHArena arena, Class<? extends IPlayerType> clazz) {
-        return "§8[§f" + (clazz != null ? arena.getAllPlayersType(clazz).size() : arena.getAllPlayers().size()) + "§7/§9" + arena.getMaxPlayers() + "§8]";
+        return "§8[§e" + (clazz != null ? arena.getAllPlayersType(clazz).size() : arena.getAllPlayers().size()) + "§7/§9" + arena.getMaxPlayers() + "§8]";
     }
 }

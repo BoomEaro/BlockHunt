@@ -3,6 +3,8 @@ package ru.boomearo.blockhunt.objects.state;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -10,6 +12,7 @@ import me.libraryaddict.disguise.DisguiseAPI;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
+import ru.boomearo.blockhunt.objects.SolidPlayer;
 import ru.boomearo.blockhunt.objects.playertype.HiderPlayer;
 import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
 import ru.boomearo.blockhunt.objects.playertype.SeekerPlayer;
@@ -55,10 +58,14 @@ public class RunningState implements IRunningState, ICountable {
         //Подготавливаем оставшихся игроков, делая их хайдераи
         for (BHPlayer tp : this.arena.getAllPlayersType(WaitingPlayer.class)) {
             
-            tp.setPlayerType(new HiderPlayer());
+            HiderPlayer hp = new HiderPlayer();
+            Material rMat = this.arena.getRandomHideBlock();
+            hp.setHideBlock(rMat);
+            
+            tp.setPlayerType(hp);
             tp.getPlayerType().preparePlayer(tp);
             
-            tp.getPlayer().sendMessage("Вы хайдер!");
+            tp.getPlayer().sendMessage(BlockHuntManager.prefix + "Вы были замаскированы под блоком §e" + rMat.name());
         }
     }
     
@@ -66,21 +73,21 @@ public class RunningState implements IRunningState, ICountable {
     public void autoUpdateHandler() {
         //Играть одним низя
         if (this.arena.getAllPlayers().size() <= 1) {
-            this.arena.sendMessages(BlockHuntManager.prefix + "Не достаточно игроков для игры! Игра прервана.");
+            this.arena.sendMessages(BlockHuntManager.prefix + "Не достаточно игроков для игры! §cИгра прервана.");
             this.arena.setState(new EndingState(this.arena));
             return;
         }
         
         //Игра сразу закончится если вдруг хайдеров не окажется
         if (this.arena.getAllPlayersType(HiderPlayer.class).size() <= 0) {
-            this.arena.sendMessages(BlockHuntManager.prefix + "Последний хайдер покинул игру. Игра прервана.");
+            this.arena.sendMessages(BlockHuntManager.prefix + "Последний §3Хайдер §bпокинул игру. §cИгра прервана.");
             this.arena.setState(new EndingState(this.arena));
             return;
         }
         
         //Если обнаружится что отсутствуют сикеры, мы сделаем нового из текущих людей
         if (this.arena.getAllPlayersType(SeekerPlayer.class).size() <= 0) {
-            this.arena.sendMessages(BlockHuntManager.prefix + "Последний сикер покинул игру, выбираем случайного нового сикера..");
+            this.arena.sendMessages(BlockHuntManager.prefix + "§cПоследний Сикер покинул игру, выбираем случайного нового Сикера..");
             choseSeeker(true);
         }
         
@@ -125,7 +132,7 @@ public class RunningState implements IRunningState, ICountable {
             this.cd = 20;
             
             if (this.count <= 0) {
-                arena.sendMessages(BlockHuntManager.prefix + "Время вышло! Хайдеры победили!");
+                arena.sendMessages(BlockHuntManager.prefix + "Время вышло! §3Хайдеры §bпобедили!");
                 //TODO награда всем хайдерам
                 arena.setState(new EndingState(this.arena));
                 return;
@@ -134,13 +141,15 @@ public class RunningState implements IRunningState, ICountable {
             arena.sendLevels(this.count);
             
             if (this.count <= 10) {
-                arena.sendMessages(BlockHuntManager.prefix + "Игра закончится через §9" + DateUtil.formatedTime(this.count, false));
+                arena.sendMessages(BlockHuntManager.prefix + "Игра закончится через §e" + DateUtil.formatedTime(this.count, false));
             }
             else {
                 if ((this.count % 30) == 0){
-                    arena.sendMessages(BlockHuntManager.prefix + "Игра закончится через §9" + DateUtil.formatedTime(this.count, false));
+                    arena.sendMessages(BlockHuntManager.prefix + "Игра закончится через §e" + DateUtil.formatedTime(this.count, false));
                 }
             }
+            
+            updateFakeSolidsBlocks();
             
             this.count--;
             
@@ -148,6 +157,21 @@ public class RunningState implements IRunningState, ICountable {
             
         }
         this.cd--;
+    }
+    
+    private void updateFakeSolidsBlocks() {
+        for (SolidPlayer sp : this.arena.getAllSolidPlayers()) {
+            Material mat = sp.getHiderPlayer().getHideBlock();
+            if (mat != null) {
+                
+                for (BHPlayer pla : this.arena.getAllPlayers()) {
+                    if (sp.getPlayer().getName().equals(pla.getName())) {
+                        continue;
+                    }
+                    pla.getPlayer().sendBlockChange(sp.getLocation(), Bukkit.createBlockData(mat));
+                }
+            }
+        }
     }
     
     public void choseSeeker(boolean onlyHiders) {
@@ -164,12 +188,12 @@ public class RunningState implements IRunningState, ICountable {
         
         seeker.getPlayerType().preparePlayer(seeker);
         
-        seeker.getPlayer().sendMessage("Вы сикер!");
+        seeker.getPlayer().sendMessage(BlockHuntManager.prefix + "Вас выбрали §cСикером§b!");
         
-        this.arena.sendMessages("Игрок " + seeker.getName() + " выбран сикером!", seeker.getName());
+        this.arena.sendMessages(BlockHuntManager.prefix + "Игрок §e" + seeker.getName() + " §bвыбран §cСикером§b!", seeker.getName());
         
         if (!onlyHiders) {
-            this.arena.sendMessages(BlockHuntManager.prefix + "Через " + seekerSpawnTime + " секунд сикер начнет вас искать!");
+            this.arena.sendMessages(BlockHuntManager.prefix + "Через §e" + seekerSpawnTime + " §bсекунд §cСикер §bначнет вас искать!");
         }
     }
     
@@ -194,26 +218,26 @@ public class RunningState implements IRunningState, ICountable {
             
             //Если умирает хайдер и это оказывается последний
             if (this.arena.getAllPlayersType(HiderPlayer.class).size() <= 0) {
-                this.arena.sendMessages("Последний хайдер " + tp.getName() + " мертв! Сикеры победили!");
+                this.arena.sendMessages(BlockHuntManager.prefix + "Последний §3Хайдер §e" + tp.getName() + " §bмертв! §cСикеры §bпобедили!");
                 
                 this.arena.setState(new EndingState(this.arena));
             }
             else {
                 sp.setSeekerRespawn(new SeekerRespawn(sp));
                 
-                tp.getPlayer().sendMessage("Вы погибли! Теперь вы сикер!");
+                tp.getPlayer().sendMessage(BlockHuntManager.prefix + "§cВы были убиты! §bТеперь вы стали §cСикером§b!");
                 
-                this.arena.sendMessages("Хайдер " + tp.getName() + " мертв!", tp.getName());
+                this.arena.sendMessages(BlockHuntManager.prefix + "§3Хайдер §e" + tp.getName() + " §bмертв!", tp.getName());
             }
         }
         else if (type instanceof SeekerPlayer) {
             SeekerPlayer sp = (SeekerPlayer) type;
             sp.setSeekerRespawn(new SeekerRespawn(sp));
             
-            tp.getPlayer().sendMessage("Вы были убиты!");
+            tp.getPlayer().sendMessage(BlockHuntManager.prefix + "§cВы были убиты!");
             
             
-            this.arena.sendMessages("Сикер " + tp.getName() + " мертв!", tp.getName());
+            this.arena.sendMessages(BlockHuntManager.prefix + "§cСикер §e" + tp.getName() + " §bмертв!", tp.getName());
         }
         tp.getPlayerType().preparePlayer(tp);
     }

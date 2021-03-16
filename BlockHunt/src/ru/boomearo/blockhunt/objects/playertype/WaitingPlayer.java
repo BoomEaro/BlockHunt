@@ -32,6 +32,8 @@ public class WaitingPlayer implements IPlayerType {
         ItemButton leave = ItemButton.Leave;
         inv.setItem(leave.getSlot(), leave.getItem());
         
+        inv.setHeldItemSlot(0);
+        
         Location loc = player.getArena().getLobbyLocation();
         if (loc != null) {
             GameControl.getInstance().asyncTeleport(pl, loc);

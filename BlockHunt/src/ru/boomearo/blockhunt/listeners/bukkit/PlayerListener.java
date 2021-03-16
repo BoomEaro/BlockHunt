@@ -27,8 +27,6 @@ import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
 import ru.boomearo.blockhunt.objects.SolidPlayer;
-import ru.boomearo.blockhunt.objects.playertype.HiderPlayer;
-import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
 import ru.boomearo.blockhunt.objects.state.RunningState;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
 
@@ -256,15 +254,8 @@ public class PlayerListener implements Listener {
         if (sb.getPlayer().getPlayerType().getClass() == tp.getPlayerType().getClass()) {
             return;
         }
-        
-        IPlayerType type = sb.getPlayer().getPlayerType();
-        if (!(type instanceof HiderPlayer)) {
-            return;
-        }
-        
-        HiderPlayer hp = (HiderPlayer) type;
 
-        arena.unmakeSolid(sb.getPlayer(), hp);
+        arena.unmakeSolid(sb.getPlayer(), sb.getHiderPlayer());
         
         pl.getWorld().playSound(sb.getLocation(), Sound.ENTITY_PLAYER_HURT, 999, 1);
     }
