@@ -4,6 +4,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
@@ -85,7 +86,7 @@ public class PlayerButtonListener implements Listener {
         }
     }
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onInventoryClickEvent(InventoryClickEvent e) {
         if (e.isCancelled()) {
             return;
@@ -103,7 +104,7 @@ public class PlayerButtonListener implements Listener {
         }
     }
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onInventoryDragEvent(InventoryDragEvent e) {
         if (e.isCancelled()) {
             return;

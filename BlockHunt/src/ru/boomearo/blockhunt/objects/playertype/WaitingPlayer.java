@@ -24,6 +24,8 @@ public class WaitingPlayer implements IPlayerType {
         pl.setFlying(false);
         pl.setAllowFlight(false);
         
+        pl.closeInventory();
+        
         ExpFix.setTotalExperience(player.getPlayer(), 0);
         
         PlayerInventory inv = pl.getInventory();

@@ -78,7 +78,7 @@ public final class MenuManager {
                 switch (page) {
                     case MainBlockChoose: {
 
-                        InventoryData newData = this.mainBlockChoose.createInventory(BlockHunt.getInstance(), "§0§lВыберите блок которым вы хотите стать", player, session);
+                        InventoryData newData = this.mainBlockChoose.createInventory(BlockHunt.getInstance(), "§0§lВыберите блок", player, session);
 
                         sortItemsBlocks(newData.getActualPage().getStackControls("blocks"), session);
                         
