@@ -172,7 +172,6 @@ public final class BlockHuntManager implements IGameManager {
 
         pl.sendMessage(prefix + "Вы покинули игру!");
         
-        //TODO написать здесь кто именно покинул игру
         arena.sendMessages(prefix + "Игрок §e" + pl.getName() + " §bпокинул игру! " + getRemainPlayersArena(arena, null), pl.getName());
     }
     
@@ -263,6 +262,6 @@ public final class BlockHuntManager implements IGameManager {
     }
     
     public static String getRemainPlayersArena(BHArena arena, Class<? extends IPlayerType> clazz) {
-        return "§8[§e" + (clazz != null ? arena.getAllPlayersType(clazz).size() : arena.getAllPlayers().size()) + "§7/§9" + arena.getMaxPlayers() + "§8]";
+        return "§8[§e" + (clazz != null ? arena.getAllPlayersType(clazz).size() : arena.getAllPlayers().size()) + "§7/§c" + arena.getMaxPlayers() + "§8]";
     }
 }
