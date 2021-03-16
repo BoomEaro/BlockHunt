@@ -32,6 +32,12 @@ public class WaitingPlayer implements IPlayerType {
         ItemButton leave = ItemButton.Leave;
         inv.setItem(leave.getSlot(), leave.getItem());
         
+        
+        if (pl.hasPermission("blockhunt.blockchoose")) {
+            ItemButton chos = ItemButton.BlockChoose;
+            inv.setItem(chos.getSlot(), chos.getItem());
+        }
+        
         inv.setHeldItemSlot(0);
         
         Location loc = player.getArena().getLobbyLocation();

@@ -1,5 +1,6 @@
 package ru.boomearo.blockhunt.objects;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
@@ -13,6 +14,8 @@ public class BHPlayer implements IGamePlayer {
     private IPlayerType playerType;
    
     private BHArena where;
+    
+    private Material choosenBlock = null;
     
     public BHPlayer(String name, Player player, IPlayerType playerType, BHArena where) {
         this.name = name;
@@ -44,5 +47,12 @@ public class BHPlayer implements IGamePlayer {
         this.playerType = playerType;
     }
     
+    public Material getChoosenBlock() {
+        return this.choosenBlock;
+    }
+    
+    public void setChoosenBlock(Material mat) {
+        this.choosenBlock = mat;
+    }
     
 }

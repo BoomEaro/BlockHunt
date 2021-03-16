@@ -65,15 +65,20 @@ public class RunningState implements IRunningState, ICountable {
         
         //Подготавливаем оставшихся игроков, делая их хайдераи
         for (BHPlayer tp : this.arena.getAllPlayersType(WaitingPlayer.class)) {
+            Material chos = tp.getChoosenBlock();
+            if (chos == null) {
+                chos = this.arena.getRandomHideBlock();
+            }
+            
+            tp.setChoosenBlock(null);
             
             HiderPlayer hp = new HiderPlayer();
-            Material rMat = this.arena.getRandomHideBlock();
-            hp.setHideBlock(rMat);
+            hp.setHideBlock(chos);
             
             tp.setPlayerType(hp);
             tp.getPlayerType().preparePlayer(tp);
             
-            tp.getPlayer().sendMessage(BlockHuntManager.prefix + "Вы были замаскированы под §e" + LangHelper.getInstance().getItemTranslate(new ItemStack(rMat, 1), LangType.RU));
+            tp.getPlayer().sendMessage(BlockHuntManager.prefix + "Вы были замаскированы под §e" + LangHelper.getInstance().getItemTranslate(new ItemStack(chos, 1), LangType.RU));
         }
     }
     

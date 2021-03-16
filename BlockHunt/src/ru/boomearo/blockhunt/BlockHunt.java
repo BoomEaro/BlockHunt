@@ -18,6 +18,7 @@ import ru.boomearo.blockhunt.listeners.bukkit.PlayerButtonListener;
 import ru.boomearo.blockhunt.listeners.bukkit.PlayerListener;
 import ru.boomearo.blockhunt.listeners.packet.PacketBlockFormAdapter;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
+import ru.boomearo.blockhunt.menu.MenuManager;
 import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.region.CuboidRegion;
 import ru.boomearo.blockhunt.objects.statistics.BHStatsData;
@@ -30,6 +31,8 @@ import ru.boomearo.gamecontrol.objects.statistics.StatsPlayer;
 public class BlockHunt extends JavaPlugin {
 
     private BlockHuntManager arenaManager = null;
+    
+    private MenuManager menu = null;
 
     private ArenasRunnable pmr = null;
 
@@ -53,6 +56,10 @@ public class BlockHunt extends JavaPlugin {
 
         if (this.arenaManager == null) {
             this.arenaManager = new BlockHuntManager();
+        }
+        
+        if (this.menu == null) {
+            this.menu = new MenuManager();
         }
 
         loadDataBase();
@@ -111,6 +118,10 @@ public class BlockHunt extends JavaPlugin {
         return this.arenaManager;
     }
 
+    public MenuManager getMenuManager() {
+        return this.menu;
+    }
+    
     public EssentialsSpawn getEssentialsSpawn() {
         return this.essSpawn;
     }
