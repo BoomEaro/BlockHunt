@@ -196,7 +196,7 @@ public class BlockHuntUse {
         final String sep = BlockHuntManager.prefix + "§8============================";
         cs.sendMessage(sep);
         for (BHArena arena : arenas) {
-            cs.sendMessage(BlockHuntManager.prefix + "Арена: '§e" + arena.getName() + "§7'. Статус: " + arena.getState().getName() + "§7. Игроков: " + BlockHuntManager.getRemainPlayersArena(arena, null));
+            cs.sendMessage(BlockHuntManager.prefix + "Арена: '§e" + arena.getName() + "§b'. Статус: " + arena.getState().getName() + "§b. Игроков: " + BlockHuntManager.getRemainPlayersArena(arena, null));
         }
         cs.sendMessage(sep);
         

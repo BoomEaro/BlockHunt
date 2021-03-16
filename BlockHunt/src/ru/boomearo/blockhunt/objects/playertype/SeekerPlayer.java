@@ -46,7 +46,8 @@ public class SeekerPlayer implements IPlayerType {
         inv.setItem(EquipmentSlot.LEGS, new ItemStack(Material.IRON_LEGGINGS, 1));
         inv.setItem(EquipmentSlot.FEET, new ItemStack(Material.IRON_BOOTS, 1));
         
-        inv.setItem(0, new ItemStack(Material.DIAMOND_SWORD, 1));
+        ItemButton sword = ItemButton.SeekerSword;
+        inv.setItem(sword.getSlot(), sword.getItem());
         
         inv.setHeldItemSlot(0);
         
@@ -93,6 +94,8 @@ public class SeekerPlayer implements IPlayerType {
                     }
                     pl.sendMessage(BlockHuntManager.prefix + "Вы были заспавнены!");
                     arena.sendMessages(BlockHuntManager.prefix + "§cСикер §e" + player.getName() + " §bбыл заспавнен!", player.getName());
+                    
+                    arena.sendTitle("", "§cСикер §e" + player.getName() + " §bбыл заспавнен!", 20, 40, 20);
                     return;
                 }
                 

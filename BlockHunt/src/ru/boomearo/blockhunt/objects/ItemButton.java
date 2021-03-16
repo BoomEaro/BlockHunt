@@ -14,6 +14,7 @@ import ru.boomearo.gamecontrol.exceptions.GameControlException;
 public enum ItemButton {
 
     HiderSword(createHiderSwordButton(), 0, null),
+    SeekerSword(createSeekerSwordButton(), 0, null),
     
     Leave(createLeaveButton(), 8, new ButtonClick() {
 
@@ -66,6 +67,15 @@ public enum ItemButton {
         ItemStack item = new ItemStack(Material.WOODEN_SWORD, 1);
         ItemMeta meta = item.getItemMeta();
         meta.addEnchant(Enchantment.KNOCKBACK, 1, true);
+        meta.addItemFlags(ItemFlag.values());
+        item.setItemMeta(meta);
+        return item;
+    }
+    
+    private static ItemStack createSeekerSwordButton() {
+        ItemStack item = new ItemStack(Material.DIAMOND_SWORD, 1);
+        ItemMeta meta = item.getItemMeta();
+        meta.addEnchant(Enchantment.DAMAGE_ALL, 2, true);
         meta.addItemFlags(ItemFlag.values());
         item.setItemMeta(meta);
         return item;

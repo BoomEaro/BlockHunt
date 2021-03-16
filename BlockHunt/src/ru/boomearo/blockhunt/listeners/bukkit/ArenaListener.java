@@ -13,6 +13,7 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
 import ru.boomearo.blockhunt.BlockHunt;
@@ -168,6 +169,16 @@ public class ArenaListener implements Listener {
         }
         
         Location loc = e.getLocation();
+        
+        BHArena arena = BlockHunt.getInstance().getBlockHuntManager().getArenaByLocation(loc);
+        if (arena != null) {
+            e.setCancelled(true);
+        }
+    }
+    
+    @EventHandler
+    public void onHangingBreakEvent(HangingBreakEvent e) {
+        Location loc = e.getEntity().getLocation();
         
         BHArena arena = BlockHunt.getInstance().getBlockHuntManager().getArenaByLocation(loc);
         if (arena != null) {

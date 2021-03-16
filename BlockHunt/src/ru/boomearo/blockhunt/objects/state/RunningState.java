@@ -7,9 +7,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import me.libraryaddict.disguise.DisguiseAPI;
+import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
+import ru.boomearo.blockhunt.managers.BlockHuntStatistics;
 import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
 import ru.boomearo.blockhunt.objects.SolidPlayer;
@@ -18,10 +21,15 @@ import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
 import ru.boomearo.blockhunt.objects.playertype.SeekerPlayer;
 import ru.boomearo.blockhunt.objects.playertype.SeekerPlayer.SeekerRespawn;
 import ru.boomearo.blockhunt.objects.playertype.WaitingPlayer;
+import ru.boomearo.blockhunt.objects.statistics.BHStatsType;
 import ru.boomearo.blockhunt.utils.RandomUtil;
+import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.objects.states.ICountable;
 import ru.boomearo.gamecontrol.objects.states.IRunningState;
 import ru.boomearo.gamecontrol.utils.DateUtil;
+import ru.boomearo.gamecontrol.utils.Vault;
+import ru.boomearo.langhelper.LangHelper;
+import ru.boomearo.langhelper.versions.LangType;
 
 public class RunningState implements IRunningState, ICountable {
 
@@ -65,7 +73,7 @@ public class RunningState implements IRunningState, ICountable {
             tp.setPlayerType(hp);
             tp.getPlayerType().preparePlayer(tp);
             
-            tp.getPlayer().sendMessage(BlockHuntManager.prefix + "Вы были замаскированы под блоком §e" + rMat.name());
+            tp.getPlayer().sendMessage(BlockHuntManager.prefix + "Вы были замаскированы под §e" + LangHelper.getInstance().getItemTranslate(new ItemStack(rMat, 1), LangType.RU));
         }
     }
     
@@ -109,7 +117,7 @@ public class RunningState implements IRunningState, ICountable {
             
             if (!this.arena.getArenaRegion().isInRegion(tp.getPlayer().getLocation())) {
 
-                handleDeath(tp);
+                handleDeath(tp, null);
             }
 
         }
@@ -135,7 +143,19 @@ public class RunningState implements IRunningState, ICountable {
                 arena.sendMessages(BlockHuntManager.prefix + "Время вышло! §3Хайдеры победили!");
                 
                 arena.sendSounds(Sound.ENTITY_PLAYER_LEVELUP, 999, 2);
-                //TODO награда всем хайдерам
+                
+                arena.sendTitle("§3Хайдеры победили!", "", 20, 100, 20);
+                
+                //Награждаем всех хайдеров
+                BlockHuntStatistics bhs = BlockHunt.getInstance().getBlockHuntManager().getStatisticManager();
+                for (BHPlayer bh : this.arena.getAllPlayersType(HiderPlayer.class)) {
+                    bhs.addStats(BHStatsType.HidersWin, bh.getName());
+                    
+                    Vault.addMoney(bh.getName(), BlockHuntManager.hiderWinReward);
+                    
+                    bh.getPlayer().sendMessage(BlockHuntManager.prefix + "Вы получили награду за победу: " + GameControl.getFormatedEco(BlockHuntManager.hiderWinReward));
+                }
+                
                 arena.setState(new EndingState(this.arena));
                 return;
             }
@@ -215,15 +235,26 @@ public class RunningState implements IRunningState, ICountable {
         }
     }
     
-    public void handleDeath(BHPlayer tp) {
-        IPlayerType type = tp.getPlayerType();
+    public void handleDeath(BHPlayer player, BHPlayer killer) {
+        BlockHuntStatistics bhs = BlockHunt.getInstance().getBlockHuntManager().getStatisticManager();
+        
+        IPlayerType type = player.getPlayerType();
         if (type instanceof HiderPlayer) {
+            
+            if (killer != null) {
+                bhs.addStats(BHStatsType.HidersKills, killer.getName());
+                
+                Vault.addMoney(killer.getName(), BlockHuntManager.hiderKillReward);
+                
+                killer.getPlayer().sendMessage(BlockHuntManager.prefix + "Вы получили " + GameControl.getFormatedEco(BlockHuntManager.hiderKillReward) + " §bза убийство §3Хайдера§b.");
+            }
+            
             HiderPlayer hp = (HiderPlayer) type;
             
             //Если был твердым то убираем твердость
-            tp.getArena().unmakeSolid(tp, hp);
+            player.getArena().unmakeSolid(player, hp);
             
-            Player pl = tp.getPlayer();
+            Player pl = player.getPlayer();
             
             //Если была маскировка то сносим ее
             if (DisguiseAPI.isDisguised(pl)) {
@@ -232,36 +263,51 @@ public class RunningState implements IRunningState, ICountable {
             
             SeekerPlayer sp = new SeekerPlayer();
             
-            tp.setPlayerType(sp);
+            player.setPlayerType(sp);
             
             //Если умирает хайдер и это оказывается последний
             if (this.arena.getAllPlayersType(HiderPlayer.class).size() <= 0) {
-                this.arena.sendMessages(BlockHuntManager.prefix + "Последний §3Хайдер §e" + tp.getName() + " §bмертв! §cСикеры победили!");
+                this.arena.sendMessages(BlockHuntManager.prefix + "Последний §3Хайдер §e" + player.getName() + " §bмертв! §cСикеры победили!");
+                
+                this.arena.sendTitle("§cСикеры победили!", "", 20, 100, 20);
                 
                 this.arena.sendSounds(Sound.ENTITY_PLAYER_LEVELUP, 999, 2);
+                
+                //Награждаем всех сикеров
+                for (BHPlayer bh : this.arena.getAllPlayersType(SeekerPlayer.class)) {
+                    bhs.addStats(BHStatsType.SeekersWin, bh.getName());
+                    
+                    //Vault.addMoney(bh.getName(), BlockHuntManager.hiderWinReward);
+                    //bh.getPlayer().sendMessage(BlockHuntManager.prefix + "Вы получили награду за победу: " + GameControl.getFormatedEco(BlockHuntManager.hiderWinReward));
+                    //TODO награждать жетонами сикеров?
+                }
                 
                 this.arena.setState(new EndingState(this.arena));
             }
             else {
                 sp.setSeekerRespawn(new SeekerRespawn(sp));
                 
-                tp.getPlayer().sendMessage(BlockHuntManager.prefix + "§cВы были убиты! §bТеперь вы стали §cСикером§b!");
+                player.getPlayer().sendMessage(BlockHuntManager.prefix + "§cВы были убиты! §bТеперь вы стали §cСикером§b!");
                 
-                this.arena.sendMessages(BlockHuntManager.prefix + "§3Хайдер §e" + tp.getName() + " §bмертв! Осталось §e" + this.arena.getAllPlayersType(HiderPlayer.class).size() + " §3Хайдеров", tp.getName());
+                this.arena.sendMessages(BlockHuntManager.prefix + "§3Хайдер §e" + player.getName() + " §bмертв! Осталось §e" + this.arena.getAllPlayersType(HiderPlayer.class).size() + " §3Хайдеров", player.getName());
             }
         }
         else if (type instanceof SeekerPlayer) {
+            if (killer != null) {
+                bhs.addStats(BHStatsType.SeekersKills, killer.getName());
+            }
+            
             SeekerPlayer sp = (SeekerPlayer) type;
             sp.setSeekerRespawn(new SeekerRespawn(sp));
             
-            tp.getPlayer().sendMessage(BlockHuntManager.prefix + "§cВы были убиты!");
+            player.getPlayer().sendMessage(BlockHuntManager.prefix + "§cВы были убиты!");
             
             
-            this.arena.sendMessages(BlockHuntManager.prefix + "§cСикер §e" + tp.getName() + " §bмертв!", tp.getName());
+            this.arena.sendMessages(BlockHuntManager.prefix + "§cСикер §e" + player.getName() + " §bмертв!", player.getName());
         }
         
         this.arena.sendSounds(Sound.ENTITY_WITHER_HURT, 999, 2);
         
-        tp.getPlayerType().preparePlayer(tp);
+        player.getPlayerType().preparePlayer(player);
     }
 }

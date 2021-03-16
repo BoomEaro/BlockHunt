@@ -18,6 +18,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.Disguise;
@@ -32,6 +33,8 @@ import ru.boomearo.blockhunt.utils.RandomUtil;
 import ru.boomearo.gamecontrol.objects.IGameArena;
 import ru.boomearo.gamecontrol.objects.IRegion;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
+import ru.boomearo.langhelper.LangHelper;
+import ru.boomearo.langhelper.versions.LangType;
 
 public class BHArena implements IGameArena, ConfigurationSerializable {
 
@@ -225,6 +228,15 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
         sendSounds(sound, volume, pitch, null);
     }
     
+    public void sendTitle(String first, String second, int in, int stay, int out) {
+        for (BHPlayer tp : this.players.values()) {
+            Player pl = tp.getPlayer();
+            if (pl.isOnline()) {
+                pl.sendTitle(first, second, in, stay, out);
+            }
+        }
+    }
+    
     private void handleSendLevels(int level) {
         for (BHPlayer tp : this.players.values()) {
             Player pl = tp.getPlayer();
@@ -384,8 +396,8 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
             pp.sendBlockChange(old.getLocation(), Bukkit.createBlockData(hp.getHideBlock()));
         }
         
-        pl.sendMessage(BlockHuntManager.prefix + "Теперь вы твердый блок!");
-        pl.playSound(player.getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 100, 1.5f);
+        pl.sendMessage(BlockHuntManager.prefix + "Теперь вы твердый блок §e" + LangHelper.getInstance().getItemTranslate(new ItemStack(hp.getHideBlock(), 1), LangType.RU) + "§b!");
+        pl.playSound(player.getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 100, 2f);
 
     }
 
@@ -417,8 +429,8 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
         d.setNotifyBar(null);
         DisguiseAPI.disguiseToAll(pl, d);
         
-        pl.sendMessage(BlockHuntManager.prefix + "Вы больше не твердый блок.");
-        pl.playSound(player.getPlayer().getLocation(), Sound.ENTITY_BAT_AMBIENT, 100, 1.5f);
+        pl.sendMessage(BlockHuntManager.prefix + "§cВы больше не твердый блок §e" + LangHelper.getInstance().getItemTranslate(new ItemStack(hp.getHideBlock(), 1), LangType.RU) + "§c.");
+        pl.playSound(player.getPlayer().getLocation(), Sound.ENTITY_BAT_AMBIENT, 100, 1.3f);
     }
     
     //Показывает всех замаскированных игроков для этого игрока

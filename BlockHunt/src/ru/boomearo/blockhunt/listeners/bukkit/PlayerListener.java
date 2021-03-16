@@ -27,6 +27,8 @@ import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
 import ru.boomearo.blockhunt.objects.SolidPlayer;
+import ru.boomearo.blockhunt.objects.playertype.HiderPlayer;
+import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
 import ru.boomearo.blockhunt.objects.state.RunningState;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
 
@@ -41,7 +43,7 @@ public class PlayerListener implements Listener {
             IGameState state = tp.getArena().getState();
             if (state instanceof RunningState) {
                 RunningState rs = (RunningState) state;
-                rs.handleDeath(tp);
+                rs.handleDeath(tp, null);
             }
             e.setDroppedExp(0);
             e.getDrops().clear();
@@ -174,11 +176,18 @@ public class PlayerListener implements Listener {
         
         RunningState rs = (RunningState) state;
         
+        //Если тот кто атакует наносит кому то урон то снимаем с него маскировку.
+        IPlayerType type = bhDamager.getPlayerType();
+        if (type instanceof HiderPlayer) {
+            HiderPlayer hp = (HiderPlayer) type;
+            bhPlayer.getArena().unmakeSolid(bhDamager, hp);
+            
+        }
         //Когда сущность точно умрет
         double newHealth = player.getHealth() - e.getFinalDamage();
         if (newHealth <= 0) {
             
-            rs.handleDeath(bhPlayer);
+            rs.handleDeath(bhPlayer, bhDamager);
             
             e.setCancelled(true);
         }
