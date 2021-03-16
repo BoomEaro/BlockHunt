@@ -2,17 +2,11 @@ package ru.boomearo.blockhunt.objects.state;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import ru.boomearo.blockhunt.BlockHunt;
+import me.libraryaddict.disguise.DisguiseAPI;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
@@ -32,9 +26,6 @@ public class RunningState implements IRunningState, ICountable {
     private int count;
 
     private int cd = 20;
-
-    private final ConcurrentMap<String, SolidBlock> hiddenLocs = new ConcurrentHashMap<String, SolidBlock>();
-    private final ConcurrentMap<String, SolidBlock> hiddenPlayers = new ConcurrentHashMap<String, SolidBlock>();
     
     public static final int seekerSpawnTime = 20;
     public static final int hiderSwordTime = 30;
@@ -185,8 +176,17 @@ public class RunningState implements IRunningState, ICountable {
     public void handleDeath(BHPlayer tp) {
         IPlayerType type = tp.getPlayerType();
         if (type instanceof HiderPlayer) {
+            HiderPlayer hp = (HiderPlayer) type;
             
-            undisguise(tp);
+            //Если был твердым то убираем твердость
+            tp.getArena().unmakeSolid(tp, hp);
+            
+            Player pl = tp.getPlayer();
+            
+            //Если была маскировка то сносим ее
+            if (DisguiseAPI.isDisguised(pl)) {
+                DisguiseAPI.undisguiseToAll(pl);
+            }
             
             SeekerPlayer sp = new SeekerPlayer();
             
@@ -216,91 +216,5 @@ public class RunningState implements IRunningState, ICountable {
             this.arena.sendMessages("Сикер " + tp.getName() + " мертв!", tp.getName());
         }
         tp.getPlayerType().preparePlayer(tp);
-    }
-    
-    public void disguise(BHPlayer player, Block old) {
-        for (BHPlayer pla : this.arena.getAllPlayers()) {
-            if (pla.getName().equals(player.getName())) {
-                continue;
-            }
-            Player pp = pla.getPlayer();
-            pp.hidePlayer(BlockHunt.getInstance(), player.getPlayer());
-            pp.sendBlockChange(old.getLocation(), Bukkit.createBlockData(Material.STONE));
-        }
-        
-        SolidBlock bs = getSolidBlockByLocation(old.getLocation());
-        if (bs == null) {
-            addSolidBlock(old.getLocation(), new SolidBlock(player, old.getLocation(), old.getType()));
-        }
-    }
-
-    public void undisguise(BHPlayer player) {
-        SolidBlock bs = getSolidBlockByPlayer(player.getName());
-        if (bs == null) {
-            return;
-        }
-        
-        for (BHPlayer pla : player.getArena().getAllPlayers()) {
-            if (pla.getName().equals(player.getName())) {
-                continue;
-            }
-            Player pp = pla.getPlayer();
-            pp.showPlayer(BlockHunt.getInstance(), player.getPlayer());
-            pp.sendBlockChange(bs.getLocation(), Bukkit.createBlockData(bs.getOldMaterial()));
-        }
-        
-        removeSolidBlockByName(player.getName());
-    }
-    
-    
-    public SolidBlock getSolidBlockByLocation(Location loc) {
-        return this.hiddenLocs.get(convertLocToString(loc));
-    }
-    
-    public SolidBlock getSolidBlockByPlayer(String name) {
-        return this.hiddenPlayers.get(name);
-    }
-    
-    public void addSolidBlock(Location loc, SolidBlock block) {
-        this.hiddenLocs.put(convertLocToString(block.getLocation()), block);
-        this.hiddenPlayers.put(block.getPlayer().getName(), block);
-    }
-    
-    public void removeSolidBlockByName(String name) {
-        SolidBlock sb = this.hiddenPlayers.get(name);
-        if (sb == null) {
-            return;
-        }
-        this.hiddenLocs.remove(convertLocToString(sb.getLocation()));
-        this.hiddenPlayers.remove(name);
-    }
-    
-    
-    public static String convertLocToString(Location loc) {
-        return loc.getBlockX() + "|" + loc.getBlockY() + "|" +  loc.getBlockZ();
-    }
-
-    public static class SolidBlock {
-        private final BHPlayer player;
-        private final Location loc;
-        private final Material old;
-        
-        public SolidBlock(BHPlayer player, Location loc, Material old) {
-            this.player = player;
-            this.loc = loc;
-            this.old = old;
-        }
-        
-        public BHPlayer getPlayer() {
-            return this.player;
-        }
-        
-        public Location getLocation() {
-            return this.loc;
-        }
-
-        public Material getOldMaterial() {
-            return this.old;
-        }
     }
 }

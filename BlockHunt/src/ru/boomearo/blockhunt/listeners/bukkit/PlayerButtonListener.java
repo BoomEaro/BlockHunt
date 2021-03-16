@@ -1,4 +1,4 @@
-package ru.boomearo.blockhunt.listeners;
+package ru.boomearo.blockhunt.listeners.bukkit;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;

@@ -14,9 +14,7 @@ import com.comphenix.protocol.wrappers.WrappedBlockData;
 
 import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.objects.BHPlayer;
-import ru.boomearo.blockhunt.objects.state.RunningState;
-import ru.boomearo.blockhunt.objects.state.RunningState.SolidBlock;
-import ru.boomearo.gamecontrol.objects.states.IGameState;
+import ru.boomearo.blockhunt.objects.SolidPlayer;
 
 public class PacketBlockFormAdapter extends PacketAdapter {
 
@@ -36,20 +34,13 @@ public class PacketBlockFormAdapter extends PacketAdapter {
         if (bh == null) {
             return;
         }
-        
-        IGameState state = bh.getArena().getState();
-        if (!(state instanceof RunningState)) {
-            return;
-        }
-        
-        RunningState rs = (RunningState) state;
 
         PacketContainer pc = e.getPacket();
         //Material mat = pc.getBlockData().readSafely(0).getType();
         BlockPosition bp = e.getPacket().getBlockPositionModifier().readSafely(0);
         Location loc = bp.toLocation(pl.getWorld());
         
-        SolidBlock sb = rs.getSolidBlockByLocation(loc);
+        SolidPlayer sb = bh.getArena().getSolidPlayerByLocation(loc);
         if (sb == null) {
             return;
         }

@@ -13,13 +13,14 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.libraryaddict.disguise.DisguiseAPI;
 import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
+import ru.boomearo.blockhunt.objects.playertype.HiderPlayer;
 import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
 import ru.boomearo.blockhunt.objects.playertype.WaitingPlayer;
 import ru.boomearo.blockhunt.objects.state.AllowJoin;
-import ru.boomearo.blockhunt.objects.state.RunningState;
 import ru.boomearo.blockhunt.utils.ExpFix;
 import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
@@ -155,13 +156,20 @@ public final class BlockHuntManager implements IGameManager {
         
         pl.getInventory().clear();
         
-        //Если вышли во время игры то снимаем маскировку, не влияет если игрок был сикером
-        IGameState state = arena.getState();
-        if (state instanceof RunningState) {
-            RunningState rs = (RunningState) state;
-            rs.undisguise(player);
+        //Снимаем свою твердую маскировку
+        IPlayerType type = player.getPlayerType();
+        if (type instanceof HiderPlayer) {
+            HiderPlayer hp = (HiderPlayer) type;
+            arena.unmakeSolid(player, hp);
+        }
+        //Делаем игрока обычного
+        if (DisguiseAPI.isDisguised(pl)) {
+            DisguiseAPI.undisguiseToAll(pl);
         }
         
+        //Показываем для себя всех замаскированных твердых а так же сбрасывает блоки
+        arena.unmakeSolidAll(player);
+
         pl.sendMessage(prefix + "Вы покинули игру!");
         
         arena.sendMessages(prefix + "Игрок §9" + pl.getName() + " §7покинул игру! " + getRemainPlayersArena(arena, null), pl.getName());

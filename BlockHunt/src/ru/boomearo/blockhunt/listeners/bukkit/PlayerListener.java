@@ -1,6 +1,7 @@
-package ru.boomearo.blockhunt.listeners;
+package ru.boomearo.blockhunt.listeners.bukkit;
 
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -25,10 +26,10 @@ import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
+import ru.boomearo.blockhunt.objects.SolidPlayer;
 import ru.boomearo.blockhunt.objects.playertype.HiderPlayer;
 import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
 import ru.boomearo.blockhunt.objects.state.RunningState;
-import ru.boomearo.blockhunt.objects.state.RunningState.SolidBlock;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
 
 public class PlayerListener implements Listener {
@@ -244,15 +245,9 @@ public class PlayerListener implements Listener {
             return;
         }
         
-        IGameState state = tp.getArena().getState();
-        if (!(state instanceof RunningState)) {
-            return;
-        }
+        BHArena arena = tp.getArena();
         
-        
-        RunningState rs = (RunningState) state;
-        
-        SolidBlock sb = rs.getSolidBlockByLocation(b.getLocation());
+        SolidPlayer sb = arena.getSolidPlayerByLocation(b.getLocation());
         if (sb == null) {
             return;
         }
@@ -268,8 +263,10 @@ public class PlayerListener implements Listener {
         }
         
         HiderPlayer hp = (HiderPlayer) type;
-        hp.setBlockLocation(new Location(sb.getPlayer().getPlayer().getWorld(), 0, 0, 0));
-        rs.undisguise(sb.getPlayer());
+
+        arena.unmakeSolid(sb.getPlayer(), hp);
+        
+        pl.getWorld().playSound(sb.getLocation(), Sound.ENTITY_PLAYER_HURT, 999, 1);
     }
     
     

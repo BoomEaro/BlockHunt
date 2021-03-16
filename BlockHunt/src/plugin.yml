@@ -4,7 +4,7 @@ version: 0.1
 author: BoomEaro
 description: blockhunt
 api-version: 1.13
-depend: [FastAsyncWorldEdit, EssentialsSpawn, GameControl, ProtocolLib]
+depend: [FastAsyncWorldEdit, EssentialsSpawn, GameControl, ProtocolLib, LibsDisguises]
 commands:
   blockhunt:
     usage: /blockhunt

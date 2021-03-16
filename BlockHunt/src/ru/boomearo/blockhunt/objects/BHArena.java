@@ -10,13 +10,19 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
+import me.libraryaddict.disguise.DisguiseAPI;
+import me.libraryaddict.disguise.disguisetypes.DisguiseType;
+import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
 import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
+import ru.boomearo.blockhunt.objects.playertype.HiderPlayer;
 import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
 import ru.boomearo.blockhunt.objects.state.WaitingState;
 import ru.boomearo.gamecontrol.objects.IGameArena;
@@ -43,6 +49,9 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
     private volatile IGameState state = new WaitingState(this);
     
     private final ConcurrentMap<String, BHPlayer> players = new ConcurrentHashMap<String, BHPlayer>();
+    
+    private final ConcurrentMap<String, SolidPlayer> hiddenLocs = new ConcurrentHashMap<String, SolidPlayer>();
+    private final ConcurrentMap<String, SolidPlayer> hiddenPlayers = new ConcurrentHashMap<String, SolidPlayer>();
     
     public BHArena(String name, int minPlayers, int maxPlayers, int timeLimit, World world, IRegion arenaRegion, Location lobbyLocation, IRegion lobbyRegion, Location seekersLocation, Location hidersLocation) {
         this.name = name;
@@ -300,5 +309,104 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
         }
         
         return new BHArena(name, minPlayers, maxPlayers, timeLimit, world, region, lobbyLocation, lobbyRegion, seekersLocation, hidersLocation);
+    }
+    
+    
+    public void makeSolid(BHPlayer player, Block old) {
+        Player pl = player.getPlayer();
+        SolidPlayer bs = getSolidPlayerByLocation(old.getLocation());
+        if (bs != null) {
+            if (!bs.getPlayer().getName().equals(player.getName())) {
+                pl.sendMessage("В данном месте уже кто то замаскирован!");
+            }
+            return;
+        }
+        
+        addSolidPlayer(new SolidPlayer(player, old.getLocation(), old.getType()));
+        
+        if (DisguiseAPI.isDisguised(pl)) {
+            DisguiseAPI.undisguiseToAll(pl);
+        }
+        
+        for (BHPlayer pla : getAllPlayers()) {
+            if (pla.getName().equals(player.getName())) {
+                continue;
+            }
+            Player pp = pla.getPlayer();
+            pp.hidePlayer(BlockHunt.getInstance(), player.getPlayer());
+            pp.sendBlockChange(old.getLocation(), Bukkit.createBlockData(Material.STONE));
+        }
+        
+        pl.sendMessage("Теперь вы твердый блок :)");
+        pl.playSound(player.getPlayer().getLocation(), Sound.ENTITY_BAT_AMBIENT, 100, 1.5f);
+
+    }
+
+    public void unmakeSolid(BHPlayer player, HiderPlayer hp) {
+        hp.resetBlockCount();
+        
+        SolidPlayer bs = getSolidPlayerByPlayer(player.getName());
+        if (bs == null) {
+            return;
+        }
+        
+        removeSolidPlayerByName(player.getName());
+        
+        for (BHPlayer pla : player.getArena().getAllPlayers()) {
+            if (pla.getName().equals(player.getName())) {
+                continue;
+            }
+            Player pp = pla.getPlayer();
+            pp.showPlayer(BlockHunt.getInstance(), player.getPlayer());
+            pp.sendBlockChange(bs.getLocation(), Bukkit.createBlockData(bs.getOldMaterial()));
+        }
+        
+        Player pl = player.getPlayer();
+        if (DisguiseAPI.isDisguised(pl)) {
+            DisguiseAPI.undisguiseToAll(pl);
+        }
+        
+        DisguiseAPI.disguiseToAll(pl, new MiscDisguise(DisguiseType.FALLING_BLOCK, Material.STONE));
+        
+        pl.sendMessage("Вы больше не твердый блок.");
+        pl.playSound(player.getPlayer().getLocation(), Sound.ENTITY_BAT_AMBIENT, 100, 1.5f);
+    }
+    
+    //Показывает всех замаскированных игроков для этого игрока
+    public void unmakeSolidAll(BHPlayer player) {
+        Player pl = player.getPlayer();
+        for (SolidPlayer sp : this.hiddenPlayers.values()) {
+            Player pp = sp.getPlayer().getPlayer();
+            
+            pl.showPlayer(BlockHunt.getInstance(), pp);
+            pl.sendBlockChange(sp.getLocation(), Bukkit.createBlockData(sp.getOldMaterial()));
+        }
+    }
+    
+    public SolidPlayer getSolidPlayerByLocation(Location loc) {
+        return this.hiddenLocs.get(convertLocToString(loc));
+    }
+    
+    public SolidPlayer getSolidPlayerByPlayer(String name) {
+        return this.hiddenPlayers.get(name);
+    }
+    
+    public void addSolidPlayer(SolidPlayer player) {
+        this.hiddenLocs.put(convertLocToString(player.getLocation()), player);
+        this.hiddenPlayers.put(player.getPlayer().getName(), player);
+    }
+    
+    public void removeSolidPlayerByName(String name) {
+        SolidPlayer sb = this.hiddenPlayers.get(name);
+        if (sb == null) {
+            return;
+        }
+        this.hiddenLocs.remove(convertLocToString(sb.getLocation()));
+        this.hiddenPlayers.remove(name);
+    }
+    
+    
+    public static String convertLocToString(Location loc) {
+        return loc.getBlockX() + "|" + loc.getBlockY() + "|" +  loc.getBlockZ();
     }
 }

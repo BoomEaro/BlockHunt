@@ -3,18 +3,20 @@ package ru.boomearo.blockhunt.objects.playertype;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 
+import me.libraryaddict.disguise.DisguiseAPI;
+import me.libraryaddict.disguise.disguisetypes.DisguiseType;
+import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
+import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
 import ru.boomearo.blockhunt.objects.ItemButton;
 import ru.boomearo.blockhunt.objects.state.RunningState;
 import ru.boomearo.blockhunt.utils.ExpFix;
 import ru.boomearo.gamecontrol.GameControl;
-import ru.boomearo.gamecontrol.objects.states.IGameState;
 
 public class HiderPlayer implements IPlayerType {
     
@@ -26,7 +28,6 @@ public class HiderPlayer implements IPlayerType {
     private Location blockLoc = null;
     private int cdBlock = 20;
     private int countBlock = placesCdTime;
-    private boolean solid = false;
 
     public static final int placesCdTime = 5;
     
@@ -55,6 +56,12 @@ public class HiderPlayer implements IPlayerType {
         if (loc != null) {
             GameControl.getInstance().asyncTeleport(pl, loc);
         }
+        
+        if (DisguiseAPI.isDisguised(pl)) {
+            DisguiseAPI.undisguiseToAll(pl);
+        }
+        
+        DisguiseAPI.disguiseToAll(pl, new MiscDisguise(DisguiseType.FALLING_BLOCK, Material.STONE));
     }
     
     public Location getBlockLocation() {
@@ -65,6 +72,13 @@ public class HiderPlayer implements IPlayerType {
         this.blockLoc = loc;
     }
     
+    public int getBlockCount() {
+        return this.countBlock;
+    }
+    
+    public void resetBlockCount() {
+        this.countBlock = placesCdTime;
+    }
     
     public void autoHandle(BHPlayer player) {
         handleDisguise(player);
@@ -72,11 +86,7 @@ public class HiderPlayer implements IPlayerType {
     }
     
     private void handleDisguise(BHPlayer player) {
-        IGameState state = player.getArena().getState();
-        if (!(state instanceof RunningState)) {
-            return;
-        }
-        RunningState rs = (RunningState) state;
+        BHArena arena = player.getArena();
         
         Player pl = player.getPlayer();
         Location curr = pl.getLocation();
@@ -88,23 +98,16 @@ public class HiderPlayer implements IPlayerType {
         
         //Если игрок находится в одном блоке
         if ((curr.getBlockX() == this.blockLoc.getBlockX()) && (curr.getBlockY() == this.blockLoc.getBlockY()) && (curr.getBlockZ() == this.blockLoc.getBlockZ())) {
-            handleSolidCount(player, curr, rs);
+            handleSolidCount(player, curr, arena);
         }
         else {
-            this.countBlock = placesCdTime;
-            
-            rs.undisguise(player);
-            if (this.solid) {
-                pl.sendMessage("Вы больше не твердый блок.");
-                pl.playSound(player.getPlayer().getLocation(), Sound.ENTITY_BAT_AMBIENT, 100, 1.5f);
-            }
-            this.solid = false;
+            arena.unmakeSolid(player, this);
         }
         
         this.blockLoc = curr;
     }
     
-    private void handleSolidCount(BHPlayer player, Location curr, RunningState rs) {
+    private void handleSolidCount(BHPlayer player, Location curr, BHArena arena) {
         if (this.cdBlock <= 0) {
             this.cdBlock = 20;
             Player pl = player.getPlayer();
@@ -118,13 +121,7 @@ public class HiderPlayer implements IPlayerType {
                     return;
                 }
                 
-                rs.disguise(player, block);
-                
-                if (!this.solid) {
-                    pl.sendMessage("Теперь вы твердый блок :)");
-                    pl.playSound(player.getPlayer().getLocation(), Sound.ENTITY_BAT_AMBIENT, 100, 1.5f);
-                }
-                this.solid = true;
+                arena.makeSolid(player, block);
                 return;
             }
             
