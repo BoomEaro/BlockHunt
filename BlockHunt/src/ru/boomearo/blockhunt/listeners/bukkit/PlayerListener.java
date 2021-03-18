@@ -189,7 +189,8 @@ public class PlayerListener implements Listener {
             
             rs.handleDeath(bhPlayer, bhDamager);
             
-            e.setCancelled(true);
+            //Наносим урон но нулевой
+            e.setDamage(0);
         }
         
     }

@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -152,6 +153,12 @@ public final class BlockHuntManager implements IGameManager {
         }
 
         pl.setGameMode(GameMode.ADVENTURE);
+        
+        pl.setFoodLevel(20);
+        
+        pl.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+        
+        pl.setHealth(pl.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
         
         ExpFix.setTotalExperience(pl, 0);
         

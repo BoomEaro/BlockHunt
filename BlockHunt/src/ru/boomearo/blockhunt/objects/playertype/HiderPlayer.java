@@ -42,6 +42,10 @@ public class HiderPlayer implements IPlayerType {
         Player pl = player.getPlayer();
         
         pl.setFoodLevel(20);
+        
+        //Делаем хайдеру 2 хп
+        pl.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(2);
+        
         pl.setHealth(pl.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
         
         pl.setGameMode(GameMode.SURVIVAL);

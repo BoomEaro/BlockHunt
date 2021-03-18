@@ -18,6 +18,9 @@ public class WaitingPlayer implements IPlayerType {
         Player pl = player.getPlayer();
         
         pl.setFoodLevel(20);
+        
+        pl.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+        
         pl.setHealth(pl.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
         
         pl.setGameMode(GameMode.ADVENTURE);
