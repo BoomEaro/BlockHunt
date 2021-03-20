@@ -115,17 +115,17 @@ public class BlockHuntUse {
                     return true;
                 }
                 
-                ar.setLobbyLocation(BlockHunt.normalizeRotation(pl.getLocation()));
+                ar.setLobbyLocation(GameControl.normalizeRotation(pl.getLocation()));
                 
                 ar.setLobbyRegion(new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()));
                 break;
             }
             case "seeker": {
-                ar.setSeekersLocation(BlockHunt.normalizeRotation(pl.getLocation()));
+                ar.setSeekersLocation(GameControl.normalizeRotation(pl.getLocation()));
                 break;
             }
             case "hider": {
-                ar.setHidersLocation(BlockHunt.normalizeRotation(pl.getLocation()));
+                ar.setHidersLocation(GameControl.normalizeRotation(pl.getLocation()));
                 break;
             }
             default: {
