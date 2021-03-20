@@ -29,10 +29,10 @@ import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.playertype.HiderPlayer;
 import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
 import ru.boomearo.blockhunt.objects.state.WaitingState;
-import ru.boomearo.blockhunt.utils.RandomUtil;
 import ru.boomearo.gamecontrol.objects.IGameArena;
 import ru.boomearo.gamecontrol.objects.IRegion;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
+import ru.boomearo.gamecontrol.utils.RandomUtil;
 import ru.boomearo.langhelper.LangHelper;
 import ru.boomearo.langhelper.versions.LangType;
 
@@ -82,6 +82,11 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
     }
     
     @Override
+    public World getWorld() {
+        return this.world;
+    }
+    
+    @Override
     public BHPlayer getGamePlayer(String name) {
         return this.players.get(name);
     }
@@ -116,10 +121,6 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
     
     public int getTimeLimit() {
         return this.timelimit;
-    }
-    
-    public World getWorld() {
-        return this.world;
     }
     
     public IRegion getArenaRegion() {

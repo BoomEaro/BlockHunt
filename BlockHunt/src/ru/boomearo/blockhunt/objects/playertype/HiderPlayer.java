@@ -19,8 +19,7 @@ import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
 import ru.boomearo.blockhunt.objects.ItemButton;
 import ru.boomearo.blockhunt.objects.state.RunningState;
-import ru.boomearo.blockhunt.utils.ExpFix;
-import ru.boomearo.gamecontrol.GameControl;
+import ru.boomearo.gamecontrol.utils.ExpFix;
 
 public class HiderPlayer implements IPlayerType {
     
@@ -43,8 +42,8 @@ public class HiderPlayer implements IPlayerType {
         
         pl.setFoodLevel(20);
         
-        //Делаем хайдеру 2 хп
-        pl.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(2);
+        //Делаем хайдеру 10 хп
+        pl.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(10);
         
         pl.setHealth(pl.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
         
@@ -68,7 +67,7 @@ public class HiderPlayer implements IPlayerType {
         
         Location loc = player.getArena().getHidersLocation();
         if (loc != null) {
-            GameControl.getInstance().asyncTeleport(pl, loc);
+            pl.teleport(loc);
         }
         
         if (DisguiseAPI.isDisguised(pl)) {

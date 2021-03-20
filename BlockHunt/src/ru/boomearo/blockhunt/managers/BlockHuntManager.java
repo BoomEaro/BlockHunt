@@ -22,13 +22,13 @@ import ru.boomearo.blockhunt.objects.playertype.HiderPlayer;
 import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
 import ru.boomearo.blockhunt.objects.playertype.WaitingPlayer;
 import ru.boomearo.blockhunt.objects.state.AllowJoin;
-import ru.boomearo.blockhunt.utils.ExpFix;
 import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
 import ru.boomearo.gamecontrol.exceptions.GameControlException;
 import ru.boomearo.gamecontrol.exceptions.PlayerGameException;
 import ru.boomearo.gamecontrol.objects.IGameManager;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
+import ru.boomearo.gamecontrol.utils.ExpFix;
 
 public final class BlockHuntManager implements IGameManager {
 
@@ -147,9 +147,9 @@ public final class BlockHuntManager implements IGameManager {
     private static void handlePlayerLeave(BHPlayer player, BHArena arena) {
         Player pl = player.getPlayer();
         
-        Location loc = BlockHunt.getInstance().getEssentialsSpawn().getSpawn("default");
+        Location loc = GameControl.getSpawnLocation();
         if (loc != null) {
-            GameControl.getInstance().asyncTeleport(pl, loc);
+            pl.teleport(loc);
         }
 
         pl.setGameMode(GameMode.ADVENTURE);

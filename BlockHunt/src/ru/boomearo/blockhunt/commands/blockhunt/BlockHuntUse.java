@@ -41,6 +41,10 @@ public class BlockHuntUse {
         
         BukkitPlayer bPlayer = BukkitAdapter.adapt(pl);
         LocalSession ls = WorldEdit.getInstance().getSessionManager().get(bPlayer);
+        if (ls == null) {
+            pl.sendMessage(BlockHuntManager.prefix + "Выделите регион!");
+            return true;
+        }
         Region re = null;
         try {
             re = ls.getSelection(ls.getSelectionWorld());   
@@ -97,6 +101,10 @@ public class BlockHuntUse {
             case "lobby": {
                 BukkitPlayer bPlayer = BukkitAdapter.adapt(pl);
                 LocalSession ls = WorldEdit.getInstance().getSessionManager().get(bPlayer);
+                if (ls == null) {
+                    pl.sendMessage(BlockHuntManager.prefix + "Выделите регион!");
+                    return true;
+                }
                 Region re = null;
                 try {
                     re = ls.getSelection(ls.getSelectionWorld());   
@@ -107,17 +115,17 @@ public class BlockHuntUse {
                     return true;
                 }
                 
-                ar.setLobbyLocation(pl.getLocation().clone());
+                ar.setLobbyLocation(BlockHunt.normalizeRotation(pl.getLocation()));
                 
                 ar.setLobbyRegion(new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()));
                 break;
             }
             case "seeker": {
-                ar.setSeekersLocation(pl.getLocation().clone());
+                ar.setSeekersLocation(BlockHunt.normalizeRotation(pl.getLocation()));
                 break;
             }
             case "hider": {
-                ar.setHidersLocation(pl.getLocation().clone());
+                ar.setHidersLocation(BlockHunt.normalizeRotation(pl.getLocation()));
                 break;
             }
             default: {

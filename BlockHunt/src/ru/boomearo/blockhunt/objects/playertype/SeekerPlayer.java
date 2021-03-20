@@ -14,9 +14,8 @@ import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
 import ru.boomearo.blockhunt.objects.ItemButton;
 import ru.boomearo.blockhunt.objects.state.RunningState;
-import ru.boomearo.blockhunt.utils.ExpFix;
-import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.utils.DateUtil;
+import ru.boomearo.gamecontrol.utils.ExpFix;
 
 public class SeekerPlayer implements IPlayerType {
     
@@ -58,7 +57,7 @@ public class SeekerPlayer implements IPlayerType {
         
         Location loc = player.getArena().getSeekersLocation();
         if (loc != null) {
-            GameControl.getInstance().asyncTeleport(pl, loc);
+            pl.teleport(loc);
         }
     }
     
@@ -95,7 +94,7 @@ public class SeekerPlayer implements IPlayerType {
                     BHArena arena = player.getArena();
                     Location loc = player.getArena().getHidersLocation();
                     if (loc != null) {
-                        GameControl.getInstance().asyncTeleport(pl, loc);
+                        pl.teleport(loc);
                     }
                     pl.sendMessage(BlockHuntManager.prefix + "Вы были заспавнены!");
                     arena.sendMessages(BlockHuntManager.prefix + "§cСикер §e" + player.getName() + " §bбыл заспавнен!", player.getName());

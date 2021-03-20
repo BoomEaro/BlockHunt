@@ -22,11 +22,12 @@ import ru.boomearo.blockhunt.objects.playertype.SeekerPlayer;
 import ru.boomearo.blockhunt.objects.playertype.SeekerPlayer.SeekerRespawn;
 import ru.boomearo.blockhunt.objects.playertype.WaitingPlayer;
 import ru.boomearo.blockhunt.objects.statistics.BHStatsType;
-import ru.boomearo.blockhunt.utils.RandomUtil;
+
 import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.objects.states.ICountable;
 import ru.boomearo.gamecontrol.objects.states.IRunningState;
 import ru.boomearo.gamecontrol.utils.DateUtil;
+import ru.boomearo.gamecontrol.utils.RandomUtil;
 import ru.boomearo.gamecontrol.utils.Vault;
 import ru.boomearo.langhelper.LangHelper;
 import ru.boomearo.langhelper.versions.LangType;

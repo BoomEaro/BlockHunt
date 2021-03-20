@@ -8,8 +8,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import ru.boomearo.blockhunt.objects.BHPlayer;
 import ru.boomearo.blockhunt.objects.ItemButton;
-import ru.boomearo.blockhunt.utils.ExpFix;
-import ru.boomearo.gamecontrol.GameControl;
+import ru.boomearo.gamecontrol.utils.ExpFix;
 
 public class WaitingPlayer implements IPlayerType {
 
@@ -47,7 +46,7 @@ public class WaitingPlayer implements IPlayerType {
         
         Location loc = player.getArena().getLobbyLocation();
         if (loc != null) {
-            GameControl.getInstance().asyncTeleport(pl, loc);
+            pl.teleport(loc);
         }
     }
 
