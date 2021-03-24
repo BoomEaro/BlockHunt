@@ -11,7 +11,7 @@ public class EndingState implements IGameState, ICountable {
 
     private final BHArena arena;
     
-    private int count = 5;
+    private int count = 15;
     
     private int cd = 20;
     
@@ -66,7 +66,9 @@ public class EndingState implements IGameState, ICountable {
                 return;
             }
             
-            arena.sendMessages(BlockHuntManager.prefix + "Следующая игра начнется через §e" + DateUtil.formatedTime(this.count, false));
+            if ((this.count % 5) == 0) {
+                arena.sendMessages(BlockHuntManager.prefix + "Следующая игра начнется через §e" + DateUtil.formatedTime(this.count, false));
+            }
             
             this.count--;
             

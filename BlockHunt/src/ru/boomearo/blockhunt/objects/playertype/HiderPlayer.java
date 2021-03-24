@@ -65,6 +65,8 @@ public class HiderPlayer implements IPlayerType {
         
         inv.setHeldItemSlot(0);
         
+        player.sendBoard(1);
+        
         Location loc = player.getArena().getHidersLocation();
         if (loc != null) {
             pl.teleport(loc);

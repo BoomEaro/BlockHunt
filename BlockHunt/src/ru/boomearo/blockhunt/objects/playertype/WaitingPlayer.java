@@ -44,6 +44,8 @@ public class WaitingPlayer implements IPlayerType {
         
         inv.setHeldItemSlot(0);
         
+        player.sendBoard(0);
+        
         Location loc = player.getArena().getLobbyLocation();
         if (loc != null) {
             pl.teleport(loc);

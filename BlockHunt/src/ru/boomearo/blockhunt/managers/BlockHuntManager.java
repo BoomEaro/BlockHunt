@@ -112,7 +112,7 @@ public final class BlockHuntManager implements IGameManager {
             pl.sendMessage(prefix + "Ожидание §e" + (tmpArena.getMinPlayers() - currCount) + " §bигроков для начала игры...");
         } 
         
-        tmpArena.sendMessages(prefix + "Игрок §e" + pl.getName() + " §bприсоединился к игре! " + getRemainPlayersArena(tmpArena, null), pl.getName());
+        tmpArena.sendMessages(prefix + "§e" + pl.getDisplayName() + " §bприсоединился к игре! " + getRemainPlayersArena(tmpArena, null), pl.getName());
         
         return newTp;
     }
@@ -145,6 +145,8 @@ public final class BlockHuntManager implements IGameManager {
     }
 
     private static void handlePlayerLeave(BHPlayer player, BHArena arena) {
+        player.sendBoard(null);
+        
         Player pl = player.getPlayer();
         
         Location loc = GameControl.getSpawnLocation();
@@ -180,7 +182,7 @@ public final class BlockHuntManager implements IGameManager {
 
         pl.sendMessage(prefix + "Вы покинули игру!");
         
-        arena.sendMessages(prefix + "Игрок §e" + pl.getName() + " §bпокинул игру! " + getRemainPlayersArena(arena, null), pl.getName());
+        arena.sendMessages(prefix + "§e" + pl.getDisplayName() + " §bпокинул игру! " + getRemainPlayersArena(arena, null), pl.getName());
     }
     
     @Override

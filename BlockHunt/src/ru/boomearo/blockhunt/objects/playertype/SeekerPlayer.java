@@ -55,6 +55,8 @@ public class SeekerPlayer implements IPlayerType {
         
         inv.setHeldItemSlot(0);
         
+        player.sendBoard(1);
+        
         Location loc = player.getArena().getSeekersLocation();
         if (loc != null) {
             pl.teleport(loc);
