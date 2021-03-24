@@ -150,7 +150,7 @@ public class RunningState implements IRunningState, ICountable {
                 
                 arena.sendSounds(Sound.ENTITY_PLAYER_LEVELUP, 999, 2);
                 
-                arena.sendTitle("§3Хайдеры победили!", "", 20, 100, 20);
+                arena.sendTitle("§3Хайдеры победили!", "", 20, 20*15, 20);
                 
                 //Награждаем всех хайдеров
                 BlockHuntStatistics bhs = BlockHunt.getInstance().getBlockHuntManager().getStatisticManager();
@@ -275,7 +275,7 @@ public class RunningState implements IRunningState, ICountable {
             if (this.arena.getAllPlayersType(HiderPlayer.class).size() <= 0) {
                 this.arena.sendMessages(BlockHuntManager.prefix + "Последний §3Хайдер §e" + player.getPlayer().getDisplayName() + " §bмертв! §cСикеры победили!");
                 
-                this.arena.sendTitle("§cСикеры победили!", "", 20, 100, 20);
+                this.arena.sendTitle("§cСикеры победили!", "", 20, 20*15, 20);
                 
                 this.arena.sendSounds(Sound.ENTITY_PLAYER_LEVELUP, 999, 2);
                 

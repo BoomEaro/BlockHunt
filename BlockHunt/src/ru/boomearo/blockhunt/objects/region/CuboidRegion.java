@@ -1,6 +1,8 @@
 package ru.boomearo.blockhunt.objects.region;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Location;
@@ -79,6 +81,16 @@ public class CuboidRegion implements IRegion, ConfigurationSerializable {
         return false;
     }
 
+    public List<ChunkCords> getAllChunks() {
+        List<ChunkCords> chunks = new ArrayList<ChunkCords>();
+        for (int x = (this.loc1.getBlockX() >> 4); x <= (this.loc2.getBlockX() >> 4); x++) {
+            for (int z = (this.loc1.getBlockZ() >> 4); z <= (this.loc2.getBlockZ() >> 4); z++) {
+                chunks.add(new ChunkCords(x, z));
+            }
+        }
+        return chunks;
+    }
+    
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> result = new LinkedHashMap<String, Object>();
@@ -104,5 +116,23 @@ public class CuboidRegion implements IRegion, ConfigurationSerializable {
         }
 
         return new CuboidRegion(loc1, loc2);
+    }
+    
+    public static class ChunkCords {
+        private final int x;
+        private final int z;
+        
+        public ChunkCords(int x, int z) {
+            this.x = x;
+            this.z = z;
+        }
+        
+        public int getX() {
+            return this.x;
+        }
+        
+        public int getZ() {
+            return this.z;
+        }
     }
 }

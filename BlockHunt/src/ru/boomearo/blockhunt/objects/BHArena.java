@@ -9,8 +9,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Consumer;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -28,6 +30,8 @@ import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.playertype.HiderPlayer;
 import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
+import ru.boomearo.blockhunt.objects.region.CuboidRegion;
+import ru.boomearo.blockhunt.objects.region.CuboidRegion.ChunkCords;
 import ru.boomearo.blockhunt.objects.state.WaitingState;
 import ru.boomearo.gamecontrol.objects.IGameArena;
 import ru.boomearo.gamecontrol.objects.IRegion;
@@ -45,10 +49,10 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
     private final int timelimit;
     
     private final World world;
-    private final IRegion arenaRegion;
+    private final CuboidRegion arenaRegion;
     
     private Location lobbyLocation;
-    private IRegion lobbyRegion;
+    private CuboidRegion lobbyRegion;
     
     private Location seekersLocation;
     private Location hidersLocation;
@@ -62,7 +66,7 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
     private final ConcurrentMap<String, SolidPlayer> hiddenLocs = new ConcurrentHashMap<String, SolidPlayer>();
     private final ConcurrentMap<String, SolidPlayer> hiddenPlayers = new ConcurrentHashMap<String, SolidPlayer>();
     
-    public BHArena(String name, int minPlayers, int maxPlayers, int timeLimit, World world, IRegion arenaRegion, Location lobbyLocation, IRegion lobbyRegion, Location seekersLocation, Location hidersLocation, List<Material> hideBlocks) {
+    public BHArena(String name, int minPlayers, int maxPlayers, int timeLimit, World world, CuboidRegion arenaRegion, Location lobbyLocation, CuboidRegion lobbyRegion, Location seekersLocation, Location hidersLocation, List<Material> hideBlocks) {
         this.name = name;
         this.minPlayers = minPlayers;
         this.maxPlayers = maxPlayers;
@@ -147,7 +151,7 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
         this.lobbyLocation = loc;
     }
     
-    public void setLobbyRegion(IRegion region) {
+    public void setLobbyRegion(CuboidRegion region) {
         this.lobbyRegion = region; 
     }
     
@@ -292,9 +296,9 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
         int maxPlayers = 15;
         int timeLimit = 300;
         World world = null;
-        IRegion region = null;
+        CuboidRegion region = null;
         Location lobbyLocation = null;
-        IRegion lobbyRegion = null;
+        CuboidRegion lobbyRegion = null;
         Location seekersLocation = null;
         Location hidersLocation = null;
         List<String> hideBlocks = new ArrayList<String>();
@@ -326,7 +330,7 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
 
         Object re = args.get("region");
         if (re != null) {
-            region = (IRegion) re;
+            region = (CuboidRegion) re;
         }
 
         Object l = args.get("lobbyLocation");
@@ -336,7 +340,7 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
         
         Object lr = args.get("lobbyRegion");
         if (lr != null) {
-            lobbyRegion = (IRegion) lr;
+            lobbyRegion = (CuboidRegion) lr;
         }
         
         Object s = args.get("seekersLocation");
@@ -369,6 +373,34 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
         }
         
         return new BHArena(name, minPlayers, maxPlayers, timeLimit, world, region, lobbyLocation, lobbyRegion, seekersLocation, hidersLocation, hiB);
+    }
+    
+    //Подгружает чанки в память навсегда
+    public void forceLoadChunksToMemory() {
+        if (this.arenaRegion != null) {
+            for (ChunkCords cc : this.arenaRegion.getAllChunks()) {
+                Consumer<Chunk> c = new Consumer<Chunk>() {
+                    @Override
+                    public void accept(Chunk t) {
+                        t.setForceLoaded(true);
+                    }
+
+                };
+                this.world.getChunkAtAsync(cc.getX(), cc.getZ(), c);
+            }
+        }
+        if (this.lobbyRegion != null) {
+            for (ChunkCords cc : this.lobbyRegion.getAllChunks()) {
+                Consumer<Chunk> c = new Consumer<Chunk>() {
+                    @Override
+                    public void accept(Chunk t) {
+                        t.setForceLoaded(true);
+                    }
+
+                };
+                this.world.getChunkAtAsync(cc.getX(), cc.getZ(), c);
+            }
+        }
     }
     
     
