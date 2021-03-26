@@ -13,7 +13,6 @@ import ru.boomearo.board.objects.boards.AbstractHolder;
 import ru.boomearo.board.objects.boards.AbstractPage;
 import ru.boomearo.board.objects.boards.AbstractPageList;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
-import ru.boomearo.gamecontrol.utils.DateUtil;
 
 public class BHGamePage extends AbstractPage {
 
@@ -83,11 +82,11 @@ public class BHGamePage extends AbstractPage {
                 if (state instanceof RunningState) {
                     RunningState rs = (RunningState) state;
                     
-                    return "§bИгра закончится через: §e" + DateUtil.formatedTime(rs.getCount(), false, true);
+                    return "§bДо конца: §e" + getFormattedTimeLeft(rs.getCount());
                 }
                 else if (state instanceof EndingState) {
                     EndingState es = (EndingState) state;
-                    return "§bНовая игра через: §e" + DateUtil.formatedTime(es.getCount(), false, true);
+                    return "§bНовая игра: §e" + getFormattedTimeLeft(es.getCount());
                 }
                 return " ";
             }
@@ -140,4 +139,18 @@ public class BHGamePage extends AbstractPage {
         return holders;
     }
 
+    private static String getFormattedTimeLeft(int time) {
+        int min = 0;
+        int sec = 0;
+        String minStr = "";
+        String secStr = "";
+
+        min = (int) Math.floor(time / 60);
+        sec = time % 60;
+
+        minStr = (min < 10) ? "0" + String.valueOf(min) : String.valueOf(min);
+        secStr = (sec < 10) ? "0" + String.valueOf(sec) : String.valueOf(sec);
+
+        return minStr + ":" + secStr;
+    }
 }

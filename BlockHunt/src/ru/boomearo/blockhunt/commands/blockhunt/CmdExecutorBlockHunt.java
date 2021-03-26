@@ -74,6 +74,6 @@ public class CmdExecutorBlockHunt extends AbstractExecutor {
 
 	@Override
 	public String getSuffix() {
-		return " §8-§b ";
+		return " §8-§7 ";
 	}
 }
