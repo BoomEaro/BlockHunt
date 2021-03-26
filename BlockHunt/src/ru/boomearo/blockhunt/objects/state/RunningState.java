@@ -121,7 +121,7 @@ public class RunningState implements IRunningState, ICountable {
                 hp.autoHandle(tp);
             }
             
-            if (!this.arena.getArenaRegion().isInRegion(tp.getPlayer().getLocation())) {
+            if (!this.arena.getArenaRegion().isInRegionPoint(tp.getPlayer().getLocation())) {
 
                 handleDeath(tp, null);
             }

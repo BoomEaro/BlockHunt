@@ -19,10 +19,10 @@ import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.commands.CmdInfo;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.BHArena;
-import ru.boomearo.blockhunt.objects.region.CuboidRegion;
 import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
 import ru.boomearo.gamecontrol.exceptions.PlayerGameException;
+import ru.boomearo.gamecontrol.objects.region.CuboidRegion;
 
 public class BlockHuntUse {
 
@@ -59,7 +59,7 @@ public class BlockHuntUse {
             List<Material> bl = new ArrayList<Material>();
             bl.add(Material.STONE);
             
-            BHArena newArena = new BHArena(arena, 2, 15, 300, pl.getWorld(), new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), null, null, null, null, bl);
+            BHArena newArena = new BHArena(arena, pl.getWorld(), 2, 15, 300, new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), null, null, null, null, bl);
             
             BlockHuntManager am = BlockHunt.getInstance().getBlockHuntManager();
             am.addArena(newArena);

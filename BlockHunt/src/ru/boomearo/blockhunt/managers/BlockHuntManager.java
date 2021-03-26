@@ -213,7 +213,7 @@ public final class BlockHuntManager implements IGameManager {
     public BHArena getArenaByLocation(Location loc) {
         for (BHArena ar : BlockHunt.getInstance().getBlockHuntManager().getAllArenas()) {
             //Лобби тоже является частью арены
-            if (ar.getArenaRegion().isInRegion(loc) || (ar.getLobbyRegion() != null ? ar.getLobbyRegion().isInRegion(loc) : false)) {
+            if (ar.getArenaRegion().isInRegionPoint(loc) || (ar.getLobbyRegion() != null ? ar.getLobbyRegion().isInRegionPoint(loc) : false)) {
                 return ar;
             }
         }

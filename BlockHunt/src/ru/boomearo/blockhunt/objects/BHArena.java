@@ -30,29 +30,25 @@ import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.playertype.HiderPlayer;
 import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
-import ru.boomearo.blockhunt.objects.region.CuboidRegion;
-import ru.boomearo.blockhunt.objects.region.CuboidRegion.ChunkCords;
 import ru.boomearo.blockhunt.objects.state.WaitingState;
-import ru.boomearo.gamecontrol.objects.IGameArena;
-import ru.boomearo.gamecontrol.objects.IRegion;
+import ru.boomearo.gamecontrol.objects.arena.AbstractGameArena;
+import ru.boomearo.gamecontrol.objects.region.IRegion;
+import ru.boomearo.gamecontrol.objects.region.IRegion.ChunkCords;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
 import ru.boomearo.gamecontrol.utils.RandomUtil;
 import ru.boomearo.langhelper.LangHelper;
 import ru.boomearo.langhelper.versions.LangType;
 
-public class BHArena implements IGameArena, ConfigurationSerializable {
+public class BHArena extends AbstractGameArena implements ConfigurationSerializable {
 
-    private final String name;
-    
     private final int minPlayers;
     private final int maxPlayers;
     private final int timelimit;
-    
-    private final World world;
-    private final CuboidRegion arenaRegion;
+
+    private final IRegion arenaRegion;
     
     private Location lobbyLocation;
-    private CuboidRegion lobbyRegion;
+    private IRegion lobbyRegion;
     
     private Location seekersLocation;
     private Location hidersLocation;
@@ -66,28 +62,17 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
     private final ConcurrentMap<String, SolidPlayer> hiddenLocs = new ConcurrentHashMap<String, SolidPlayer>();
     private final ConcurrentMap<String, SolidPlayer> hiddenPlayers = new ConcurrentHashMap<String, SolidPlayer>();
     
-    public BHArena(String name, int minPlayers, int maxPlayers, int timeLimit, World world, CuboidRegion arenaRegion, Location lobbyLocation, CuboidRegion lobbyRegion, Location seekersLocation, Location hidersLocation, List<Material> hideBlocks) {
-        this.name = name;
+    public BHArena(String name, World world, int minPlayers, int maxPlayers, int timeLimit, IRegion arenaRegion, Location lobbyLocation, IRegion lobbyRegion, Location seekersLocation, Location hidersLocation, List<Material> hideBlocks) {
+        super(name, world);
         this.minPlayers = minPlayers;
         this.maxPlayers = maxPlayers;
         this.timelimit = timeLimit;
-        this.world = world;
         this.arenaRegion = arenaRegion;
         this.lobbyLocation = lobbyLocation;
         this.lobbyRegion = lobbyRegion;
         this.seekersLocation = seekersLocation;
         this.hidersLocation = hidersLocation;
         this.hideBlocks = hideBlocks;
-    }
-    
-    @Override
-    public String getName() {
-        return this.name;
-    }
-    
-    @Override
-    public World getWorld() {
-        return this.world;
     }
     
     @Override
@@ -109,12 +94,7 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
     public IGameState getState() {
         return this.state;
     }
-    
-    @Override
-    public void regen() {
-        throw new UnsupportedOperationException("Данная арена не требуется в регенерации.");
-    }
-    
+
     public int getMinPlayers() {
         return this.minPlayers;
     }
@@ -151,7 +131,7 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
         this.lobbyLocation = loc;
     }
     
-    public void setLobbyRegion(CuboidRegion region) {
+    public void setLobbyRegion(IRegion region) {
         this.lobbyRegion = region; 
     }
     
@@ -265,12 +245,12 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
     public Map<String, Object> serialize() {
         Map<String, Object> result = new LinkedHashMap<String, Object>();
 
-        result.put("name", this.name);
+        result.put("name", getName());
         result.put("minPlayers", this.minPlayers);
         result.put("maxPlayers", this.maxPlayers);
         result.put("timeLimit", this.timelimit);
         
-        result.put("world", this.world.getName());
+        result.put("world", getWorld().getName());
         result.put("region", this.arenaRegion);
         
         result.put("lobbyLocation", this.lobbyLocation);
@@ -296,9 +276,9 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
         int maxPlayers = 15;
         int timeLimit = 300;
         World world = null;
-        CuboidRegion region = null;
+        IRegion region = null;
         Location lobbyLocation = null;
-        CuboidRegion lobbyRegion = null;
+        IRegion lobbyRegion = null;
         Location seekersLocation = null;
         Location hidersLocation = null;
         List<String> hideBlocks = new ArrayList<String>();
@@ -330,7 +310,7 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
 
         Object re = args.get("region");
         if (re != null) {
-            region = (CuboidRegion) re;
+            region = (IRegion) re;
         }
 
         Object l = args.get("lobbyLocation");
@@ -340,7 +320,7 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
         
         Object lr = args.get("lobbyRegion");
         if (lr != null) {
-            lobbyRegion = (CuboidRegion) lr;
+            lobbyRegion = (IRegion) lr;
         }
         
         Object s = args.get("seekersLocation");
@@ -372,7 +352,7 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
             hiB.add(mat);
         }
         
-        return new BHArena(name, minPlayers, maxPlayers, timeLimit, world, region, lobbyLocation, lobbyRegion, seekersLocation, hidersLocation, hiB);
+        return new BHArena(name, world, minPlayers, maxPlayers, timeLimit, region, lobbyLocation, lobbyRegion, seekersLocation, hidersLocation, hiB);
     }
     
     //Подгружает чанки в память навсегда
@@ -386,7 +366,7 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
                     }
 
                 };
-                this.world.getChunkAtAsync(cc.getX(), cc.getZ(), c);
+                getWorld().getChunkAtAsync(cc.getX(), cc.getZ(), c);
             }
         }
         if (this.lobbyRegion != null) {
@@ -398,7 +378,7 @@ public class BHArena implements IGameArena, ConfigurationSerializable {
                     }
 
                 };
-                this.world.getChunkAtAsync(cc.getX(), cc.getZ(), c);
+                getWorld().getChunkAtAsync(cc.getX(), cc.getZ(), c);
             }
         }
     }

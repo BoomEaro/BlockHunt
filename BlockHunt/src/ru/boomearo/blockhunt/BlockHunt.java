@@ -19,7 +19,6 @@ import ru.boomearo.blockhunt.listeners.packet.PacketBlockFormAdapter;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.menu.MenuManager;
 import ru.boomearo.blockhunt.objects.BHArena;
-import ru.boomearo.blockhunt.objects.region.CuboidRegion;
 import ru.boomearo.blockhunt.objects.statistics.BHStatsData;
 import ru.boomearo.blockhunt.objects.statistics.BHStatsType;
 import ru.boomearo.blockhunt.runnable.ArenasRunnable;
@@ -40,7 +39,6 @@ public class BlockHunt extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        ConfigurationSerialization.registerClass(CuboidRegion.class);
         ConfigurationSerialization.registerClass(BHArena.class);
 
         File configFile = new File(getDataFolder() + File.separator + "config.yml");
@@ -110,7 +108,6 @@ public class BlockHunt extends JavaPlugin {
             e.printStackTrace();
         }
 
-        ConfigurationSerialization.unregisterClass(CuboidRegion.class);
         ConfigurationSerialization.unregisterClass(BHArena.class);
 
         getLogger().info("Плагин успешно выключен.");

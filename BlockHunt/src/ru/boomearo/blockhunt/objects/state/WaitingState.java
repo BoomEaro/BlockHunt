@@ -62,7 +62,7 @@ public class WaitingState implements IWaitingState, AllowJoin {
         for (BHPlayer tp : this.arena.getAllPlayers()) {
             tp.getPlayer().spigot().respawn();
             
-            if (!this.arena.getLobbyRegion().isInRegion(tp.getPlayer().getLocation())) {
+            if (!this.arena.getLobbyRegion().isInRegionPoint(tp.getPlayer().getLocation())) {
                 tp.getPlayerType().preparePlayer(tp);
             }
         }
