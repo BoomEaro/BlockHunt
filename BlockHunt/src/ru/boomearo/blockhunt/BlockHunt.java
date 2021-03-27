@@ -12,7 +12,6 @@ import com.comphenix.protocol.ProtocolLibrary;
 import ru.boomearo.blockhunt.commands.blockhunt.CmdExecutorBlockHunt;
 import ru.boomearo.blockhunt.database.Sql;
 import ru.boomearo.blockhunt.database.sections.SectionStats;
-import ru.boomearo.blockhunt.listeners.bukkit.ArenaListener;
 import ru.boomearo.blockhunt.listeners.bukkit.PlayerButtonListener;
 import ru.boomearo.blockhunt.listeners.bukkit.PlayerListener;
 import ru.boomearo.blockhunt.listeners.packet.PacketBlockFormAdapter;
@@ -73,8 +72,6 @@ public class BlockHunt extends JavaPlugin {
         }
 
         getCommand("blockhunt").setExecutor(new CmdExecutorBlockHunt());
-
-        getServer().getPluginManager().registerEvents(new ArenaListener(), this);
 
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerButtonListener(), this);

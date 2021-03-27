@@ -10,16 +10,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import ru.boomearo.blockhunt.BlockHunt;
@@ -92,7 +88,6 @@ public class PlayerListener implements Listener {
         }
     }
     
-    @EventHandler
     public void onEntityDamageEvent(EntityDamageEvent e) {
         if (e.isCancelled()) {
             return;
@@ -113,10 +108,6 @@ public class PlayerListener implements Listener {
     
     @EventHandler(priority = EventPriority.MONITOR)
     public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent e) {
-        if (e.isCancelled()) {
-            return;
-        }
-        
         Player damager = null;
 
         if (e.getDamager() instanceof Player) {
@@ -193,44 +184,9 @@ public class PlayerListener implements Listener {
             e.setDamage(0);
         }
         
+        e.setCancelled(false);
     }
-    
-    @EventHandler
-    public void onBlockBreakEvent(BlockBreakEvent e) {
-        if (e.isCancelled()) {
-            return;
-        }
-        
-        Player pl = e.getPlayer();
-        BHPlayer tp = BlockHunt.getInstance().getBlockHuntManager().getGamePlayer(pl.getName());
-        if (tp != null) {
-            e.setCancelled(true);
-        }
-    }
-    
-    @EventHandler
-    public void onPlayerItemDamageEvent(PlayerItemDamageEvent e) {
-        if (e.isCancelled()) {
-            return;
-        }
-        Player pl = e.getPlayer();
-        BHPlayer tp = BlockHunt.getInstance().getBlockHuntManager().getGamePlayer(pl.getName());
-        if (tp != null) {
-            e.setCancelled(true);
-        }
-    }
-    
-    @EventHandler
-    public void onBlockPlaceEvent(BlockPlaceEvent e) {
-        if (e.isCancelled()) {
-            return;
-        }
-        Player pl = e.getPlayer();
-        BHPlayer tp = BlockHunt.getInstance().getBlockHuntManager().getGamePlayer(pl.getName());
-        if (tp != null) {
-            e.setCancelled(true);
-        }
-    }
+
     
     @EventHandler
     public void onPlayerInteractEvent(PlayerInteractEvent e) {
@@ -270,19 +226,4 @@ public class PlayerListener implements Listener {
         pl.getWorld().playSound(sb.getLocation(), Sound.ENTITY_PLAYER_HURT, 999, 1);
     }
     
-    
-    @EventHandler
-    public void onFoodLevelChangeEvent(FoodLevelChangeEvent e) {
-        if (e.isCancelled()) {
-            return;
-        }
-        Entity en = e.getEntity();
-        if (en instanceof Player) {
-            Player pl = (Player) en;
-            BHPlayer tp = BlockHunt.getInstance().getBlockHuntManager().getGamePlayer(pl.getName());
-            if (tp != null) {
-                e.setCancelled(true);
-            }
-        }
-    }
 }
