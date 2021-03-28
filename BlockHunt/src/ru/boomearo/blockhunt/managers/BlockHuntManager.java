@@ -7,9 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,13 +20,11 @@ import ru.boomearo.blockhunt.objects.playertype.HiderPlayer;
 import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
 import ru.boomearo.blockhunt.objects.playertype.WaitingPlayer;
 import ru.boomearo.blockhunt.objects.state.AllowJoin;
-import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
 import ru.boomearo.gamecontrol.exceptions.GameControlException;
 import ru.boomearo.gamecontrol.exceptions.PlayerGameException;
 import ru.boomearo.gamecontrol.objects.IGameManager;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
-import ru.boomearo.gamecontrol.utils.ExpFix;
 
 public final class BlockHuntManager implements IGameManager {
 
@@ -148,23 +144,6 @@ public final class BlockHuntManager implements IGameManager {
         player.sendBoard(null);
         
         Player pl = player.getPlayer();
-        
-        Location loc = GameControl.getSpawnLocation();
-        if (loc != null) {
-            pl.teleport(loc);
-        }
-
-        pl.setGameMode(GameMode.ADVENTURE);
-        
-        pl.setFoodLevel(20);
-        
-        pl.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
-        
-        pl.setHealth(pl.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-        
-        ExpFix.setTotalExperience(pl, 0);
-        
-        pl.getInventory().clear();
         
         //Снимаем свою твердую маскировку
         IPlayerType type = player.getPlayerType();
