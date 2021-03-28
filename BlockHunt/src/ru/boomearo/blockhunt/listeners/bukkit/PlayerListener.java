@@ -11,8 +11,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -87,26 +85,7 @@ public class PlayerListener implements Listener {
             pl.sendMessage(BlockHuntManager.prefix + "Вы не можете использовать эти команды в игре!");
         }
     }
-    
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onEntityDamageEvent(EntityDamageEvent e) {
-        if (e.isCancelled()) {
-            return;
-        }
-        if (e.getCause() == DamageCause.ENTITY_ATTACK) {
-            return;
-        }
-        Entity en = e.getEntity();
-        if (en instanceof Player) {
-            Player pl = (Player) en;
-            
-            BHPlayer tp = BlockHunt.getInstance().getBlockHuntManager().getGamePlayer(pl.getName());
-            if (tp != null) {
-                e.setCancelled(true);
-            }
-        }
-    }
-    
+
     @EventHandler(priority = EventPriority.MONITOR)
     public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent e) {
         Player damager = null;
