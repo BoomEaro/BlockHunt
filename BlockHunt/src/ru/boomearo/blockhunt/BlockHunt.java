@@ -3,7 +3,6 @@ package ru.boomearo.blockhunt;
 import java.io.File;
 import java.sql.SQLException;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -48,13 +47,6 @@ public class BlockHunt extends JavaPlugin {
 
         if (this.arenaManager == null) {
             this.arenaManager = new BlockHuntManager();
-            
-            //После загрузки сервера запускаем задачу на перманентную подгрузку чанков
-            Bukkit.getScheduler().runTask(this, () -> {
-                for (BHArena arena : this.arenaManager.getAllArenas()) {
-                    arena.forceLoadChunksToMemory();
-                }
-            });
         }
         
         if (this.menu == null) {

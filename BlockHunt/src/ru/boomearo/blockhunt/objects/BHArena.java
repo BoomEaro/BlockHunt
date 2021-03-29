@@ -9,10 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.function.Consumer;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -33,7 +31,6 @@ import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
 import ru.boomearo.blockhunt.objects.state.WaitingState;
 import ru.boomearo.gamecontrol.objects.arena.AbstractGameArena;
 import ru.boomearo.gamecontrol.objects.region.IRegion;
-import ru.boomearo.gamecontrol.objects.region.IRegion.ChunkCords;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
 import ru.boomearo.gamecontrol.utils.RandomUtil;
 import ru.boomearo.langhelper.LangHelper;
@@ -353,34 +350,6 @@ public class BHArena extends AbstractGameArena implements ConfigurationSerializa
         }
         
         return new BHArena(name, world, minPlayers, maxPlayers, timeLimit, region, lobbyLocation, lobbyRegion, seekersLocation, hidersLocation, hiB);
-    }
-    
-    //Подгружает чанки в память навсегда
-    public void forceLoadChunksToMemory() {
-        if (this.arenaRegion != null) {
-            for (ChunkCords cc : this.arenaRegion.getAllChunks()) {
-                Consumer<Chunk> c = new Consumer<Chunk>() {
-                    @Override
-                    public void accept(Chunk t) {
-                        t.setForceLoaded(true);
-                    }
-
-                };
-                getWorld().getChunkAtAsync(cc.getX(), cc.getZ(), c);
-            }
-        }
-        if (this.lobbyRegion != null) {
-            for (ChunkCords cc : this.lobbyRegion.getAllChunks()) {
-                Consumer<Chunk> c = new Consumer<Chunk>() {
-                    @Override
-                    public void accept(Chunk t) {
-                        t.setForceLoaded(true);
-                    }
-
-                };
-                getWorld().getChunkAtAsync(cc.getX(), cc.getZ(), c);
-            }
-        }
     }
     
     
