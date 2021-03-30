@@ -7,7 +7,6 @@ import ru.boomearo.blockhunt.board.BHPageList;
 import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
 import ru.boomearo.board.Board;
 import ru.boomearo.board.exceptions.BoardException;
-import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.objects.PlayerBoard;
 import ru.boomearo.board.objects.boards.AbstractPageList;
 import ru.boomearo.gamecontrol.objects.IGamePlayer;
@@ -67,7 +66,7 @@ public class BHPlayer implements IGamePlayer {
             try {
                 AbstractPageList apl;
                 if (index == null) {
-                    apl = BoardManager.createDefaultPageList(Board.getInstance().getBoardManager().getDefaultPageList(), pb);
+                    apl = Board.getInstance().getBoardManager().getPageListFactory().createPageList(pb);
                 }
                 else {
                     apl = new BHPageList(pb, this);
