@@ -6,10 +6,10 @@ import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
 import ru.boomearo.gamecontrol.objects.states.ICountable;
-import ru.boomearo.gamecontrol.objects.states.IGameState;
+import ru.boomearo.gamecontrol.objects.states.IStartingState;
 import ru.boomearo.gamecontrol.utils.DateUtil;
 
-public class StartingState implements IGameState, ICountable, AllowJoin {
+public class StartingState implements IStartingState, ICountable, AllowJoin {
 
     private final BHArena arena;
     

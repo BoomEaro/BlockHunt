@@ -59,8 +59,8 @@ public class BHArena extends AbstractGameArena implements ConfigurationSerializa
     private final ConcurrentMap<String, SolidPlayer> hiddenLocs = new ConcurrentHashMap<String, SolidPlayer>();
     private final ConcurrentMap<String, SolidPlayer> hiddenPlayers = new ConcurrentHashMap<String, SolidPlayer>();
     
-    public BHArena(String name, World world, int minPlayers, int maxPlayers, int timeLimit, IRegion arenaRegion, Location lobbyLocation, IRegion lobbyRegion, Location seekersLocation, Location hidersLocation, List<Material> hideBlocks) {
-        super(name, world);
+    public BHArena(String name, World world, Material icon, int minPlayers, int maxPlayers, int timeLimit, IRegion arenaRegion, Location lobbyLocation, IRegion lobbyRegion, Location seekersLocation, Location hidersLocation, List<Material> hideBlocks) {
+        super(name, world, icon);
         this.minPlayers = minPlayers;
         this.maxPlayers = maxPlayers;
         this.timelimit = timeLimit;
@@ -245,6 +245,7 @@ public class BHArena extends AbstractGameArena implements ConfigurationSerializa
         Map<String, Object> result = new LinkedHashMap<String, Object>();
 
         result.put("name", getName());
+        result.put("icon", getIcon().name());
         result.put("minPlayers", this.minPlayers);
         result.put("maxPlayers", this.maxPlayers);
         result.put("timeLimit", this.timelimit);
@@ -271,6 +272,7 @@ public class BHArena extends AbstractGameArena implements ConfigurationSerializa
     @SuppressWarnings("unchecked")
     public static BHArena deserialize(Map<String, Object> args) {
         String name = null;
+        Material icon = Material.STONE;
         int minPlayers = 2;
         int maxPlayers = 15;
         int timeLimit = 300;
@@ -285,6 +287,14 @@ public class BHArena extends AbstractGameArena implements ConfigurationSerializa
         Object na = args.get("name");
         if (na != null) {
             name = (String) na;
+        }
+        
+        Object ic = args.get("icon");
+        if (ic != null) {
+            try {
+                icon = Material.valueOf((String) ic);
+            }
+            catch (Exception e) {}
         }
 
         Object minp = args.get("minPlayers");
@@ -351,7 +361,7 @@ public class BHArena extends AbstractGameArena implements ConfigurationSerializa
             hiB.add(mat);
         }
         
-        return new BHArena(name, world, minPlayers, maxPlayers, timeLimit, region, lobbyLocation, lobbyRegion, seekersLocation, hidersLocation, hiB);
+        return new BHArena(name, world, icon, minPlayers, maxPlayers, timeLimit, region, lobbyLocation, lobbyRegion, seekersLocation, hidersLocation, hiB);
     }
     
     

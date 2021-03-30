@@ -59,7 +59,7 @@ public class BlockHuntUse {
             List<Material> bl = new ArrayList<Material>();
             bl.add(Material.STONE);
             
-            BHArena newArena = new BHArena(arena, pl.getWorld(), 2, 15, 300, new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), null, null, null, null, bl);
+            BHArena newArena = new BHArena(arena, pl.getWorld(), Material.STONE, 2, 15, 300, new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), null, null, null, null, bl);
             
             BlockHuntManager am = BlockHunt.getInstance().getBlockHuntManager();
             am.addArena(newArena);

@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -54,6 +55,21 @@ public final class BlockHuntManager implements IGameManager {
         return gameNameDys;
     }
 
+    @Override
+    public ChatColor getMainColor() {
+        return ChatColor.AQUA;
+    }
+
+    @Override
+    public ChatColor getVariableColor() {
+        return ChatColor.YELLOW;
+    }
+
+    @Override
+    public ChatColor getOtherColor() {
+        return ChatColor.RED;
+    }
+    
     @Override
     public JavaPlugin getPlugin() {
         return BlockHunt.getInstance();
