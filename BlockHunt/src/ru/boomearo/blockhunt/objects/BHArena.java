@@ -91,11 +91,13 @@ public class BHArena extends AbstractGameArena implements ConfigurationSerializa
     public IGameState getState() {
         return this.state;
     }
-
+    
+    @Override
     public int getMinPlayers() {
         return this.minPlayers;
     }
     
+    @Override
     public int getMaxPlayers() {
         return this.maxPlayers;
     }
