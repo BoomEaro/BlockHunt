@@ -151,6 +151,8 @@ public class PlayerListener implements Listener {
         IPlayerType type = bhDamager.getPlayerType();
         if (type instanceof HiderPlayer) {
             HiderPlayer hp = (HiderPlayer) type;
+            hp.resetBlockCount();
+            
             bhPlayer.getArena().unmakeSolid(bhDamager, hp);
             
         }
