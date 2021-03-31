@@ -88,18 +88,18 @@ public final class BlockHuntManager implements IGameManager {
 
         BHArena tmpArena = this.arenas.get(arena);
         if (tmpArena == null) {
-            throw new PlayerGameException("Арена §b'§e" + arena + "§b' не найдена!");
+            throw new PlayerGameException("Карта §b'§e" + arena + "§b' не найдена!");
         }
 
         int count = tmpArena.getAllPlayers().size();
         if (count >= tmpArena.getMaxPlayers()) {
-            throw new PlayerGameException("Арена §b'§e" + arena + "§b' переполнена!");
+            throw new PlayerGameException("Карта §b'§e" + arena + "§b' переполнена!");
         }
 
         IGameState state = tmpArena.getState();
 
         if (!(state instanceof AllowJoin)) {
-            throw new PlayerGameException("В арене §b'§e" + arena + "§b' уже идет игра!");
+            throw new PlayerGameException("В карте §b'§e" + arena + "§b' уже идет игра!");
         }
         
         WaitingPlayer type = new WaitingPlayer();
@@ -116,8 +116,8 @@ public final class BlockHuntManager implements IGameManager {
         //Обрабатываем игрока
         type.preparePlayer(newTp);
         
-        pl.sendMessage(prefix + "Вы присоединились к арене §b'§e" + arena + "§b'!");
-        pl.sendMessage(prefix + "Чтобы покинуть игру, используйте §eМагма крем §bили команду §e/bh leave§b.");
+        pl.sendMessage(prefix + "Вы присоединились к карте §b'§e" + arena + "§b'!");
+        pl.sendMessage(prefix + "Чтобы покинуть игру, используйте §eМагма крем §bили команду §e/lobby§b.");
         
         int currCount = tmpArena.getAllPlayers().size();
         if (currCount < tmpArena.getMinPlayers()) {

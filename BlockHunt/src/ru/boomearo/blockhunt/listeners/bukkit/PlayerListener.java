@@ -75,7 +75,7 @@ public class PlayerListener implements Listener {
         Player pl = e.getPlayer();
         
         String msg = e.getMessage();
-        if (msg.equalsIgnoreCase("/blockhunt leave") || msg.equalsIgnoreCase("/bh leave")) {
+        if (msg.equalsIgnoreCase("/blockhunt leave") || msg.equalsIgnoreCase("/bh leave") || msg.equalsIgnoreCase("/lobby") || msg.equalsIgnoreCase("/spawn")) {
             return;
         }
         

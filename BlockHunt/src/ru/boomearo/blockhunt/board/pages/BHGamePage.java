@@ -1,6 +1,8 @@
 package ru.boomearo.blockhunt.board.pages;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
@@ -45,8 +47,26 @@ public class BHGamePage extends AbstractPage {
         holders.add(new AbstractHolder(this) {
 
             @Override
+            public String getText() {
+                return "§7" + new SimpleDateFormat("dd/MM/yyyy").format(new Date(System.currentTimeMillis()));
+            }
+
+        });
+        
+        holders.add(new AbstractHolder(this) {
+
+            @Override
+            public String getText() {
+                return " ";
+            }
+
+        });
+        
+        holders.add(new AbstractHolder(this) {
+
+            @Override
             protected String getText() {
-                return "§bАрена: '§e" + bhPlayer.getArena().getName() + "§b'";
+                return "§bКарта: '§e" + bhPlayer.getArena().getName() + "§b'";
             }
             
         });
