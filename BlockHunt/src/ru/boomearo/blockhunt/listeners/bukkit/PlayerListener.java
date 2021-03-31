@@ -147,15 +147,27 @@ public class PlayerListener implements Listener {
         
         RunningState rs = (RunningState) state;
         
-        //Если тот кто атакует наносит кому то урон то снимаем с него маскировку.
-        IPlayerType type = bhDamager.getPlayerType();
-        if (type instanceof HiderPlayer) {
-            HiderPlayer hp = (HiderPlayer) type;
+        //Если тот кто атакует является хайдером и наносит кому то урон то снимаем с него маскировку.
+        IPlayerType typeDamager = bhDamager.getPlayerType();
+        if (typeDamager instanceof HiderPlayer) {
+            HiderPlayer hp = (HiderPlayer) typeDamager;
             hp.resetBlockCount();
             
             bhPlayer.getArena().unmakeSolid(bhDamager, hp);
             
         }
+        
+        
+        //Если тот кто получает урон является хайдером то сбрасываем с него все
+        IPlayerType typePlayer = bhPlayer.getPlayerType();
+        if (typePlayer instanceof HiderPlayer) {
+            HiderPlayer hp = (HiderPlayer) typePlayer;
+            hp.resetBlockCount();
+            
+            bhPlayer.getArena().unmakeSolid(bhPlayer, hp);
+            
+        }
+        
         //Когда сущность точно умрет
         double newHealth = player.getHealth() - e.getFinalDamage();
         if (newHealth <= 0) {
