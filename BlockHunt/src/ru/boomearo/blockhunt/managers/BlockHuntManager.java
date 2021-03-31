@@ -38,7 +38,7 @@ public final class BlockHuntManager implements IGameManager {
     public static final String gameNameDys = "§8[§9BlockHunt§8]";
     public static final String prefix = gameNameDys + ": §b";
     
-    public static final double hiderWinReward = 5;
+    public static final double hiderWinReward = 35;
     public static final double hiderKillReward = 5;
 
     public BlockHuntManager() {

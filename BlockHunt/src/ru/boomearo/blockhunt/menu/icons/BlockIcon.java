@@ -1,6 +1,8 @@
 package ru.boomearo.blockhunt.menu.icons;
 
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.nuop.sf.MenuMaker.inventory.control.ControlHandler;
@@ -22,6 +24,10 @@ public class BlockIcon implements ControlHandler {
     @Override
     public void click(HandlerHeader handler) {
         PlayerSession ps = (PlayerSession) handler.getSession();
+        
+        Player pl = handler.getPlayerClicked();
+        
+        pl.playSound(pl.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 15, 1f);
         
         ps.getBHPlayer().setChoosenBlock(this.mat);
         ps.getPlayer().sendMessage(BlockHuntManager.prefix + "Вы выбрали блок §e" + LangHelper.getInstance().getItemTranslate(new ItemStack(this.mat, 1), LangType.RU));
