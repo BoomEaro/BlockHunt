@@ -99,18 +99,18 @@ public class SeekerPlayer implements IPlayerType {
                         pl.teleport(loc);
                     }
                     pl.sendMessage(BlockHuntManager.prefix + "Вы были заспавнены!");
-                    arena.sendMessages(BlockHuntManager.prefix + "§cСикер §e" + player.getName() + " §bбыл заспавнен!", player.getName());
+                    arena.sendMessages(BlockHuntManager.prefix + BlockHuntManager.seekerColor+  "Сикер " + player.getName() + BlockHuntManager.mainColor + " был заспавнен!", player.getName());
                     
-                    arena.sendTitle("", "§cСикер §e" + player.getName() + " §bбыл заспавнен!", 20, 40, 20);
+                    arena.sendTitle("", BlockHuntManager.seekerColor + "Сикер " + player.getPlayer().getDisplayName() + BlockHuntManager.mainColor + " был заспавнен!", 20, 40, 20);
                     return;
                 }
                 
                 if (this.count <= 5) {
-                    pl.sendMessage(BlockHuntManager.prefix + "Вы будете заспавнены через §e" + DateUtil.formatedTime(this.count, false));
+                    pl.sendMessage(BlockHuntManager.prefix + "Вы будете заспавнены через " + BlockHuntManager.variableColor + DateUtil.formatedTime(this.count, false));
                 }
                 else {
                     if ((this.count % 5) == 0){
-                        pl.sendMessage(BlockHuntManager.prefix + "Вы будете заспавнены через §e" + DateUtil.formatedTime(this.count, false));
+                        pl.sendMessage(BlockHuntManager.prefix + "Вы будете заспавнены через " + BlockHuntManager.variableColor + DateUtil.formatedTime(this.count, false));
                     }
                 }
                 

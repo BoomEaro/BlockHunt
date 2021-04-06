@@ -142,7 +142,7 @@ public class HiderPlayer implements IPlayerType {
                 Block block = curr.getBlock();
                 Material t = block.getType();
                 if (!(t == Material.AIR || t == Material.WATER)) {
-                    pl.sendMessage(BlockHuntManager.prefix + "§cВы не можете стать твердым здесь!");
+                    pl.sendMessage(BlockHuntManager.prefix + BlockHuntManager.hiderColor + "Вы не можете стать твердым здесь!");
                     return;
                 }
                 
