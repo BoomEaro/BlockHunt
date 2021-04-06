@@ -37,7 +37,7 @@ public final class BlockHuntManager implements IGameManager {
     private final BlockHuntStatistics stats = new BlockHuntStatistics();
     
     public static final ChatColor mainColor = ChatColor.of(new Color(0, 255, 222));
-    public static final ChatColor variableColor = ChatColor.of(new Color(248, 251, 160));
+    public static final ChatColor variableColor = ChatColor.of(new Color(250, 248, 82));
     public static final ChatColor otherColor = ChatColor.of(new Color(255, 60, 0));
     
     public static final ChatColor hiderColor = ChatColor.of(new Color(124, 207, 196));
