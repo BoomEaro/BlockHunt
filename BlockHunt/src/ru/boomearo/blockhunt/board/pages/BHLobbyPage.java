@@ -83,7 +83,7 @@ public class BHLobbyPage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return BlockHuntManager.variableColor + "Игроков: " + BlockHuntManager.variableColor + bhPlayer.getArena().getAllPlayers().size() + "§8/" + BlockHuntManager.otherColor + bhPlayer.getArena().getMaxPlayers();
+                return BlockHuntManager.mainColor + "Игроков: " + BlockHuntManager.variableColor + bhPlayer.getArena().getAllPlayers().size() + "§8/" + BlockHuntManager.otherColor + bhPlayer.getArena().getMaxPlayers();
             }
             
             @Override
