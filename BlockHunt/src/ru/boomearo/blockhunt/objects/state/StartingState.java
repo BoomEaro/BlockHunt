@@ -88,12 +88,12 @@ public class StartingState implements IStartingState, ICountable, AllowJoin {
             
             arena.sendLevels(this.count);
             if (this.count <= 5) {
-                arena.sendMessages(BlockHuntManager.prefix + "Игра начнется через §e" + DateUtil.formatedTime(this.count, false));
+                arena.sendMessages(BlockHuntManager.prefix + "Игра начнется через " + BlockHuntManager.variableColor + DateUtil.formatedTime(this.count, false));
                 arena.sendSounds(Sound.BLOCK_NOTE_BLOCK_PLING, 999, 2);
             }
             else {
                 if ((this.count % 5) == 0){
-                    arena.sendMessages(BlockHuntManager.prefix + "Игра начнется через §e" + DateUtil.formatedTime(this.count, false));
+                    arena.sendMessages(BlockHuntManager.prefix + "Игра начнется через " + BlockHuntManager.variableColor + DateUtil.formatedTime(this.count, false));
                     arena.sendSounds(Sound.BLOCK_NOTE_BLOCK_PLING, 999, 2);
                 }
             }

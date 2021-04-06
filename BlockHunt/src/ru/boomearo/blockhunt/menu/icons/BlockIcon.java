@@ -30,7 +30,7 @@ public class BlockIcon implements ControlHandler {
         pl.playSound(pl.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 15, 1f);
         
         ps.getBHPlayer().setChoosenBlock(this.mat);
-        ps.getPlayer().sendMessage(BlockHuntManager.prefix + "Вы выбрали блок §e" + LangHelper.getInstance().getItemTranslate(new ItemStack(this.mat, 1), LangType.RU));
+        ps.getPlayer().sendMessage(BlockHuntManager.prefix + "Вы выбрали блок " + BlockHuntManager.variableColor + LangHelper.getInstance().getItemTranslate(new ItemStack(this.mat, 1), LangType.RU));
         
         handler.getData().close();
     }

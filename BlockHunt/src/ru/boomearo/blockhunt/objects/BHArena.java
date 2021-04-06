@@ -370,7 +370,7 @@ public class BHArena extends AbstractGameArena implements ConfigurationSerializa
         SolidPlayer bs = getSolidPlayerByLocation(old.getLocation());
         if (bs != null) {
             if (!bs.getPlayer().getName().equals(player.getName())) {
-                pl.sendMessage(BlockHuntManager.prefix + "§cВ данном месте уже кто то замаскирован!");
+                pl.sendMessage(BlockHuntManager.prefix + BlockHuntManager.hiderColor + "В данном месте уже кто то замаскирован!");
             }
             return;
         }
@@ -390,7 +390,7 @@ public class BHArena extends AbstractGameArena implements ConfigurationSerializa
             pp.sendBlockChange(old.getLocation(), Bukkit.createBlockData(hp.getHideBlock()));
         }
         
-        pl.sendMessage(BlockHuntManager.prefix + "Теперь вы твердый блок §e" + LangHelper.getInstance().getItemTranslate(new ItemStack(hp.getHideBlock(), 1), LangType.RU) + "§b!");
+        pl.sendMessage(BlockHuntManager.prefix + "Теперь вы твердый блок " + BlockHuntManager.variableColor + LangHelper.getInstance().getItemTranslate(new ItemStack(hp.getHideBlock(), 1), LangType.RU) + "§b!");
         pl.playSound(player.getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 100, 2f);
 
     }
@@ -423,7 +423,7 @@ public class BHArena extends AbstractGameArena implements ConfigurationSerializa
         d.setNotifyBar(null);
         DisguiseAPI.disguiseToAll(pl, d);
         
-        pl.sendMessage(BlockHuntManager.prefix + "§cВы больше не твердый блок §e" + LangHelper.getInstance().getItemTranslate(new ItemStack(hp.getHideBlock(), 1), LangType.RU) + "§c.");
+        pl.sendMessage(BlockHuntManager.prefix + BlockHuntManager.hiderColor + "Вы больше не твердый блок " + BlockHuntManager.variableColor + LangHelper.getInstance().getItemTranslate(new ItemStack(hp.getHideBlock(), 1), LangType.RU) + "§c.");
         pl.playSound(player.getPlayer().getLocation(), Sound.ENTITY_BAT_AMBIENT, 100, 1.3f);
     }
     

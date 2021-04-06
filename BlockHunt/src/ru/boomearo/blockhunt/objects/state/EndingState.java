@@ -67,7 +67,7 @@ public class EndingState implements IEndingState, ICountable {
             }
             
             if ((this.count % 5) == 0) {
-                arena.sendMessages(BlockHuntManager.prefix + "Следующая игра начнется через §e" + DateUtil.formatedTime(this.count, false));
+                arena.sendMessages(BlockHuntManager.prefix + "Следующая игра начнется через " + BlockHuntManager.variableColor + DateUtil.formatedTime(this.count, false));
             }
             
             this.count--;

@@ -48,7 +48,7 @@ public class BHGamePage extends AbstractPage {
 
             @Override
             public String getText() {
-                return "§7" + new SimpleDateFormat("dd/MM/yyyy").format(new Date(System.currentTimeMillis()));
+                return BlockHuntManager.mainColor + new SimpleDateFormat("dd/MM/yyyy").format(new Date(System.currentTimeMillis()));
             }
 
         });
@@ -66,7 +66,7 @@ public class BHGamePage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return "§bКарта: '§e" + bhPlayer.getArena().getName() + "§b'";
+                return BlockHuntManager.mainColor + "Карта: '" + BlockHuntManager.variableColor + bhPlayer.getArena().getName() + BlockHuntManager.mainColor + "'";
             }
             
         });
@@ -84,7 +84,7 @@ public class BHGamePage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return "§bСтатус: " + bhPlayer.getArena().getState().getName();
+                return BlockHuntManager.mainColor + "Статус: " + bhPlayer.getArena().getState().getName();
             }
             
             @Override
@@ -102,11 +102,11 @@ public class BHGamePage extends AbstractPage {
                 if (state instanceof RunningState) {
                     RunningState rs = (RunningState) state;
                     
-                    return "§bДо конца: §e" + getFormattedTimeLeft(rs.getCount());
+                    return BlockHuntManager.mainColor + "До конца: " + BlockHuntManager.variableColor + getFormattedTimeLeft(rs.getCount());
                 }
                 else if (state instanceof EndingState) {
                     EndingState es = (EndingState) state;
-                    return "§bНовая игра: §e" + getFormattedTimeLeft(es.getCount());
+                    return BlockHuntManager.mainColor + "Новая игра: " + BlockHuntManager.variableColor + getFormattedTimeLeft(es.getCount());
                 }
                 return " ";
             }
@@ -132,7 +132,7 @@ public class BHGamePage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return "§cСикеров: §e" + bhPlayer.getArena().getAllPlayersType(SeekerPlayer.class).size();
+                return BlockHuntManager.seekerColor + "Сикеров: " + BlockHuntManager.variableColor + bhPlayer.getArena().getAllPlayersType(SeekerPlayer.class).size();
             }
             
             @Override
@@ -146,7 +146,7 @@ public class BHGamePage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return "§3Хайдеров: §e" + bhPlayer.getArena().getAllPlayersType(HiderPlayer.class).size();
+                return BlockHuntManager.hiderColor + "Хайдеров: " + BlockHuntManager.variableColor + bhPlayer.getArena().getAllPlayersType(HiderPlayer.class).size();
             }
             
             @Override

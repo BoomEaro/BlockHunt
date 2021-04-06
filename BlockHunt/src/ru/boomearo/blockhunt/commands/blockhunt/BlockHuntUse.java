@@ -157,7 +157,7 @@ public class BlockHuntUse {
             GameControl.getInstance().getGameManager().joinGame(pl, BlockHunt.class, arena);
         } 
         catch (PlayerGameException e) {
-            pl.sendMessage(BlockHuntManager.prefix + "§eОшибка: §b" + e.getMessage());
+            pl.sendMessage(BlockHuntManager.prefix + "§cОшибка: " + BlockHuntManager.mainColor + e.getMessage());
         }
         catch (ConsoleGameException e) {
             e.printStackTrace();
@@ -181,7 +181,7 @@ public class BlockHuntUse {
             GameControl.getInstance().getGameManager().leaveGame(pl);
         } 
         catch (PlayerGameException e) {
-            pl.sendMessage(BlockHuntManager.prefix + "§eОшибка: §b" + e.getMessage());
+            pl.sendMessage(BlockHuntManager.prefix + "§cОшибка: " + BlockHuntManager.mainColor + e.getMessage());
         }
         catch (ConsoleGameException e) {
             e.printStackTrace();
@@ -204,7 +204,7 @@ public class BlockHuntUse {
         final String sep = BlockHuntManager.prefix + "§8============================";
         cs.sendMessage(sep);
         for (BHArena arena : arenas) {
-            cs.sendMessage(BlockHuntManager.prefix + "Арена: '§e" + arena.getName() + "§b'. Статус: " + arena.getState().getName() + "§b. Игроков: " + BlockHuntManager.getRemainPlayersArena(arena, null));
+            cs.sendMessage(BlockHuntManager.prefix + "Арена: '" + BlockHuntManager.variableColor + arena.getName() + BlockHuntManager.mainColor + "'. Статус: " + arena.getState().getName() + BlockHuntManager.mainColor + ". Игроков: " + BlockHuntManager.getRemainPlayersArena(arena, null));
         }
         cs.sendMessage(sep);
         

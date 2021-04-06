@@ -47,7 +47,7 @@ public class BHLobbyPage extends AbstractPage {
 
             @Override
             public String getText() {
-                return "§7" + new SimpleDateFormat("dd/MM/yyyy").format(new Date(System.currentTimeMillis()));
+                return BlockHuntManager.mainColor + new SimpleDateFormat("dd/MM/yyyy").format(new Date(System.currentTimeMillis()));
             }
 
         });
@@ -65,7 +65,7 @@ public class BHLobbyPage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return "§bКарта: '§e" + bhPlayer.getArena().getName() + "§b'";
+                return BlockHuntManager.mainColor + "Карта: '" + BlockHuntManager.variableColor + bhPlayer.getArena().getName() + BlockHuntManager.mainColor + "'";
             }
             
         });
@@ -83,7 +83,7 @@ public class BHLobbyPage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return "§bИгроков: §e" + bhPlayer.getArena().getAllPlayers().size() + "§7/§c" + bhPlayer.getArena().getMaxPlayers();
+                return BlockHuntManager.variableColor + "Игроков: " + BlockHuntManager.variableColor + bhPlayer.getArena().getAllPlayers().size() + "§8/" + BlockHuntManager.otherColor + bhPlayer.getArena().getMaxPlayers();
             }
             
             @Override
@@ -97,7 +97,7 @@ public class BHLobbyPage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return "§bСтатус: " + bhPlayer.getArena().getState().getName();
+                return BlockHuntManager.mainColor + "Статус: " + bhPlayer.getArena().getState().getName();
             }
             
             @Override
@@ -120,7 +120,7 @@ public class BHLobbyPage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return "§bСтатистика: ";
+                return BlockHuntManager.mainColor + "Статистика: ";
             }
             
         });
@@ -170,10 +170,10 @@ public class BHLobbyPage extends AbstractPage {
         BHStatsData data = BlockHunt.getInstance().getBlockHuntManager().getStatisticManager().getStatsData(type);
         StatsPlayer sp = data.getStatsPlayer(name);
         if (sp == null) {
-            return "§b" + type.getName() + ": §e0";
+            return BlockHuntManager.mainColor + type.getName() + ": " + BlockHuntManager.variableColor + "0";
         }
         
-        return "§b" + type.getName() + ": §e" + (long) sp.getValue();
+        return BlockHuntManager.mainColor + type.getName() + ": " + BlockHuntManager.variableColor + (long) sp.getValue();
     }
     
 }

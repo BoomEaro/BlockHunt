@@ -1,5 +1,6 @@
 package ru.boomearo.blockhunt.managers;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -7,13 +8,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.libraryaddict.disguise.DisguiseAPI;
+import net.md_5.bungee.api.ChatColor;
 import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
@@ -35,8 +36,15 @@ public final class BlockHuntManager implements IGameManager {
     
     private final BlockHuntStatistics stats = new BlockHuntStatistics();
     
-    public static final String gameNameDys = "§8[§9BlockHunt§8]";
-    public static final String prefix = gameNameDys + ": §b";
+    public static final ChatColor mainColor = ChatColor.of(new Color(0, 255, 222));
+    public static final ChatColor variableColor = ChatColor.of(new Color(252, 255, 0));
+    public static final ChatColor otherColor = ChatColor.of(new Color(255, 60, 0));
+    
+    public static final ChatColor hiderColor = ChatColor.of(new Color(124, 207, 196));
+    public static final ChatColor seekerColor = ChatColor.of(new Color(253, 134, 134));
+    
+    public static final String gameNameDys = "§8[" + variableColor + "BlockHunt§8]";
+    public static final String prefix = gameNameDys + ": " + mainColor;
     
     public static final double hiderWinReward = 35;
     public static final double hiderKillReward = 5;
@@ -57,17 +65,17 @@ public final class BlockHuntManager implements IGameManager {
 
     @Override
     public ChatColor getMainColor() {
-        return ChatColor.AQUA;
+        return mainColor;
     }
 
     @Override
     public ChatColor getVariableColor() {
-        return ChatColor.YELLOW;
+        return variableColor;
     }
 
     @Override
     public ChatColor getOtherColor() {
-        return ChatColor.RED;
+        return otherColor;
     }
     
     @Override
@@ -88,18 +96,18 @@ public final class BlockHuntManager implements IGameManager {
 
         BHArena tmpArena = this.arenas.get(arena);
         if (tmpArena == null) {
-            throw new PlayerGameException("Карта §b'§e" + arena + "§b' не найдена!");
+            throw new PlayerGameException("Карта " + mainColor + "'" + variableColor + arena + mainColor + "' не найдена!");
         }
 
         int count = tmpArena.getAllPlayers().size();
         if (count >= tmpArena.getMaxPlayers()) {
-            throw new PlayerGameException("Карта §b'§e" + arena + "§b' переполнена!");
+            throw new PlayerGameException("Карта " + mainColor + "'" + variableColor + arena + mainColor + "' переполнена!");
         }
 
         IGameState state = tmpArena.getState();
 
         if (!(state instanceof AllowJoin)) {
-            throw new PlayerGameException("В карте §b'§e" + arena + "§b' уже идет игра!");
+            throw new PlayerGameException("В карте " + mainColor + "'" + variableColor + arena + mainColor + "' уже идет игра!");
         }
         
         WaitingPlayer type = new WaitingPlayer();
@@ -116,15 +124,15 @@ public final class BlockHuntManager implements IGameManager {
         //Обрабатываем игрока
         type.preparePlayer(newTp);
         
-        pl.sendMessage(prefix + "Вы присоединились к карте §b'§e" + arena + "§b'!");
-        pl.sendMessage(prefix + "Чтобы покинуть игру, используйте §eМагма крем §bили команду §e/lobby§b.");
+        pl.sendMessage(prefix + "Вы присоединились к карте " + mainColor + "'" + variableColor + arena + mainColor + "'!");
+        pl.sendMessage(prefix + "Чтобы покинуть игру, используйте " + variableColor + "Магма крем " + mainColor + "или команду " + variableColor + "/lobby" + variableColor + ".");
         
         int currCount = tmpArena.getAllPlayers().size();
         if (currCount < tmpArena.getMinPlayers()) {
-            pl.sendMessage(prefix + "Ожидание §e" + (tmpArena.getMinPlayers() - currCount) + " §bигроков для начала игры...");
+            pl.sendMessage(prefix + "Ожидание " + variableColor + (tmpArena.getMinPlayers() - currCount) + mainColor +" игроков для начала игры...");
         } 
         
-        tmpArena.sendMessages(prefix + "§e" + pl.getDisplayName() + " §bприсоединился к игре! " + getRemainPlayersArena(tmpArena, null), pl.getName());
+        tmpArena.sendMessages(prefix + pl.getDisplayName() + mainColor + " присоединился к игре! " + getRemainPlayersArena(tmpArena, null), pl.getName());
         
         return newTp;
     }
@@ -177,7 +185,7 @@ public final class BlockHuntManager implements IGameManager {
 
         pl.sendMessage(prefix + "Вы покинули игру!");
         
-        arena.sendMessages(prefix + "§e" + pl.getDisplayName() + " §bпокинул игру! " + getRemainPlayersArena(arena, null), pl.getName());
+        arena.sendMessages(prefix + pl.getDisplayName() + mainColor + " покинул игру! " + getRemainPlayersArena(arena, null), pl.getName());
     }
     
     @Override
@@ -268,6 +276,6 @@ public final class BlockHuntManager implements IGameManager {
     }
     
     public static String getRemainPlayersArena(BHArena arena, Class<? extends IPlayerType> clazz) {
-        return "§8[§e" + (clazz != null ? arena.getAllPlayersType(clazz).size() : arena.getAllPlayers().size()) + "§7/§c" + arena.getMaxPlayers() + "§8]";
+        return "§8[" + variableColor + (clazz != null ? arena.getAllPlayersType(clazz).size() : arena.getAllPlayers().size()) + mainColor + "/" + otherColor + arena.getMaxPlayers() + "§8]";
     }
 }
