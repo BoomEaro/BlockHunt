@@ -29,6 +29,7 @@ import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.playertype.HiderPlayer;
 import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
 import ru.boomearo.blockhunt.objects.state.WaitingState;
+import ru.boomearo.gamecontrol.objects.IForceStartable;
 import ru.boomearo.gamecontrol.objects.arena.AbstractGameArena;
 import ru.boomearo.gamecontrol.objects.region.IRegion;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
@@ -36,7 +37,7 @@ import ru.boomearo.gamecontrol.utils.RandomUtil;
 import ru.boomearo.langhelper.LangHelper;
 import ru.boomearo.langhelper.versions.LangType;
 
-public class BHArena extends AbstractGameArena implements ConfigurationSerializable {
+public class BHArena extends AbstractGameArena implements IForceStartable, ConfigurationSerializable {
 
     private final int minPlayers;
     private final int maxPlayers;
@@ -59,6 +60,8 @@ public class BHArena extends AbstractGameArena implements ConfigurationSerializa
     private final ConcurrentMap<String, SolidPlayer> hiddenLocs = new ConcurrentHashMap<String, SolidPlayer>();
     private final ConcurrentMap<String, SolidPlayer> hiddenPlayers = new ConcurrentHashMap<String, SolidPlayer>();
     
+    private boolean forceStarted = false;
+    
     public BHArena(String name, World world, Material icon, int minPlayers, int maxPlayers, int timeLimit, IRegion arenaRegion, Location lobbyLocation, IRegion lobbyRegion, Location seekersLocation, Location hidersLocation, List<Material> hideBlocks) {
         super(name, world, icon);
         this.minPlayers = minPlayers;
@@ -70,6 +73,16 @@ public class BHArena extends AbstractGameArena implements ConfigurationSerializa
         this.seekersLocation = seekersLocation;
         this.hidersLocation = hidersLocation;
         this.hideBlocks = hideBlocks;
+    }
+    
+    @Override
+    public boolean isForceStarted() {
+        return this.forceStarted;
+    }
+
+    @Override
+    public void setForceStarted(boolean force) {
+        this.forceStarted = force;
     }
     
     @Override

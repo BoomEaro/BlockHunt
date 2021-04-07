@@ -31,6 +31,8 @@ public class WaitingState implements IWaitingState, AllowJoin {
     
     @Override 
     public void initState() {
+        this.arena.setForceStarted(false);
+        
         //Делаем всех игроков ожидающими
         for (BHPlayer tp : this.arena.getAllPlayers()) {
             Player pl = tp.getPlayer();
@@ -55,7 +57,7 @@ public class WaitingState implements IWaitingState, AllowJoin {
     @Override
     public void autoUpdateHandler() {
         //Если мы набрали минимум то меняем статус
-        if (this.arena.getAllPlayers().size() >= this.arena.getMinPlayers()) {
+        if (this.arena.getAllPlayers().size() >= this.arena.getMinPlayers() || this.arena.isForceStarted()) {
             this.arena.setState(new StartingState(this.arena));
         }
         

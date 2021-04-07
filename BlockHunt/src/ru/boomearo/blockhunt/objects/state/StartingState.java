@@ -74,11 +74,13 @@ public class StartingState implements IStartingState, ICountable, AllowJoin {
             //Если прошло 30 сек
             if (this.count <= 0) {
                 
-                //Если игроков не достаточно для игры, то возвращаемся в ожидание
-                if (this.arena.getAllPlayers().size() < this.arena.getMinPlayers()) {
-                    this.arena.sendMessages(BlockHuntManager.prefix + "§cНе достаточно игроков для старта!");
-                    this.arena.setState(new WaitingState(this.arena));
-                    return;
+                if (!this.arena.isForceStarted()) {
+                    //Если игроков не достаточно для игры, то возвращаемся в ожидание
+                    if (this.arena.getAllPlayers().size() < this.arena.getMinPlayers()) {
+                        this.arena.sendMessages(BlockHuntManager.prefix + "§cНе достаточно игроков для старта!");
+                        this.arena.setState(new WaitingState(this.arena));
+                        return;
+                    }
                 }
                 
                 
