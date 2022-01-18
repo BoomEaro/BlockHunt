@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>ru.boomearo</groupId>
+    <artifactId>BlockHunt</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
+
+    <name>BlockHunt</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
+    </properties>
+
+    <build>
+        <finalName>${project.name}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>IntellectualSites Releases</id>
+            <url>https://mvn.intellectualsites.com/content/repositories/releases/</url>
+        </repository>
+        <repository>
+            <id>IntellectualSites Snapshots</id>
+            <url>https://mvn.intellectualsites.com/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>paper</groupId>
+            <artifactId>paper</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>C:/Users/mm123/workspace/paper-1.16.5.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>GameControl</groupId>
+            <artifactId>GameControl</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>C:/Users/mm123/git/minecraft/BoomEaro/GameControl/target/GameControl.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>Board</groupId>
+            <artifactId>Board</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>C:/Users/mm123/git/minecraft/BoomEaro/Board/target/Board.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>ServerUtils</groupId>
+            <artifactId>ServerUtils</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>C:/Users/mm123/git/minecraft/BoomEaro/ServerUtils/target/ServerUtils.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.fastasyncworldedit</groupId>
+            <artifactId>FastAsyncWorldEdit-Core</artifactId>
+            <version>1.17-327</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fastasyncworldedit</groupId>
+            <artifactId>FastAsyncWorldEdit-Bukkit</artifactId>
+            <version>1.17-327</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>FastAsyncWorldEdit-Core</artifactId>
+                    <groupId>*</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+    
+</project>
