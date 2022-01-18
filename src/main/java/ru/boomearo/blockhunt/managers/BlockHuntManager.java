@@ -30,27 +30,27 @@ import ru.boomearo.gamecontrol.objects.states.IGameState;
 
 public final class BlockHuntManager implements IGameManager {
 
-    private final ConcurrentMap<String, BHArena> arenas = new ConcurrentHashMap<String, BHArena>();
+    private final ConcurrentMap<String, BHArena> arenas = new ConcurrentHashMap<>();
 
-    private final ConcurrentMap<String, BHPlayer> players = new ConcurrentHashMap<String, BHPlayer>();
-    
+    private final ConcurrentMap<String, BHPlayer> players = new ConcurrentHashMap<>();
+
     private final BlockHuntStatistics stats = new BlockHuntStatistics();
-    
+
     public static final ChatColor mainColor = ChatColor.of(new Color(0, 255, 222));
     public static final ChatColor variableColor = ChatColor.of(new Color(250, 248, 82));
     public static final ChatColor otherColor = ChatColor.of(new Color(255, 60, 0));
-    
+
     public static final ChatColor hiderColor = ChatColor.of(new Color(124, 207, 196));
     public static final ChatColor seekerColor = ChatColor.of(new Color(253, 134, 134));
-    
+
     public static final String gameNameDys = "§8[" + variableColor + "BlockHunt§8]";
     public static final String prefix = gameNameDys + ": " + mainColor;
-    
+
     public static final double hiderWinReward = 35;
     public static final double hiderKillReward = 5;
 
     public BlockHuntManager() {
-        loadArenas();  
+        loadArenas();
     }
 
     @Override
@@ -77,7 +77,7 @@ public final class BlockHuntManager implements IGameManager {
     public ChatColor getOtherColor() {
         return otherColor;
     }
-    
+
     @Override
     public JavaPlugin getPlugin() {
         return BlockHunt.getInstance();
@@ -109,12 +109,12 @@ public final class BlockHuntManager implements IGameManager {
         if (!(state instanceof AllowJoin)) {
             throw new PlayerGameException("В карте " + mainColor + "'" + variableColor + arena + mainColor + "' уже идет игра!");
         }
-        
+
         WaitingPlayer type = new WaitingPlayer();
 
         //Создаем игрока
         BHPlayer newTp = new BHPlayer(pl.getName(), pl, type, tmpArena);
-        
+
         //Добавляем в арену
         tmpArena.addPlayer(newTp);
 
@@ -123,17 +123,17 @@ public final class BlockHuntManager implements IGameManager {
 
         //Обрабатываем игрока
         type.preparePlayer(newTp);
-        
+
         pl.sendMessage(prefix + "Вы присоединились к карте " + mainColor + "'" + variableColor + arena + mainColor + "'!");
         pl.sendMessage(prefix + "Чтобы покинуть игру, используйте " + variableColor + "Магма крем " + mainColor + "или команду " + variableColor + "/lobby" + variableColor + ".");
-        
+
         int currCount = tmpArena.getAllPlayers().size();
         if (currCount < tmpArena.getMinPlayers()) {
-            pl.sendMessage(prefix + "Ожидание " + variableColor + (tmpArena.getMinPlayers() - currCount) + mainColor +" игроков для начала игры...");
-        } 
-        
+            pl.sendMessage(prefix + "Ожидание " + variableColor + (tmpArena.getMinPlayers() - currCount) + mainColor + " игроков для начала игры...");
+        }
+
         tmpArena.sendMessages(prefix + pl.getDisplayName() + mainColor + " присоединился к игре! " + getRemainPlayersArena(tmpArena, null), pl.getName());
-        
+
         return newTp;
     }
 
@@ -147,9 +147,9 @@ public final class BlockHuntManager implements IGameManager {
         if (tmpPlayer == null) {
             throw new ConsoleGameException("Игрок не в игре!");
         }
-        
+
         BHArena arena = tmpPlayer.getArena();
-        
+
         arena.removePlayer(pl.getName());
 
         this.players.remove(pl.getName());
@@ -166,28 +166,27 @@ public final class BlockHuntManager implements IGameManager {
 
     private static void handlePlayerLeave(BHPlayer player, BHArena arena) {
         player.sendBoard(null);
-        
+
         Player pl = player.getPlayer();
-        
+
         //Снимаем свою твердую маскировку
         IPlayerType type = player.getPlayerType();
-        if (type instanceof HiderPlayer) {
-            HiderPlayer hp = (HiderPlayer) type;
+        if (type instanceof HiderPlayer hp) {
             arena.unmakeSolid(player, hp);
         }
         //Делаем игрока обычного
         if (DisguiseAPI.isDisguised(pl)) {
             DisguiseAPI.undisguiseToAll(pl);
         }
-        
+
         //Показываем для себя всех замаскированных твердых а так же сбрасывает блоки
         arena.unmakeSolidAll(player);
 
         pl.sendMessage(prefix + "Вы покинули игру!");
-        
+
         arena.sendMessages(prefix + pl.getDisplayName() + mainColor + " покинул игру! " + getRemainPlayersArena(arena, null), pl.getName());
     }
-    
+
     @Override
     public BHPlayer getGamePlayer(String name) {
         return this.players.get(name);
@@ -197,17 +196,17 @@ public final class BlockHuntManager implements IGameManager {
     public BHArena getGameArena(String name) {
         return this.arenas.get(name);
     }
-    
+
     @Override
     public Collection<BHArena> getAllArenas() {
         return this.arenas.values();
     }
-    
+
     @Override
     public Collection<BHPlayer> getAllPlayers() {
         return this.players.values();
     }
-    
+
     @Override
     public BlockHuntStatistics getStatisticManager() {
         return this.stats;
@@ -222,8 +221,7 @@ public final class BlockHuntManager implements IGameManager {
         }
         return null;
     }
-    
-    @SuppressWarnings("unchecked")
+
     public void loadArenas() {
 
         FileConfiguration fc = BlockHunt.getInstance().getConfig();
@@ -232,7 +230,7 @@ public final class BlockHuntManager implements IGameManager {
             for (BHArena ar : arenas) {
                 try {
                     addArena(ar);
-                } 
+                }
                 catch (GameControlException e) {
                     e.printStackTrace();
                 }
@@ -243,7 +241,7 @@ public final class BlockHuntManager implements IGameManager {
     public void saveArenas() {
         FileConfiguration fc = BlockHunt.getInstance().getConfig();
 
-        List<BHArena> tmp = new ArrayList<BHArena>(this.arenas.values());
+        List<BHArena> tmp = new ArrayList<>(this.arenas.values());
         fc.set("arenas", tmp);
 
         BlockHunt.getInstance().saveConfig();
@@ -274,7 +272,7 @@ public final class BlockHuntManager implements IGameManager {
 
         this.arenas.remove(name);
     }
-    
+
     public static String getRemainPlayersArena(BHArena arena, Class<? extends IPlayerType> clazz) {
         return "§8[" + variableColor + (clazz != null ? arena.getAllPlayersType(clazz).size() : arena.getAllPlayers().size()) + mainColor + "/" + otherColor + arena.getMaxPlayers() + "§8]";
     }

@@ -13,7 +13,7 @@ import ru.boomearo.gamecontrol.objects.statistics.StatsPlayer;
 
 public class BlockHuntStatistics implements IStatisticsManager {
 
-    private final ConcurrentMap<BHStatsType, BHStatsData> stats = new ConcurrentHashMap<BHStatsType, BHStatsData>();
+    private final ConcurrentMap<BHStatsType, BHStatsData> stats = new ConcurrentHashMap<>();
     
     public BlockHuntStatistics() {
         for (BHStatsType type : BHStatsType.values()) {
@@ -27,7 +27,7 @@ public class BlockHuntStatistics implements IStatisticsManager {
         try {
             type = BHStatsType.valueOf(name);
         }
-        catch (Exception e) {}
+        catch (Exception ignored) {}
         if (type == null) {
             return null;
         }

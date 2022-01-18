@@ -63,8 +63,8 @@ public final class MenuManager {
             im.setLore(tmp);
 
             copy.setItemMeta(im);
-            
-            isc.add(copy, new BlockIcon(mat)); 
+
+            isc.add(copy, new BlockIcon(mat));
         }
 
         isc.setScroll(scroll);
@@ -81,10 +81,10 @@ public final class MenuManager {
                         InventoryData newData = this.mainBlockChoose.createInventory(BlockHunt.getInstance(), "§0§lВыберите блок", player, session);
 
                         sortItemsBlocks(newData.getActualPage().getStackControls("blocks"), session);
-                        
+
                         newData.updateInventory();
                         newData.lockPlayerInventory();
-                        
+
                         break;
                     }
                 }

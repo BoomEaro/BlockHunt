@@ -12,26 +12,26 @@ import ru.boomearo.gamecontrol.objects.statistics.StatsPlayer;
 public class PutStats extends BukkitRunnable {
 
     private final BHStatsType type;
-	private final StatsPlayer player;
-	
-	public PutStats(BHStatsType type, StatsPlayer player) {
-		this.player = player;
-		this.type = type;
-		runnable();
-	}
-	
-	private void runnable() {
-		this.runTaskAsynchronously(BlockHunt.getInstance());
-	}
-	
-	@Override
-	public void run() {
-		try {
-			Sql.getInstance().putStatsData(this.type, this.player.getName(), this.player.getValue());
-		} 
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
+    private final StatsPlayer player;
+
+    public PutStats(BHStatsType type, StatsPlayer player) {
+        this.player = player;
+        this.type = type;
+        runnable();
+    }
+
+    private void runnable() {
+        this.runTaskAsynchronously(BlockHunt.getInstance());
+    }
+
+    @Override
+    public void run() {
+        try {
+            Sql.getInstance().putStatsData(this.type, this.player.getName(), this.player.getValue());
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

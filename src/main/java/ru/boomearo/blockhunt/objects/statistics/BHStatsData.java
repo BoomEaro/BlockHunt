@@ -10,13 +10,13 @@ import ru.boomearo.gamecontrol.objects.statistics.StatsPlayer;
 public class BHStatsData implements IStatsData {
 
     private final BHStatsType type;
-    
-    private final ConcurrentMap<String, StatsPlayer> players = new ConcurrentHashMap<String, StatsPlayer>();
-    
+
+    private final ConcurrentMap<String, StatsPlayer> players = new ConcurrentHashMap<>();
+
     public BHStatsData(BHStatsType type) {
         this.type = type;
     }
-    
+
     @Override
     public String getName() {
         return this.type.name();
@@ -35,7 +35,7 @@ public class BHStatsData implements IStatsData {
     public BHStatsType getType() {
         return this.type;
     }
-    
+
     public void addStatsPlayer(StatsPlayer data) {
         this.players.put(data.getName(), data);
     }

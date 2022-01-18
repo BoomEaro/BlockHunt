@@ -18,7 +18,7 @@ import ru.boomearo.gamecontrol.objects.statistics.StatsPlayer;
 public class BHLobbyPage extends AbstractPage {
 
     private final BHPlayer bhPlayer;
-    
+
     public BHLobbyPage(AbstractPageList pageList, BHPlayer bhPlayer) {
         super(pageList);
         this.bhPlayer = bhPlayer;
@@ -41,8 +41,8 @@ public class BHLobbyPage extends AbstractPage {
 
     @Override
     protected List<AbstractHolder> createHolders() {
-        List<AbstractHolder> holders = new ArrayList<AbstractHolder>();
-        
+        List<AbstractHolder> holders = new ArrayList<>();
+
         holders.add(new AbstractHolder(this) {
 
             @Override
@@ -51,7 +51,7 @@ public class BHLobbyPage extends AbstractPage {
             }
 
         });
-        
+
         holders.add(new AbstractHolder(this) {
 
             @Override
@@ -60,109 +60,109 @@ public class BHLobbyPage extends AbstractPage {
             }
 
         });
-        
+
         holders.add(new AbstractHolder(this) {
 
             @Override
             protected String getText() {
                 return BlockHuntManager.mainColor + "Карта: '" + BlockHuntManager.variableColor + bhPlayer.getArena().getName() + BlockHuntManager.mainColor + "'";
             }
-            
+
         });
-        
+
         holders.add(new AbstractHolder(this) {
 
             @Override
             protected String getText() {
                 return " ";
             }
-            
+
         });
-        
+
         holders.add(new AbstractHolder(this) {
 
             @Override
             protected String getText() {
                 return BlockHuntManager.mainColor + "Игроков: " + BlockHuntManager.variableColor + bhPlayer.getArena().getAllPlayers().size() + "§8/" + BlockHuntManager.otherColor + bhPlayer.getArena().getMaxPlayers();
             }
-            
+
             @Override
             public long getMaxCacheTime() {
                 return 0;
             }
-            
+
         });
-        
+
         holders.add(new AbstractHolder(this) {
 
             @Override
             protected String getText() {
                 return BlockHuntManager.mainColor + "Статус: " + bhPlayer.getArena().getState().getName();
             }
-            
+
             @Override
             public long getMaxCacheTime() {
                 return 0;
             }
-            
+
         });
-        
+
         holders.add(new AbstractHolder(this) {
 
             @Override
             protected String getText() {
                 return " ";
             }
-            
+
         });
-        
+
         holders.add(new AbstractHolder(this) {
 
             @Override
             protected String getText() {
                 return BlockHuntManager.mainColor + "Статистика: ";
             }
-            
+
         });
-        
+
         holders.add(new AbstractHolder(this) {
 
             @Override
             protected String getText() {
                 return getStatisticData(BHStatsType.SeekersWin, bhPlayer.getName());
             }
-            
-            
+
+
         });
-        
+
         holders.add(new AbstractHolder(this) {
 
             @Override
             protected String getText() {
                 return getStatisticData(BHStatsType.HidersWin, bhPlayer.getName());
             }
-            
-            
+
+
         });
-        
+
         holders.add(new AbstractHolder(this) {
 
             @Override
             protected String getText() {
                 return getStatisticData(BHStatsType.SeekersKills, bhPlayer.getName());
             }
-            
+
         });
-        
+
         holders.add(new AbstractHolder(this) {
 
             @Override
             protected String getText() {
                 return getStatisticData(BHStatsType.HidersKills, bhPlayer.getName());
             }
-            
+
         });
-        
+
         return holders;
     }
 
@@ -172,8 +172,8 @@ public class BHLobbyPage extends AbstractPage {
         if (sp == null) {
             return BlockHuntManager.mainColor + type.getName() + ": " + BlockHuntManager.variableColor + "0";
         }
-        
+
         return BlockHuntManager.mainColor + type.getName() + ": " + BlockHuntManager.variableColor + (long) sp.getValue();
     }
-    
+
 }

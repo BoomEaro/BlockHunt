@@ -38,7 +38,7 @@ public class BlockHuntUse {
         }
         String arena = args[0];
         Player pl = (Player) cs;
-        
+
         BukkitPlayer bPlayer = BukkitAdapter.adapt(pl);
         LocalSession ls = WorldEdit.getInstance().getSessionManager().get(bPlayer);
         if (ls == null) {
@@ -47,20 +47,21 @@ public class BlockHuntUse {
         }
         Region re = null;
         try {
-            re = ls.getSelection(ls.getSelectionWorld());   
+            re = ls.getSelection(ls.getSelectionWorld());
         }
-        catch (IncompleteRegionException e) {}
+        catch (IncompleteRegionException e) {
+        }
         if (re == null) {
             pl.sendMessage(BlockHuntManager.prefix + "Выделите регион!");
             return true;
         }
-        
+
         try {
             List<Material> bl = new ArrayList<Material>();
             bl.add(Material.STONE);
-            
+
             BHArena newArena = new BHArena(arena, pl.getWorld(), Material.STONE, 2, 15, 300, new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), null, null, null, null, bl);
-            
+
             BlockHuntManager am = BlockHunt.getInstance().getBlockHuntManager();
             am.addArena(newArena);
 
@@ -71,10 +72,10 @@ public class BlockHuntUse {
         catch (Exception e) {
             pl.sendMessage(e.getMessage());
         }
-        
+
         return true;
     }
-    
+
     @CmdInfo(name = "setpoint", description = "Установить указанную точку указанной арене.", usage = "/blockhunt setpoint <lobby/seeker/hider> <арена>", permission = "blockhunt.admin")
     public boolean setspawnpoint(CommandSender cs, String[] args) {
         if (!(cs instanceof Player)) {
@@ -93,10 +94,10 @@ public class BlockHuntUse {
             cs.sendMessage(BlockHuntManager.prefix + "Арена '§e" + arena + "§b' не найдена!");
             return true;
         }
-        
+
 
         String s = args[0].toLowerCase();
-        
+
         switch (s) {
             case "lobby": {
                 BukkitPlayer bPlayer = BukkitAdapter.adapt(pl);
@@ -107,16 +108,17 @@ public class BlockHuntUse {
                 }
                 Region re = null;
                 try {
-                    re = ls.getSelection(ls.getSelectionWorld());   
+                    re = ls.getSelection(ls.getSelectionWorld());
                 }
-                catch (IncompleteRegionException e) {}
+                catch (IncompleteRegionException e) {
+                }
                 if (re == null) {
                     pl.sendMessage(BlockHuntManager.prefix + "Выделите регион!");
                     return true;
                 }
-                
+
                 ar.setLobbyLocation(GameControl.normalizeRotation(pl.getLocation()));
-                
+
                 ar.setLobbyRegion(new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()));
                 break;
             }
@@ -133,11 +135,11 @@ public class BlockHuntUse {
                 return true;
             }
         }
-        
+
         trm.saveArenas();
-        
+
         cs.sendMessage(BlockHuntManager.prefix + "Точка §e" + s + " §bуспешно установлена в арене '§e" + arena + "§b'");
-        
+
         return true;
     }
 
@@ -155,7 +157,7 @@ public class BlockHuntUse {
 
         try {
             GameControl.getInstance().getGameManager().joinGame(pl, BlockHunt.class, arena);
-        } 
+        }
         catch (PlayerGameException e) {
             pl.sendMessage(BlockHuntManager.prefix + "§cОшибка: " + BlockHuntManager.mainColor + e.getMessage());
         }
@@ -165,7 +167,7 @@ public class BlockHuntUse {
         }
         return true;
     }
-        
+
     @CmdInfo(name = "leave", description = "Покинуть игру.", usage = "/blockhunt leave", permission = "")
     public boolean leave(CommandSender cs, String[] args) {
         if (!(cs instanceof Player)) {
@@ -179,7 +181,7 @@ public class BlockHuntUse {
 
         try {
             GameControl.getInstance().getGameManager().leaveGame(pl);
-        } 
+        }
         catch (PlayerGameException e) {
             pl.sendMessage(BlockHuntManager.prefix + "§cОшибка: " + BlockHuntManager.mainColor + e.getMessage());
         }
@@ -189,13 +191,13 @@ public class BlockHuntUse {
         }
         return true;
     }
-    
+
     @CmdInfo(name = "list", description = "Показать список всех доступных арен.", usage = "/blockhunt list", permission = "")
     public boolean list(CommandSender cs, String[] args) {
         if (args.length < 0 || args.length > 0) {
             return false;
         }
-        
+
         Collection<BHArena> arenas = BlockHunt.getInstance().getBlockHuntManager().getAllArenas();
         if (arenas.isEmpty()) {
             cs.sendMessage(BlockHuntManager.prefix + "Арены еще не созданы!");
@@ -207,7 +209,7 @@ public class BlockHuntUse {
             cs.sendMessage(BlockHuntManager.prefix + "Арена: '" + BlockHuntManager.variableColor + arena.getName() + BlockHuntManager.mainColor + "'. Статус: " + arena.getState().getName() + BlockHuntManager.mainColor + ". Игроков: " + BlockHuntManager.getRemainPlayersArena(arena, null));
         }
         cs.sendMessage(sep);
-        
+
         return true;
     }
 }

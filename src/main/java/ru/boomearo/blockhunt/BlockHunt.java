@@ -27,13 +27,14 @@ import ru.boomearo.gamecontrol.objects.statistics.StatsPlayer;
 public class BlockHunt extends JavaPlugin {
 
     private BlockHuntManager arenaManager = null;
-    
+
     private MenuManager menu = null;
 
     private ArenasRunnable pmr = null;
 
     private static BlockHunt instance = null;
 
+    @Override
     public void onEnable() {
         instance = this;
 
@@ -48,7 +49,7 @@ public class BlockHunt extends JavaPlugin {
         if (this.arenaManager == null) {
             this.arenaManager = new BlockHuntManager();
         }
-        
+
         if (this.menu == null) {
             this.menu = new MenuManager();
         }
@@ -58,7 +59,7 @@ public class BlockHunt extends JavaPlugin {
 
         try {
             GameControl.getInstance().getGameManager().registerGame(this.getClass(), this.arenaManager);
-        } 
+        }
         catch (ConsoleGameException e) {
             e.printStackTrace();
         }
@@ -67,7 +68,7 @@ public class BlockHunt extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerButtonListener(), this);
-        
+
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketBlockFormAdapter());
 
         if (this.pmr == null) {
@@ -77,9 +78,10 @@ public class BlockHunt extends JavaPlugin {
         getLogger().info("Плагин успешно запущен.");
     }
 
+    @Override
     public void onDisable() {
         ProtocolLibrary.getProtocolManager().removePacketListeners(this);
-        
+
         try {
             getLogger().info("Отключаюсь от базы данных");
             Sql.getInstance().Disconnect();
@@ -92,7 +94,7 @@ public class BlockHunt extends JavaPlugin {
 
         try {
             GameControl.getInstance().getGameManager().unregisterGame(this.getClass());
-        } 
+        }
         catch (ConsoleGameException e) {
             e.printStackTrace();
         }

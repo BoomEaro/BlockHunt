@@ -76,6 +76,34 @@
             <systemPath>C:/Users/mm123/git/minecraft/BoomEaro/ServerUtils/target/ServerUtils.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>LangHelper</groupId>
+            <artifactId>LangHelper</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>C:/Users/mm123/git/minecraft/BoomEaro/LangHelper/LangHelper/build/libs/LangHelper.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>MenuInv</groupId>
+            <artifactId>MenuInv</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>C:/Users/mm123/git/minecraft/BoomEaro/MenuInv/target/MenuInv.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>LibsDisguises</groupId>
+            <artifactId>LibsDisguises</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>C:/Users/mm123/git/minecraft/other/LibsDisguises/target/LibsDisguises.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>ProtocolLib</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>C:/Users/mm123/git/minecraft/other/ProtocolLib/target/ProtocolLib.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>com.fastasyncworldedit</groupId>
             <artifactId>FastAsyncWorldEdit-Core</artifactId>
             <version>1.17-327</version>

@@ -15,51 +15,51 @@ public class BHPlayer implements IGamePlayer {
 
     private final String name;
     private final Player player;
-    
+
     private IPlayerType playerType;
-   
-    private BHArena where;
-    
+
+    private final BHArena where;
+
     private Material choosenBlock = null;
-    
+
     public BHPlayer(String name, Player player, IPlayerType playerType, BHArena where) {
         this.name = name;
         this.player = player;
         this.playerType = playerType;
         this.where = where;
     }
-    
+
     @Override
     public String getName() {
         return this.name;
     }
-    
+
     @Override
     public Player getPlayer() {
         return this.player;
     }
-    
+
     @Override
     public BHArena getArena() {
         return this.where;
     }
-    
+
     public IPlayerType getPlayerType() {
         return this.playerType;
     }
-    
+
     public void setPlayerType(IPlayerType playerType) {
         this.playerType = playerType;
     }
-    
+
     public Material getChoosenBlock() {
         return this.choosenBlock;
     }
-    
+
     public void setChoosenBlock(Material mat) {
         this.choosenBlock = mat;
     }
-    
+
     public void sendBoard(Integer index) {
         PlayerBoard pb = Board.getInstance().getBoardManager().getPlayerBoard(this.name);
         if (pb != null) {
@@ -71,17 +71,17 @@ public class BHPlayer implements IGamePlayer {
                 else {
                     apl = new BHPageList(pb, this);
                 }
-                
+
                 pb.setNewPageList(apl);
-                
+
                 if (index != null) {
                     pb.toPage(index, pb.getPageByIndex(index));
                 }
-            } 
+            }
             catch (BoardException e) {
                 e.printStackTrace();
             }
         }
     }
-    
+
 }

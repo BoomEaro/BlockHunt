@@ -19,7 +19,7 @@ import ru.boomearo.gamecontrol.objects.states.IGameState;
 public class BHGamePage extends AbstractPage {
 
     private final BHPlayer bhPlayer;
-    
+
     public BHGamePage(AbstractPageList pageList, BHPlayer bhPlayer) {
         super(pageList);
         this.bhPlayer = bhPlayer;
@@ -42,7 +42,7 @@ public class BHGamePage extends AbstractPage {
 
     @Override
     protected List<AbstractHolder> createHolders() {
-        List<AbstractHolder> holders = new ArrayList<AbstractHolder>();
+        List<AbstractHolder> holders = new ArrayList<>();
 
         holders.add(new AbstractHolder(this) {
 
@@ -52,7 +52,7 @@ public class BHGamePage extends AbstractPage {
             }
 
         });
-        
+
         holders.add(new AbstractHolder(this) {
 
             @Override
@@ -61,16 +61,16 @@ public class BHGamePage extends AbstractPage {
             }
 
         });
-        
+
         holders.add(new AbstractHolder(this) {
 
             @Override
             protected String getText() {
                 return BlockHuntManager.mainColor + "Карта: '" + BlockHuntManager.variableColor + bhPlayer.getArena().getName() + BlockHuntManager.mainColor + "'";
             }
-            
+
         });
-        
+
         holders.add(new AbstractHolder(this) {
 
             @Override
@@ -86,39 +86,37 @@ public class BHGamePage extends AbstractPage {
             protected String getText() {
                 return BlockHuntManager.mainColor + "Статус: " + bhPlayer.getArena().getState().getName();
             }
-            
+
             @Override
             public long getMaxCacheTime() {
                 return 0;
             }
-            
+
         });
-        
+
         holders.add(new AbstractHolder(this) {
 
             @Override
             protected String getText() {
                 IGameState state = bhPlayer.getArena().getState();
-                if (state instanceof RunningState) {
-                    RunningState rs = (RunningState) state;
-                    
+                if (state instanceof RunningState rs) {
+
                     return BlockHuntManager.mainColor + "До конца: " + BlockHuntManager.variableColor + getFormattedTimeLeft(rs.getCount());
                 }
-                else if (state instanceof EndingState) {
-                    EndingState es = (EndingState) state;
+                else if (state instanceof EndingState es) {
                     return BlockHuntManager.mainColor + "Новая игра: " + BlockHuntManager.variableColor + getFormattedTimeLeft(es.getCount());
                 }
                 return " ";
             }
-            
+
             @Override
             public long getMaxCacheTime() {
                 return 0;
             }
 
         });
-        
-        
+
+
         holders.add(new AbstractHolder(this) {
 
             @Override
@@ -134,7 +132,7 @@ public class BHGamePage extends AbstractPage {
             protected String getText() {
                 return BlockHuntManager.seekerColor + "Сикеров: " + BlockHuntManager.variableColor + bhPlayer.getArena().getAllPlayersType(SeekerPlayer.class).size();
             }
-            
+
             @Override
             public long getMaxCacheTime() {
                 return 0;
@@ -148,14 +146,14 @@ public class BHGamePage extends AbstractPage {
             protected String getText() {
                 return BlockHuntManager.hiderColor + "Хайдеров: " + BlockHuntManager.variableColor + bhPlayer.getArena().getAllPlayersType(HiderPlayer.class).size();
             }
-            
+
             @Override
             public long getMaxCacheTime() {
                 return 0;
             }
 
         });
-        
+
         return holders;
     }
 

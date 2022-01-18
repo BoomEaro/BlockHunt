@@ -15,20 +15,20 @@ import ru.boomearo.blockhunt.objects.BHArena;
 
 public class CmdExecutorBlockHunt extends AbstractExecutor {
 
-	public CmdExecutorBlockHunt() {
-		super(new BlockHuntUse());
-	}
+    public CmdExecutorBlockHunt() {
+        super(new BlockHuntUse());
+    }
 
-	@Override
-	public boolean zeroArgument(CommandSender sender, CmdList cmds) {
-		cmds.sendUsageCmds(sender);
-		return true;
-	}
+    @Override
+    public boolean zeroArgument(CommandSender sender, CmdList cmds) {
+        cmds.sendUsageCmds(sender);
+        return true;
+    }
 
-	private static final List<String> empty = new ArrayList<>();
+    private static final List<String> empty = new ArrayList<>();
 
-	@Override
-	public List<String> onTabComplete(CommandSender arg0, Command arg1, String arg2, String[] arg3) {
+    @Override
+    public List<String> onTabComplete(CommandSender arg0, Command arg1, String arg2, String[] arg3) {
         if (arg3.length == 1) {
             List<String> ss = new ArrayList<String>(Arrays.asList("join", "leave", "list"));
             if (arg0.hasPermission("blockhunt.admin")) {
@@ -37,10 +37,8 @@ public class CmdExecutorBlockHunt extends AbstractExecutor {
             }
             List<String> matches = new ArrayList<>();
             String search = arg3[0].toLowerCase();
-            for (String se : ss)
-            {
-                if (se.toLowerCase().startsWith(search))
-                {
+            for (String se : ss) {
+                if (se.toLowerCase().startsWith(search)) {
                     matches.add(se);
                 }
             }
@@ -54,10 +52,8 @@ public class CmdExecutorBlockHunt extends AbstractExecutor {
                 }
                 List<String> matches = new ArrayList<>();
                 String search = arg3[1].toLowerCase();
-                for (String se : ss)
-                {
-                    if (se.toLowerCase().startsWith(search))
-                    {
+                for (String se : ss) {
+                    if (se.toLowerCase().startsWith(search)) {
                         matches.add(se);
                     }
                 }
@@ -65,15 +61,15 @@ public class CmdExecutorBlockHunt extends AbstractExecutor {
             }
         }
         return empty;
-	}
+    }
 
-	@Override
-	public String getPrefix() {
-		return BlockHuntManager.prefix;
-	}
+    @Override
+    public String getPrefix() {
+        return BlockHuntManager.prefix;
+    }
 
-	@Override
-	public String getSuffix() {
-		return " §8-" + BlockHuntManager.variableColor + " ";
-	}
+    @Override
+    public String getSuffix() {
+        return " §8-" + BlockHuntManager.variableColor + " ";
+    }
 }

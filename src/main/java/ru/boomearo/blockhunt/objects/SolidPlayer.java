@@ -11,22 +11,22 @@ public class SolidPlayer {
     private final HiderPlayer hp;
     private final Location loc;
     private final Material old;
-    
+
     public SolidPlayer(BHPlayer player, HiderPlayer hp, Location loc, Material old) {
         this.player = player;
         this.hp = hp;
         this.loc = loc;
         this.old = old;
     }
-    
+
     public BHPlayer getPlayer() {
         return this.player;
     }
-    
+
     public HiderPlayer getHiderPlayer() {
         return this.hp;
     }
-    
+
     public Location getLocation() {
         return this.loc;
     }
@@ -34,5 +34,5 @@ public class SolidPlayer {
     public Material getOldMaterial() {
         return this.old;
     }
-    
+
 }

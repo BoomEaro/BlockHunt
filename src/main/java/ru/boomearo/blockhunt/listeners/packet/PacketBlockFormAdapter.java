@@ -21,7 +21,7 @@ public class PacketBlockFormAdapter extends PacketAdapter {
     public PacketBlockFormAdapter() {
         super(BlockHunt.getInstance(), ListenerPriority.LOWEST, PacketType.Play.Server.BLOCK_CHANGE);
     }
-    
+
 
     @Override
     public void onPacketSending(PacketEvent e) {
@@ -29,7 +29,7 @@ public class PacketBlockFormAdapter extends PacketAdapter {
         if (pl == null) {
             return;
         }
-        
+
         BHPlayer bh = BlockHunt.getInstance().getBlockHuntManager().getGamePlayer(pl.getName());
         if (bh == null) {
             return;
@@ -39,17 +39,17 @@ public class PacketBlockFormAdapter extends PacketAdapter {
         //Material mat = pc.getBlockData().readSafely(0).getType();
         BlockPosition bp = e.getPacket().getBlockPositionModifier().readSafely(0);
         Location loc = bp.toLocation(pl.getWorld());
-        
+
         SolidPlayer sb = bh.getArena().getSolidPlayerByLocation(loc);
         if (sb == null) {
             return;
         }
-        
+
         if (sb.getPlayer().getName().equals(pl.getName())) {
             return;
         }
-        
-        
+
+
         Material mat = sb.getHiderPlayer().getHideBlock();
         if (mat == null) {
             return;

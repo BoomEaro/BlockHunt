@@ -13,7 +13,7 @@ import ru.boomearo.board.objects.boards.AbstractPageList;
 public class BHPageList extends AbstractPageList {
 
     private final BHPlayer bwPlayer;
-    
+
     public BHPageList(PlayerBoard player, BHPlayer bwPlayer) {
         super(player);
         this.bwPlayer = bwPlayer;
@@ -21,11 +21,11 @@ public class BHPageList extends AbstractPageList {
 
     @Override
     protected List<AbstractPage> createPages() {
-        List<AbstractPage> pages = new ArrayList<AbstractPage>();
-        
+        List<AbstractPage> pages = new ArrayList<>();
+
         pages.add(new BHLobbyPage(this, this.bwPlayer));
         pages.add(new BHGamePage(this, this.bwPlayer));
-        
+
         return pages;
     }
 
