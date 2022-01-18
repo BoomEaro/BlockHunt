@@ -7,7 +7,7 @@ import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
 import ru.boomearo.gamecontrol.objects.states.ICountable;
 import ru.boomearo.gamecontrol.objects.states.IStartingState;
-import ru.boomearo.gamecontrol.utils.DateUtil;
+import ru.boomearo.serverutils.utils.other.DateUtil;
 
 public class StartingState implements IStartingState, ICountable, AllowJoin {
 

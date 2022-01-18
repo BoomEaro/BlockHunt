@@ -16,28 +16,27 @@ import com.sk89q.worldedit.bukkit.BukkitPlayer;
 import com.sk89q.worldedit.regions.Region;
 
 import ru.boomearo.blockhunt.BlockHunt;
-import ru.boomearo.blockhunt.commands.CmdInfo;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
 import ru.boomearo.gamecontrol.exceptions.PlayerGameException;
 import ru.boomearo.gamecontrol.objects.region.CuboidRegion;
+import ru.boomearo.serverutils.utils.other.commands.CmdInfo;
+import ru.boomearo.serverutils.utils.other.commands.Commands;
 
-public class BlockHuntUse {
-
+public class BlockHuntUse implements Commands {
 
     @CmdInfo(name = "createarena", description = "Создать арену с указанным названием.", usage = "/blockhunt createarena <название>", permission = "blockhunt.admin")
     public boolean createarena(CommandSender cs, String[] args) {
-        if (!(cs instanceof Player)) {
+        if (!(cs instanceof Player pl)) {
             cs.sendMessage("Данная команда только для игроков.");
             return true;
         }
-        if (args.length < 1 || args.length > 1) {
+        if (args.length != 1) {
             return false;
         }
         String arena = args[0];
-        Player pl = (Player) cs;
 
         BukkitPlayer bPlayer = BukkitAdapter.adapt(pl);
         LocalSession ls = WorldEdit.getInstance().getSessionManager().get(bPlayer);
@@ -49,7 +48,7 @@ public class BlockHuntUse {
         try {
             re = ls.getSelection(ls.getSelectionWorld());
         }
-        catch (IncompleteRegionException e) {
+        catch (IncompleteRegionException ignored) {
         }
         if (re == null) {
             pl.sendMessage(BlockHuntManager.prefix + "Выделите регион!");
@@ -57,7 +56,7 @@ public class BlockHuntUse {
         }
 
         try {
-            List<Material> bl = new ArrayList<Material>();
+            List<Material> bl = new ArrayList<>();
             bl.add(Material.STONE);
 
             BHArena newArena = new BHArena(arena, pl.getWorld(), Material.STONE, 2, 15, 300, new CuboidRegion(re.getMaximumPoint(), re.getMinimumPoint(), pl.getWorld()), null, null, null, null, bl);
@@ -78,15 +77,14 @@ public class BlockHuntUse {
 
     @CmdInfo(name = "setpoint", description = "Установить указанную точку указанной арене.", usage = "/blockhunt setpoint <lobby/seeker/hider> <арена>", permission = "blockhunt.admin")
     public boolean setspawnpoint(CommandSender cs, String[] args) {
-        if (!(cs instanceof Player)) {
+        if (!(cs instanceof Player pl)) {
             cs.sendMessage("Данная команда только для игроков.");
             return true;
         }
-        if (args.length < 2 || args.length > 2) {
+        if (args.length != 2) {
             return false;
         }
         String arena = args[1];
-        Player pl = (Player) cs;
 
         BlockHuntManager trm = BlockHunt.getInstance().getBlockHuntManager();
         BHArena ar = trm.getGameArena(arena);
@@ -110,7 +108,7 @@ public class BlockHuntUse {
                 try {
                     re = ls.getSelection(ls.getSelectionWorld());
                 }
-                catch (IncompleteRegionException e) {
+                catch (IncompleteRegionException ignored) {
                 }
                 if (re == null) {
                     pl.sendMessage(BlockHuntManager.prefix + "Выделите регион!");
@@ -145,15 +143,14 @@ public class BlockHuntUse {
 
     @CmdInfo(name = "join", description = "Присоединиться к указанной арене.", usage = "/blockhunt join <арена>", permission = "")
     public boolean join(CommandSender cs, String[] args) {
-        if (!(cs instanceof Player)) {
+        if (!(cs instanceof Player pl)) {
             cs.sendMessage("Данная команда только для игроков.");
             return true;
         }
-        if (args.length < 1 || args.length > 1) {
+        if (args.length != 1) {
             return false;
         }
         String arena = args[0];
-        Player pl = (Player) cs;
 
         try {
             GameControl.getInstance().getGameManager().joinGame(pl, BlockHunt.class, arena);
@@ -170,14 +167,13 @@ public class BlockHuntUse {
 
     @CmdInfo(name = "leave", description = "Покинуть игру.", usage = "/blockhunt leave", permission = "")
     public boolean leave(CommandSender cs, String[] args) {
-        if (!(cs instanceof Player)) {
+        if (!(cs instanceof Player pl)) {
             cs.sendMessage("Данная команда только для игроков.");
             return true;
         }
-        if (args.length < 0 || args.length > 0) {
+        if (args.length != 0) {
             return false;
         }
-        Player pl = (Player) cs;
 
         try {
             GameControl.getInstance().getGameManager().leaveGame(pl);
@@ -194,7 +190,7 @@ public class BlockHuntUse {
 
     @CmdInfo(name = "list", description = "Показать список всех доступных арен.", usage = "/blockhunt list", permission = "")
     public boolean list(CommandSender cs, String[] args) {
-        if (args.length < 0 || args.length > 0) {
+        if (args.length != 0) {
             return false;
         }
 

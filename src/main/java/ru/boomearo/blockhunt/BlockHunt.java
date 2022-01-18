@@ -23,13 +23,12 @@ import ru.boomearo.blockhunt.runnable.ArenasRunnable;
 import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
 import ru.boomearo.gamecontrol.objects.statistics.StatsPlayer;
+import ru.boomearo.menuinv.MenuInv;
+import ru.boomearo.menuinv.exceptions.MenuInvException;
 
 public class BlockHunt extends JavaPlugin {
 
     private BlockHuntManager arenaManager = null;
-
-    private MenuManager menu = null;
-
     private ArenasRunnable pmr = null;
 
     private static BlockHunt instance = null;
@@ -50,8 +49,11 @@ public class BlockHunt extends JavaPlugin {
             this.arenaManager = new BlockHuntManager();
         }
 
-        if (this.menu == null) {
-            this.menu = new MenuManager();
+        try {
+            MenuManager.initMenu(this);
+        }
+        catch (MenuInvException e) {
+            e.printStackTrace();
         }
 
         loadDataBase();
@@ -80,14 +82,21 @@ public class BlockHunt extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        try {
+            MenuInv.getInstance().unregisterPages(this);
+        }
+        catch (MenuInvException e) {
+            e.printStackTrace();
+        }
+
         ProtocolLibrary.getProtocolManager().removePacketListeners(this);
 
         try {
             getLogger().info("Отключаюсь от базы данных");
-            Sql.getInstance().Disconnect();
+            Sql.getInstance().disconnect();
             getLogger().info("Успешно отключился от базы данных");
         }
-        catch (SQLException e) {
+        catch (Exception e) {
             e.printStackTrace();
             getLogger().info("Не удалось отключиться от базы данных...");
         }
@@ -108,18 +117,12 @@ public class BlockHunt extends JavaPlugin {
         return this.arenaManager;
     }
 
-    public MenuManager getMenuManager() {
-        return this.menu;
-    }
-
     private void loadDataBase() {
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
         }
         try {
-            for (BHStatsType type : BHStatsType.values()) {
-                Sql.getInstance().createNewDatabaseStatsData(type);
-            }
+            Sql.initSql();
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -129,16 +132,13 @@ public class BlockHunt extends JavaPlugin {
     private void loadDataFromDatabase() {
         try {
             for (BHStatsType type : BHStatsType.values()) {
-                BHStatsData data = this.arenaManager.getStatisticManager()
-                        .getStatsData(type);
-                for (SectionStats stats : Sql.getInstance()
-                        .getAllStatsData(type)) {
-                    data.addStatsPlayer(
-                            new StatsPlayer(stats.name, stats.value));
+                BHStatsData data = this.arenaManager.getStatisticManager().getStatsData(type);
+                for (SectionStats stats : Sql.getInstance().getAllStatsData(type).get()) {
+                    data.addStatsPlayer(new StatsPlayer(stats.name, stats.value));
                 }
             }
         }
-        catch (SQLException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
     }

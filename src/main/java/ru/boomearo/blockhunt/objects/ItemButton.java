@@ -14,33 +14,95 @@ import ru.boomearo.gamecontrol.exceptions.GameControlException;
 
 import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.menu.MenuPage;
-import ru.boomearo.blockhunt.menu.sessions.PlayerSession;
+import ru.boomearo.blockhunt.menu.sessions.BHPlayerSession;
+import ru.boomearo.menuinv.MenuInv;
+import ru.boomearo.menuinv.exceptions.MenuInvException;
 
 public enum ItemButton {
 
-    HiderSword(createHiderSwordButton(), 0, null),
-    SeekerSword(createSeekerSwordButton(), 0, null),
-
-    BlockChoose(createBlockChooseButton(), 0, new ButtonClick() {
+    HiderSword(0) {
 
         @Override
-        public void click(BHPlayer player) {
+        public ItemStack getItem() {
+            ItemStack item = new ItemStack(Material.WOODEN_SWORD, 1);
+            ItemMeta meta = item.getItemMeta();
+            meta.addEnchant(Enchantment.KNOCKBACK, 1, true);
+            meta.addItemFlags(ItemFlag.values());
+            item.setItemMeta(meta);
+            return item;
+        }
+
+        @Override
+        public void handleClick(BHPlayer player) {
+
+        }
+
+    },
+    SeekerSword(0) {
+
+        @Override
+        public ItemStack getItem() {
+            ItemStack item = new ItemStack(Material.DIAMOND_SWORD, 1);
+            ItemMeta meta = item.getItemMeta();
+            meta.addEnchant(Enchantment.DAMAGE_ALL, 2, true);
+            meta.addItemFlags(ItemFlag.values());
+            item.setItemMeta(meta);
+            return item;
+        }
+
+        @Override
+        public void handleClick(BHPlayer player) {
+
+        }
+    },
+
+    BlockChoose(0) {
+        @Override
+        public ItemStack getItem() {
+            ItemStack item = new ItemStack(Material.BOOK, 1);
+            ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName("§9Выбрать блок §8[§9ПКМ§8]");
+            meta.setLore(Arrays.asList("§fКликните чтобы выбрать блок."));
+            meta.addEnchant(Enchantment.DIG_SPEED, 1, true);
+            meta.addItemFlags(ItemFlag.values());
+            item.setItemMeta(meta);
+            return item;
+        }
+
+        @Override
+        public void handleClick(BHPlayer player) {
             Player pl = player.getPlayer();
 
             if (!pl.hasPermission("blockhunt.blockchoose")) {
                 return;
             }
 
-            PlayerSession ps = new PlayerSession(pl, player, MenuPage.MainBlockChoose);
+            BHPlayerSession ps = new BHPlayerSession(player);
 
-            BlockHunt.getInstance().getMenuManager().openPage(pl, ps, MenuPage.MainBlockChoose);
+            try {
+                MenuInv.getInstance().openMenu(MenuPage.CHOSEN.getPage(), pl, ps);
+            }
+            catch (MenuInvException e) {
+                e.printStackTrace();
+            }
         }
-
-    }),
-    Leave(createLeaveButton(), 8, new ButtonClick() {
+    },
+    Leave(8) {
 
         @Override
-        public void click(BHPlayer player) {
+        public ItemStack getItem() {
+            ItemStack item = new ItemStack(Material.MAGMA_CREAM, 1);
+            ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName("§cПокинуть игру §8[§cПКМ§8]");
+            meta.setLore(Arrays.asList("§fКликните чтобы покинуть игру."));
+            meta.addEnchant(Enchantment.DIG_SPEED, 1, true);
+            meta.addItemFlags(ItemFlag.values());
+            item.setItemMeta(meta);
+            return item;
+        }
+
+        @Override
+        public void handleClick(BHPlayer player) {
             try {
                 GameControl.getInstance().getGameManager().leaveGame(player.getPlayer());
             }
@@ -48,71 +110,20 @@ public enum ItemButton {
                 e.printStackTrace();
             }
         }
+    };
 
-    });
+    private final int slot;
 
-    private ItemStack item;
-    private int slot;
-    private ButtonClick click;
-
-    ItemButton(ItemStack item, int slot, ButtonClick click) {
-        this.item = item;
+    ItemButton(int slot) {
         this.slot = slot;
-        this.click = click;
-    }
-
-    public ItemStack getItem() {
-        return this.item.clone();
     }
 
     public int getSlot() {
         return this.slot;
     }
 
-    public ButtonClick getClick() {
-        return this.click;
-    }
-
-    private static ItemStack createBlockChooseButton() {
-        ItemStack item = new ItemStack(Material.BOOK, 1);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§9Выбрать блок §8[§9ПКМ§8]");
-        meta.setLore(Arrays.asList("§fКликните чтобы выбрать блок."));
-        meta.addEnchant(Enchantment.DIG_SPEED, 1, true);
-        meta.addItemFlags(ItemFlag.values());
-        item.setItemMeta(meta);
-        return item;
-    }
-
-
-    private static ItemStack createLeaveButton() {
-        ItemStack item = new ItemStack(Material.MAGMA_CREAM, 1);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§cПокинуть игру §8[§cПКМ§8]");
-        meta.setLore(Arrays.asList("§fКликните чтобы покинуть игру."));
-        meta.addEnchant(Enchantment.DIG_SPEED, 1, true);
-        meta.addItemFlags(ItemFlag.values());
-        item.setItemMeta(meta);
-        return item;
-    }
-
-    private static ItemStack createHiderSwordButton() {
-        ItemStack item = new ItemStack(Material.WOODEN_SWORD, 1);
-        ItemMeta meta = item.getItemMeta();
-        meta.addEnchant(Enchantment.KNOCKBACK, 1, true);
-        meta.addItemFlags(ItemFlag.values());
-        item.setItemMeta(meta);
-        return item;
-    }
-
-    private static ItemStack createSeekerSwordButton() {
-        ItemStack item = new ItemStack(Material.DIAMOND_SWORD, 1);
-        ItemMeta meta = item.getItemMeta();
-        meta.addEnchant(Enchantment.DAMAGE_ALL, 2, true);
-        meta.addItemFlags(ItemFlag.values());
-        item.setItemMeta(meta);
-        return item;
-    }
+    public abstract ItemStack getItem();
+    public abstract void handleClick(BHPlayer player);
 
     public static ItemButton getButtonByItem(ItemStack item) {
         for (ItemButton ib : values()) {
@@ -123,7 +134,4 @@ public enum ItemButton {
         return null;
     }
 
-    public static interface ButtonClick {
-        public void click(BHPlayer player);
-    }
 }

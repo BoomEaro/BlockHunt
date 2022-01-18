@@ -8,7 +8,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import ru.boomearo.blockhunt.objects.BHPlayer;
 import ru.boomearo.blockhunt.objects.ItemButton;
-import ru.boomearo.gamecontrol.utils.ExpFix;
+import ru.boomearo.serverutils.utils.other.ExpFix;
 
 public class WaitingPlayer implements IPlayerType {
 

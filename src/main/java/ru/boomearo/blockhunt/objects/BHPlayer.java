@@ -20,7 +20,7 @@ public class BHPlayer implements IGamePlayer {
 
     private final BHArena where;
 
-    private Material choosenBlock = null;
+    private Material chosenBlock = null;
 
     public BHPlayer(String name, Player player, IPlayerType playerType, BHArena where) {
         this.name = name;
@@ -52,12 +52,12 @@ public class BHPlayer implements IGamePlayer {
         this.playerType = playerType;
     }
 
-    public Material getChoosenBlock() {
-        return this.choosenBlock;
+    public Material getChosenBlock() {
+        return this.chosenBlock;
     }
 
-    public void setChoosenBlock(Material mat) {
-        this.choosenBlock = mat;
+    public void setChosenBlock(Material mat) {
+        this.chosenBlock = mat;
     }
 
     public void sendBoard(Integer index) {

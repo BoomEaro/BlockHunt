@@ -24,6 +24,7 @@ import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.Disguise;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
+
 import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.playertype.HiderPlayer;
@@ -33,9 +34,9 @@ import ru.boomearo.gamecontrol.objects.IForceStartable;
 import ru.boomearo.gamecontrol.objects.arena.AbstractGameArena;
 import ru.boomearo.gamecontrol.objects.region.IRegion;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
-import ru.boomearo.gamecontrol.utils.RandomUtil;
 import ru.boomearo.langhelper.LangHelper;
 import ru.boomearo.langhelper.versions.LangType;
+import ru.boomearo.serverutils.utils.other.RandomUtils;
 
 public class BHArena extends AbstractGameArena implements IForceStartable, ConfigurationSerializable {
 
@@ -164,7 +165,7 @@ public class BHArena extends AbstractGameArena implements IForceStartable, Confi
             return Material.STONE;
         }
 
-        return this.hideBlocks.get(RandomUtil.getRandomNumberRange(0, (this.hideBlocks.size() - 1)));
+        return this.hideBlocks.get(RandomUtils.getRandomNumberRange(0, (this.hideBlocks.size() - 1)));
     }
 
     public void setState(IGameState state) {
@@ -405,7 +406,7 @@ public class BHArena extends AbstractGameArena implements IForceStartable, Confi
             pp.sendBlockChange(old.getLocation(), Bukkit.createBlockData(hp.getHideBlock()));
         }
 
-        pl.sendMessage(BlockHuntManager.prefix + "Теперь вы твердый блок " + BlockHuntManager.variableColor + LangHelper.getInstance().getItemTranslate(new ItemStack(hp.getHideBlock(), 1), LangType.RU) + "§b!");
+        pl.sendMessage(BlockHuntManager.prefix + "Теперь вы твердый блок " + BlockHuntManager.variableColor + LangHelper.getInstance().getItemTranslate(new ItemStack(hp.getHideBlock(), 1), LangType.RU_RU) + "§b!");
         pl.playSound(player.getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 100, 2f);
 
     }
@@ -438,7 +439,7 @@ public class BHArena extends AbstractGameArena implements IForceStartable, Confi
         d.setNotifyBar(null);
         DisguiseAPI.disguiseToAll(pl, d);
 
-        pl.sendMessage(BlockHuntManager.prefix + BlockHuntManager.hiderColor + "Вы больше не твердый блок " + BlockHuntManager.variableColor + LangHelper.getInstance().getItemTranslate(new ItemStack(hp.getHideBlock(), 1), LangType.RU) + "§c.");
+        pl.sendMessage(BlockHuntManager.prefix + BlockHuntManager.hiderColor + "Вы больше не твердый блок " + BlockHuntManager.variableColor + LangHelper.getInstance().getItemTranslate(new ItemStack(hp.getHideBlock(), 1), LangType.RU_RU) + "§c.");
         pl.playSound(player.getPlayer().getLocation(), Sound.ENTITY_BAT_AMBIENT, 100, 1.3f);
     }
 

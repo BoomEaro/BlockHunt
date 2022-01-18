@@ -26,11 +26,11 @@ import ru.boomearo.blockhunt.objects.statistics.BHStatsType;
 import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.objects.states.ICountable;
 import ru.boomearo.gamecontrol.objects.states.IRunningState;
-import ru.boomearo.gamecontrol.utils.DateUtil;
-import ru.boomearo.gamecontrol.utils.RandomUtil;
 import ru.boomearo.gamecontrol.utils.Vault;
 import ru.boomearo.langhelper.LangHelper;
 import ru.boomearo.langhelper.versions.LangType;
+import ru.boomearo.serverutils.utils.other.DateUtil;
+import ru.boomearo.serverutils.utils.other.RandomUtils;
 
 public class RunningState implements IRunningState, ICountable {
 
@@ -66,12 +66,12 @@ public class RunningState implements IRunningState, ICountable {
 
         //Подготавливаем оставшихся игроков, делая их хайдераи
         for (BHPlayer tp : this.arena.getAllPlayersType(WaitingPlayer.class)) {
-            Material chos = tp.getChoosenBlock();
+            Material chos = tp.getChosenBlock();
             if (chos == null) {
                 chos = this.arena.getRandomHideBlock();
             }
 
-            tp.setChoosenBlock(null);
+            tp.setChosenBlock(null);
 
             HiderPlayer hp = new HiderPlayer();
             hp.setHideBlock(chos);
@@ -79,7 +79,7 @@ public class RunningState implements IRunningState, ICountable {
             tp.setPlayerType(hp);
             tp.getPlayerType().preparePlayer(tp);
 
-            tp.getPlayer().sendMessage(BlockHuntManager.prefix + "Вы были замаскированы под " + BlockHuntManager.variableColor + LangHelper.getInstance().getItemTranslate(new ItemStack(chos, 1), LangType.RU));
+            tp.getPlayer().sendMessage(BlockHuntManager.prefix + "Вы были замаскированы под " + BlockHuntManager.variableColor + LangHelper.getInstance().getItemTranslate(new ItemStack(chos, 1), LangType.RU_RU));
         }
     }
 
@@ -204,7 +204,7 @@ public class RunningState implements IRunningState, ICountable {
         List<BHPlayer> players = new ArrayList<>((onlyHiders ? this.arena.getAllPlayersType(HiderPlayer.class) : this.arena.getAllPlayers()));
 
         //Выбираем случайно одного сикера
-        BHPlayer seeker = players.get(RandomUtil.getRandomNumberRange(0, (players.size() - 1)));
+        BHPlayer seeker = players.get(RandomUtils.getRandomNumberRange(0, (players.size() - 1)));
 
         //При выборе если оказалоось что выбрали хайдера, то сбрасываем все обличии
         IPlayerType type = seeker.getPlayerType();

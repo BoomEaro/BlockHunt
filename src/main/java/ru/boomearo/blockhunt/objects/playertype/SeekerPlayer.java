@@ -14,8 +14,8 @@ import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
 import ru.boomearo.blockhunt.objects.ItemButton;
 import ru.boomearo.blockhunt.objects.state.RunningState;
-import ru.boomearo.gamecontrol.utils.DateUtil;
-import ru.boomearo.gamecontrol.utils.ExpFix;
+import ru.boomearo.serverutils.utils.other.DateUtil;
+import ru.boomearo.serverutils.utils.other.ExpFix;
 
 public class SeekerPlayer implements IPlayerType {
 

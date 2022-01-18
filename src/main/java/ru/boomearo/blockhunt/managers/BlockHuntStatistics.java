@@ -4,8 +4,7 @@ import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import ru.boomearo.blockhunt.database.runnable.PutStats;
-import ru.boomearo.blockhunt.database.runnable.UpdateStats;
+import ru.boomearo.blockhunt.database.Sql;
 import ru.boomearo.blockhunt.objects.statistics.BHStatsData;
 import ru.boomearo.blockhunt.objects.statistics.BHStatsType;
 import ru.boomearo.gamecontrol.objects.statistics.IStatisticsManager;
@@ -50,11 +49,11 @@ public class BlockHuntStatistics implements IStatisticsManager {
         if (sp == null) {
             StatsPlayer newSp = new StatsPlayer(name, 1);
             data.addStatsPlayer(newSp);
-            new PutStats(type, newSp);
+            Sql.getInstance().putStatsData(type, name, 1);
             return;
         }
         sp.setValue(sp.getValue() + 1);
-        new UpdateStats(type, sp);
+        Sql.getInstance().updateStatsData(type, name, sp.getValue());
     }
 
 }
