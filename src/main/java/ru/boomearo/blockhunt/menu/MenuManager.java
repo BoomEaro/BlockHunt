@@ -42,7 +42,7 @@ public final class MenuManager {
                 return icons;
             }
 
-        });
+        }, true);
     }
 
 }
