@@ -421,7 +421,7 @@ public class BHArena extends AbstractGameArena implements IForceStartable, Confi
 
         removeSolidPlayerByName(player.getName());
 
-        for (BHPlayer pla : player.getArena().getAllPlayers()) {
+        for (BHPlayer pla : getAllPlayers()) {
             if (pla.getName().equals(player.getName())) {
                 continue;
             }
