@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffect;
 
 import ru.boomearo.blockhunt.objects.BHPlayer;
 import ru.boomearo.blockhunt.objects.ItemButton;
@@ -15,6 +16,10 @@ public class WaitingPlayer implements IPlayerType {
     @Override
     public void preparePlayer(BHPlayer player) {
         Player pl = player.getPlayer();
+
+        for (PotionEffect effect : pl.getActivePotionEffects()) {
+            pl.removePotionEffect(effect.getType());
+        }
 
         pl.setFoodLevel(20);
 

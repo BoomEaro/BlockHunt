@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.BHArena;
@@ -24,6 +26,13 @@ public class SeekerPlayer implements IPlayerType {
     @Override
     public void preparePlayer(BHPlayer player) {
         Player pl = player.getPlayer();
+
+        for (PotionEffect effect : pl.getActivePotionEffects()) {
+            pl.removePotionEffect(effect.getType());
+        }
+
+        //Ослепляем сикера
+        pl.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20*600, 1));
 
         pl.setFoodLevel(20);
 
@@ -92,6 +101,10 @@ public class SeekerPlayer implements IPlayerType {
 
                 if (this.count <= 0) {
                     this.sp.setSeekerRespawn(null);
+
+                    for (PotionEffect effect : pl.getActivePotionEffects()) {
+                        pl.removePotionEffect(effect.getType());
+                    }
 
                     BHArena arena = player.getArena();
                     Location loc = player.getArena().getHidersLocation();

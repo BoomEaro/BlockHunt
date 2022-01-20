@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffect;
 
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.Disguise;
@@ -40,6 +41,10 @@ public class HiderPlayer implements IPlayerType {
     @Override
     public void preparePlayer(BHPlayer player) {
         Player pl = player.getPlayer();
+
+        for (PotionEffect effect : pl.getActivePotionEffects()) {
+            pl.removePotionEffect(effect.getType());
+        }
 
         pl.setFoodLevel(20);
 
