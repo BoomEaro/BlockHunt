@@ -1,30 +1,14 @@
 package ru.boomearo.blockhunt.objects;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.Disguise;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
-
+import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.playertype.HiderPlayer;
@@ -37,6 +21,10 @@ import ru.boomearo.gamecontrol.objects.states.IGameState;
 import ru.boomearo.langhelper.LangHelper;
 import ru.boomearo.langhelper.versions.LangType;
 import ru.boomearo.serverutils.utils.other.RandomUtils;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class BHArena extends AbstractGameArena implements IForceStartable, ConfigurationSerializable {
 
@@ -411,6 +399,8 @@ public class BHArena extends AbstractGameArena implements IForceStartable, Confi
 
     }
 
+    //TODO Похоже, плагин ViaVersion иногда не отправляет некоторые пакеты игрокам с других версий, из-за чего
+    //TODO многие становятся невидимыми. Хз как и что фиксить.
     public void unmakeSolid(BHPlayer player, HiderPlayer hp) {
         hp.resetBlockCount();
 

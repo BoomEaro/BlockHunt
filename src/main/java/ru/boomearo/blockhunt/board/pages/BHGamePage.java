@@ -130,7 +130,7 @@ public class BHGamePage extends AbstractPage {
 
             @Override
             protected String getText() {
-                return BlockHuntManager.seekerColor + "Сикеров: " + BlockHuntManager.variableColor + bhPlayer.getArena().getAllPlayersType(SeekerPlayer.class).size();
+                return BlockHuntManager.seekerColor + "Охотников: " + BlockHuntManager.variableColor + bhPlayer.getArena().getAllPlayersType(SeekerPlayer.class).size();
             }
 
             @Override

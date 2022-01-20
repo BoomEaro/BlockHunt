@@ -101,7 +101,7 @@ public class RunningState implements IRunningState, ICountable {
 
         //Если обнаружится что отсутствуют сикеры, мы сделаем нового из текущих людей
         if (this.arena.getAllPlayersType(SeekerPlayer.class).size() <= 0) {
-            this.arena.sendMessages(BlockHuntManager.prefix + "§cПоследний Сикер покинул игру, выбираем случайного нового Сикера..");
+            this.arena.sendMessages(BlockHuntManager.prefix + "§cПоследний Охотник покинул игру, выбираем случайного нового Охотника..");
             choseSeeker(true);
         }
 
@@ -229,12 +229,12 @@ public class RunningState implements IRunningState, ICountable {
 
         seeker.getPlayerType().preparePlayer(seeker);
 
-        seeker.getPlayer().sendMessage(BlockHuntManager.prefix + "Вас выбрали " + BlockHuntManager.seekerColor + "Сикером " + BlockHuntManager.mainColor + "!");
+        seeker.getPlayer().sendMessage(BlockHuntManager.prefix + "Вас выбрали " + BlockHuntManager.seekerColor + "Охотником " + BlockHuntManager.mainColor + "!");
 
-        this.arena.sendMessages(BlockHuntManager.prefix + seeker.getPlayer().getDisplayName() + BlockHuntManager.mainColor + " выбран " + BlockHuntManager.seekerColor + "Сикером" + BlockHuntManager.mainColor + "!", seeker.getName());
+        this.arena.sendMessages(BlockHuntManager.prefix + seeker.getPlayer().getDisplayName() + BlockHuntManager.mainColor + " выбран " + BlockHuntManager.seekerColor + "Охотником" + BlockHuntManager.mainColor + "!", seeker.getName());
 
         if (!onlyHiders) {
-            this.arena.sendMessages(BlockHuntManager.prefix + "Через " + BlockHuntManager.seekerColor + seekerSpawnTime + BlockHuntManager.mainColor + " секунд " + BlockHuntManager.seekerColor + "Сикер начнет вас искать" + BlockHuntManager.mainColor + "!");
+            this.arena.sendMessages(BlockHuntManager.prefix + "Через " + BlockHuntManager.seekerColor + seekerSpawnTime + BlockHuntManager.mainColor + " секунд " + BlockHuntManager.seekerColor + "Охотник начнет вас искать" + BlockHuntManager.mainColor + "!");
         }
     }
 
@@ -268,9 +268,9 @@ public class RunningState implements IRunningState, ICountable {
 
             //Если умирает хайдер и это оказывается последний
             if (this.arena.getAllPlayersType(HiderPlayer.class).size() <= 0) {
-                this.arena.sendMessages(BlockHuntManager.prefix + "Последний " + BlockHuntManager.hiderColor + "Хайдер " + player.getPlayer().getDisplayName() + BlockHuntManager.mainColor + " мертв! " + BlockHuntManager.seekerColor + "Сикеры победили!");
+                this.arena.sendMessages(BlockHuntManager.prefix + "Последний " + BlockHuntManager.hiderColor + "Хайдер " + player.getPlayer().getDisplayName() + BlockHuntManager.mainColor + " мертв! " + BlockHuntManager.seekerColor + "Охотники победили!");
 
-                this.arena.sendTitle(BlockHuntManager.seekerColor + "Сикеры победили!", "", 20, 20 * 15, 20);
+                this.arena.sendTitle(BlockHuntManager.seekerColor + "Охотники победили!", "", 20, 20 * 15, 20);
 
                 this.arena.sendSounds(Sound.ENTITY_PLAYER_LEVELUP, 999, 2);
 
@@ -288,7 +288,7 @@ public class RunningState implements IRunningState, ICountable {
             else {
                 sp.setSeekerRespawn(new SeekerRespawn(sp));
 
-                player.getPlayer().sendMessage(BlockHuntManager.prefix + BlockHuntManager.seekerColor + "Вы были убиты! " + BlockHuntManager.mainColor + "Теперь вы стали " + BlockHuntManager.seekerColor + "Сикером" + BlockHuntManager.mainColor + "!");
+                player.getPlayer().sendMessage(BlockHuntManager.prefix + BlockHuntManager.seekerColor + "Вы были убиты! " + BlockHuntManager.mainColor + "Теперь вы стали " + BlockHuntManager.seekerColor + "Охотником" + BlockHuntManager.mainColor + "!");
 
                 this.arena.sendMessages(BlockHuntManager.prefix + BlockHuntManager.hiderColor + "Хайдер " + player.getPlayer().getDisplayName() + BlockHuntManager.mainColor + " мертв! Осталось " + BlockHuntManager.hiderColor + this.arena.getAllPlayersType(HiderPlayer.class).size() + " Хайдеров", player.getName());
             }
@@ -303,7 +303,7 @@ public class RunningState implements IRunningState, ICountable {
             player.getPlayer().sendMessage(BlockHuntManager.prefix + "Вы были убиты!");
 
 
-            this.arena.sendMessages(BlockHuntManager.prefix + BlockHuntManager.seekerColor + "Сикер " + player.getPlayer().getDisplayName() + BlockHuntManager.mainColor + " мертв!", player.getName());
+            this.arena.sendMessages(BlockHuntManager.prefix + BlockHuntManager.seekerColor + "Охотник " + player.getPlayer().getDisplayName() + BlockHuntManager.mainColor + " мертв!", player.getName());
         }
 
         this.arena.sendSounds(Sound.ENTITY_WITHER_HURT, 999, 2);
