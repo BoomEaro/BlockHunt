@@ -97,18 +97,18 @@ public final class BlockHuntManager implements IGameManager {
 
         BHArena tmpArena = this.arenas.get(arena);
         if (tmpArena == null) {
-            throw new PlayerGameException("Карта " + mainColor + "'" + variableColor + arena + mainColor + "' не найдена!");
+            throw new PlayerGameException(mainColor + "Карта " + mainColor + "'" + variableColor + arena + mainColor + "' не найдена!");
         }
 
         int count = tmpArena.getAllPlayers().size();
         if (count >= tmpArena.getMaxPlayers()) {
-            throw new PlayerGameException("Карта " + mainColor + "'" + variableColor + arena + mainColor + "' переполнена!");
+            throw new PlayerGameException(mainColor + "Карта " + mainColor + "'" + variableColor + arena + mainColor + "' переполнена!");
         }
 
         IGameState state = tmpArena.getState();
 
         if (!(state instanceof AllowJoin)) {
-            throw new PlayerGameException("В карте " + mainColor + "'" + variableColor + arena + mainColor + "' уже идет игра!");
+            throw new PlayerGameException(mainColor + "В карте " + mainColor + "'" + variableColor + arena + mainColor + "' уже идет игра!");
         }
 
         WaitingPlayer type = new WaitingPlayer();
