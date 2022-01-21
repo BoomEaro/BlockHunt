@@ -10,6 +10,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.libraryaddict.disguise.DisguiseAPI;
+
+import ru.boomearo.adveco.AdvEco;
+import ru.boomearo.adveco.exceptions.EcoException;
+import ru.boomearo.adveco.managers.EcoManager;
+import ru.boomearo.adveco.objects.EcoType;
 import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.managers.BlockHuntStatistics;
@@ -23,10 +28,8 @@ import ru.boomearo.blockhunt.objects.playertype.SeekerPlayer.SeekerRespawn;
 import ru.boomearo.blockhunt.objects.playertype.WaitingPlayer;
 import ru.boomearo.blockhunt.objects.statistics.BHStatsType;
 
-import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.objects.states.ICountable;
 import ru.boomearo.gamecontrol.objects.states.IRunningState;
-import ru.boomearo.gamecontrol.utils.Vault;
 import ru.boomearo.langhelper.LangHelper;
 import ru.boomearo.langhelper.versions.LangType;
 import ru.boomearo.serverutils.utils.other.DateUtil;
@@ -155,9 +158,14 @@ public class RunningState implements IRunningState, ICountable {
                 for (BHPlayer bh : this.arena.getAllPlayersType(HiderPlayer.class)) {
                     bhs.addStats(BHStatsType.HidersWin, bh.getName());
 
-                    Vault.addMoney(bh.getName(), BlockHuntManager.hiderWinReward);
+                    try {
+                        AdvEco.getInstance().getEcoManager().addPlayerEco(bh.getName(), bh.getPlayer(), EcoType.Credit, BlockHuntManager.hiderWinReward);
+                    }
+                    catch (EcoException e) {
+                        e.printStackTrace();
+                    }
 
-                    bh.getPlayer().sendMessage(BlockHuntManager.prefix + "Вы получили награду за победу: " + GameControl.getFormatedEco(BlockHuntManager.hiderWinReward));
+                    bh.getPlayer().sendMessage(BlockHuntManager.prefix + "Вы получили награду за победу: " + EcoManager.getFormatedEco(BlockHuntManager.hiderWinReward, EcoType.Credit));
                 }
 
                 arena.setState(new EndingState(this.arena));
@@ -247,9 +255,14 @@ public class RunningState implements IRunningState, ICountable {
             if (killer != null) {
                 bhs.addStats(BHStatsType.HidersKills, killer.getName());
 
-                Vault.addMoney(killer.getName(), BlockHuntManager.hiderKillReward);
+                try {
+                    AdvEco.getInstance().getEcoManager().addPlayerEco(killer.getName(), killer.getPlayer(), EcoType.Credit, BlockHuntManager.hiderKillReward);
+                }
+                catch (EcoException e) {
+                    e.printStackTrace();
+                }
 
-                killer.getPlayer().sendMessage(BlockHuntManager.prefix + "Вы получили " + GameControl.getFormatedEco(BlockHuntManager.hiderKillReward) + BlockHuntManager.mainColor + " за убийство " + BlockHuntManager.hiderColor + "Хайдера");
+                killer.getPlayer().sendMessage(BlockHuntManager.prefix + "Вы получили " + EcoManager.getFormatedEco(BlockHuntManager.hiderKillReward, EcoType.Credit) + BlockHuntManager.mainColor + " за убийство " + BlockHuntManager.hiderColor + "Хайдера");
             }
 
             //Если был твердым то убираем твердость

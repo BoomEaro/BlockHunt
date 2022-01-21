@@ -76,6 +76,13 @@
             <systemPath>C:/Users/mm123/git/minecraft/BoomEaro/ServerUtils/target/ServerUtils.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>AdvEco</groupId>
+            <artifactId>AdvEco</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>C:/Users/mm123/git/minecraft/BoomEaro/AdvEco/target/AdvEco.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>LangHelper</groupId>
             <artifactId>LangHelper</artifactId>
             <version>1</version>
