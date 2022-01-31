@@ -289,6 +289,12 @@ public class RunningState implements IRunningState, ICountable {
 
                 //Награждаем всех сикеров
                 for (BHPlayer bh : this.arena.getAllPlayersType(SeekerPlayer.class)) {
+                    //Проигравший хайдер становится сикером и в этот момент всем сикерам выдается награда.
+                    //Так как игрок просто не успел поиграть за сикера, не даем ему никакой награды.
+                    //TODO Справедливо ли это?
+                    if (bh == player) {
+                        continue;
+                    }
                     bhs.addStats(BHStatsType.SeekersWin, bh.getName());
 
                     //Vault.addMoney(bh.getName(), BlockHuntManager.hiderWinReward);
