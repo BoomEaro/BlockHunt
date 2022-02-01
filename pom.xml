@@ -136,6 +136,7 @@
             <groupId>com.viaversion</groupId>
             <artifactId>viaversion-api</artifactId>
             <version>LATEST</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     
