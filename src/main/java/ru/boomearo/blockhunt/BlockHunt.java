@@ -19,7 +19,6 @@ import ru.boomearo.blockhunt.menu.MenuManager;
 import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.statistics.BHStatsData;
 import ru.boomearo.blockhunt.objects.statistics.BHStatsType;
-import ru.boomearo.blockhunt.runnable.ArenasRunnable;
 import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
 import ru.boomearo.gamecontrol.objects.statistics.StatsPlayer;
@@ -29,7 +28,6 @@ import ru.boomearo.menuinv.exceptions.MenuInvException;
 public class BlockHunt extends JavaPlugin {
 
     private BlockHuntManager arenaManager = null;
-    private ArenasRunnable pmr = null;
 
     private static BlockHunt instance = null;
 
@@ -72,10 +70,6 @@ public class BlockHunt extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerButtonListener(), this);
 
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketBlockFormAdapter());
-
-        if (this.pmr == null) {
-            this.pmr = new ArenasRunnable();
-        }
 
         getLogger().info("Плагин успешно запущен.");
     }

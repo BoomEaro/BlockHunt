@@ -27,6 +27,7 @@ import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
 import ru.boomearo.gamecontrol.exceptions.GameControlException;
 import ru.boomearo.gamecontrol.exceptions.PlayerGameException;
 import ru.boomearo.gamecontrol.objects.IGameManager;
+import ru.boomearo.gamecontrol.objects.defactions.IDefaultAction;
 import ru.boomearo.gamecontrol.objects.states.IGameState;
 
 public final class BlockHuntManager implements IGameManager {
@@ -85,7 +86,7 @@ public final class BlockHuntManager implements IGameManager {
     }
 
     @Override
-    public BHPlayer join(Player pl, String arena) throws ConsoleGameException, PlayerGameException {
+    public BHPlayer join(Player pl, String arena, IDefaultAction action) throws ConsoleGameException, PlayerGameException {
         if (pl == null || arena == null) {
             throw new ConsoleGameException("Аргументы не должны быть нулем!");
         }
@@ -110,6 +111,8 @@ public final class BlockHuntManager implements IGameManager {
         if (!(state instanceof AllowJoin)) {
             throw new PlayerGameException(mainColor + "В карте '" + variableColor + arena + mainColor + "' уже идет игра!");
         }
+
+        action.performDefaultJoinAction(pl);
 
         WaitingPlayer type = new WaitingPlayer();
 
@@ -139,7 +142,7 @@ public final class BlockHuntManager implements IGameManager {
     }
 
     @Override
-    public void leave(Player pl) throws ConsoleGameException, PlayerGameException {
+    public void leave(Player pl, IDefaultAction action) throws ConsoleGameException, PlayerGameException {
         if (pl == null) {
             throw new ConsoleGameException("Аргументы не должны быть нулем!");
         }
@@ -155,25 +158,12 @@ public final class BlockHuntManager implements IGameManager {
 
         this.players.remove(pl.getName());
 
-        if (Bukkit.isPrimaryThread()) {
-            handlePlayerLeave(tmpPlayer, arena);
-        }
-        else {
-            Bukkit.getScheduler().runTask(BlockHunt.getInstance(), () -> {
-                handlePlayerLeave(tmpPlayer, arena);
-            });
-        }
-    }
-
-    private static void handlePlayerLeave(BHPlayer player, BHArena arena) {
-        player.sendBoard(null);
-
-        Player pl = player.getPlayer();
+        tmpPlayer.sendBoard(null);
 
         //Снимаем свою твердую маскировку
-        IPlayerType type = player.getPlayerType();
+        IPlayerType type = tmpPlayer.getPlayerType();
         if (type instanceof HiderPlayer hp) {
-            arena.unmakeSolid(player, hp);
+            arena.unmakeSolid(tmpPlayer, hp);
         }
         //Делаем игрока обычного
         if (DisguiseAPI.isDisguised(pl)) {
@@ -181,12 +171,15 @@ public final class BlockHuntManager implements IGameManager {
         }
 
         //Показываем для себя всех замаскированных твердых а так же сбрасывает блоки
-        arena.unmakeSolidAll(player);
+        arena.unmakeSolidAll(tmpPlayer);
 
         pl.sendMessage(prefix + "Вы покинули игру!");
 
         arena.sendMessages(prefix + pl.getDisplayName() + mainColor + " покинул игру! " + getRemainPlayersArena(arena, null), pl.getName());
+
+        action.performDefaultLeaveAction(pl);
     }
+
 
     @Override
     public BHPlayer getGamePlayer(String name) {
