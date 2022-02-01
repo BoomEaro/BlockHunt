@@ -44,6 +44,10 @@
             <id>IntellectualSites Snapshots</id>
             <url>https://mvn.intellectualsites.com/content/repositories/snapshots/</url>
         </repository>
+        <repository>
+            <id>viaversion-repo</id>
+            <url>https://repo.viaversion.com</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -127,6 +131,11 @@
                     <groupId>*</groupId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.viaversion</groupId>
+            <artifactId>viaversion-api</artifactId>
+            <version>LATEST</version>
         </dependency>
     </dependencies>
     

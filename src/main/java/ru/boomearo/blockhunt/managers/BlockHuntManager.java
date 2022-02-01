@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import com.viaversion.viaversion.api.Via;
+import com.viaversion.viaversion.api.ViaAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -101,6 +103,13 @@ public final class BlockHuntManager implements IGameManager {
             throw new PlayerGameException(mainColor + "Карта '" + variableColor + arena + mainColor + "' не найдена!");
         }
 
+        ViaAPI api = Via.getAPI();
+        int version = api.getPlayerVersion(pl);
+
+        if (version > 754) {
+            throw new PlayerGameException(mainColor + "Сожалеем, но для игры в эту мини-игру требуется версия игры 1.16.5.");
+        }
+
         int count = tmpArena.getAllPlayers().size();
         if (count >= tmpArena.getMaxPlayers()) {
             throw new PlayerGameException(mainColor + "Карта '" + variableColor + arena + mainColor + "' переполнена!");
@@ -111,6 +120,7 @@ public final class BlockHuntManager implements IGameManager {
         if (!(state instanceof AllowJoin)) {
             throw new PlayerGameException(mainColor + "В карте '" + variableColor + arena + mainColor + "' уже идет игра!");
         }
+
 
         action.performDefaultJoinAction(pl);
 
