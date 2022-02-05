@@ -11,6 +11,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import ru.boomearo.blockhunt.board.BHPLGame;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
@@ -64,7 +65,7 @@ public class SeekerPlayer implements IPlayerType {
 
         inv.setHeldItemSlot(0);
 
-        player.sendBoard(1);
+        player.sendBoard((playerBoard -> new BHPLGame(playerBoard, player)));
 
         Location loc = player.getArena().getSeekersLocation();
         if (loc != null) {

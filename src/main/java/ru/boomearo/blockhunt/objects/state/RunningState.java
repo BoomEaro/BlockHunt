@@ -28,8 +28,8 @@ import ru.boomearo.blockhunt.objects.playertype.SeekerPlayer.SeekerRespawn;
 import ru.boomearo.blockhunt.objects.playertype.WaitingPlayer;
 import ru.boomearo.blockhunt.objects.statistics.BHStatsType;
 
-import ru.boomearo.gamecontrol.objects.states.ICountable;
-import ru.boomearo.gamecontrol.objects.states.IRunningState;
+import ru.boomearo.gamecontrol.objects.states.game.ICountable;
+import ru.boomearo.gamecontrol.objects.states.game.IRunningState;
 import ru.boomearo.langhelper.LangHelper;
 import ru.boomearo.langhelper.versions.LangType;
 import ru.boomearo.serverutils.utils.other.DateUtil;

@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 
+import ru.boomearo.blockhunt.board.BHPLLobby;
 import ru.boomearo.blockhunt.objects.BHPlayer;
 import ru.boomearo.blockhunt.objects.ItemButton;
 import ru.boomearo.serverutils.utils.other.ExpFix;
@@ -49,7 +50,7 @@ public class WaitingPlayer implements IPlayerType {
 
         inv.setHeldItemSlot(0);
 
-        player.sendBoard(0);
+        player.sendBoard((playerBoard -> new BHPLLobby(playerBoard, player)));
 
         Location loc = player.getArena().getLobbyLocation();
         if (loc != null) {

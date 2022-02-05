@@ -9,7 +9,7 @@ import ru.boomearo.blockhunt.objects.BHPlayer;
 import ru.boomearo.blockhunt.objects.playertype.HiderPlayer;
 import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
 import ru.boomearo.blockhunt.objects.playertype.WaitingPlayer;
-import ru.boomearo.gamecontrol.objects.states.IWaitingState;
+import ru.boomearo.gamecontrol.objects.states.game.IWaitingState;
 
 public class WaitingState implements IWaitingState, AllowJoin {
 

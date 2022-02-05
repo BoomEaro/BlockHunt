@@ -24,7 +24,7 @@ import ru.boomearo.blockhunt.objects.SolidPlayer;
 import ru.boomearo.blockhunt.objects.playertype.HiderPlayer;
 import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
 import ru.boomearo.blockhunt.objects.state.RunningState;
-import ru.boomearo.gamecontrol.objects.states.IGameState;
+import ru.boomearo.gamecontrol.objects.states.game.IGameState;
 
 public class PlayerListener implements Listener {
 

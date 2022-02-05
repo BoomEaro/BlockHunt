@@ -9,13 +9,14 @@ import java.util.concurrent.ConcurrentMap;
 
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.ViaAPI;
-import org.bukkit.Bukkit;
+
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.libraryaddict.disguise.DisguiseAPI;
+
 import net.md_5.bungee.api.ChatColor;
 
 import ru.boomearo.blockhunt.BlockHunt;
@@ -30,9 +31,9 @@ import ru.boomearo.gamecontrol.exceptions.GameControlException;
 import ru.boomearo.gamecontrol.exceptions.PlayerGameException;
 import ru.boomearo.gamecontrol.objects.IGameManager;
 import ru.boomearo.gamecontrol.objects.defactions.IDefaultAction;
-import ru.boomearo.gamecontrol.objects.states.IGameState;
+import ru.boomearo.gamecontrol.objects.states.game.IGameState;
 
-public final class BlockHuntManager implements IGameManager {
+public final class BlockHuntManager implements IGameManager<BHPlayer> {
 
     private final ConcurrentMap<String, BHArena> arenas = new ConcurrentHashMap<>();
 

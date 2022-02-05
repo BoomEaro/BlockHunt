@@ -16,6 +16,7 @@ import me.libraryaddict.disguise.disguisetypes.Disguise;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
 
+import ru.boomearo.blockhunt.board.BHPLGame;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
@@ -71,7 +72,7 @@ public class HiderPlayer implements IPlayerType {
 
         inv.setHeldItemSlot(0);
 
-        player.sendBoard(1);
+        player.sendBoard((playerBoard -> new BHPLGame(playerBoard, player)));
 
         Location loc = player.getArena().getHidersLocation();
         if (loc != null) {

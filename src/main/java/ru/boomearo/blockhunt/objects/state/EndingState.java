@@ -3,8 +3,8 @@ package ru.boomearo.blockhunt.objects.state;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
-import ru.boomearo.gamecontrol.objects.states.ICountable;
-import ru.boomearo.gamecontrol.objects.states.IEndingState;
+import ru.boomearo.gamecontrol.objects.states.game.ICountable;
+import ru.boomearo.gamecontrol.objects.states.game.IEndingState;
 import ru.boomearo.serverutils.utils.other.DateUtil;
 
 public class EndingState implements IEndingState, ICountable {

@@ -4,11 +4,13 @@ import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.Disguise;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
+
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
 import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.playertype.HiderPlayer;
@@ -17,7 +19,6 @@ import ru.boomearo.blockhunt.objects.state.WaitingState;
 import ru.boomearo.gamecontrol.objects.IForceStartable;
 import ru.boomearo.gamecontrol.objects.arena.AbstractGameArena;
 import ru.boomearo.gamecontrol.objects.region.IRegion;
-import ru.boomearo.gamecontrol.objects.states.IGameState;
 import ru.boomearo.langhelper.LangHelper;
 import ru.boomearo.langhelper.versions.LangType;
 import ru.boomearo.serverutils.utils.other.RandomUtils;
@@ -26,7 +27,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class BHArena extends AbstractGameArena implements IForceStartable, ConfigurationSerializable {
+public class BHArena extends AbstractGameArena<BHPlayer> implements IForceStartable, ConfigurationSerializable {
 
     private final int minPlayers;
     private final int maxPlayers;
@@ -41,10 +42,6 @@ public class BHArena extends AbstractGameArena implements IForceStartable, Confi
     private Location hidersLocation;
 
     private final List<Material> hideBlocks;
-
-    private volatile IGameState state = new WaitingState(this);
-
-    private final ConcurrentMap<String, BHPlayer> players = new ConcurrentHashMap<>();
 
     private final ConcurrentMap<String, SolidPlayer> hiddenLocs = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, SolidPlayer> hiddenPlayers = new ConcurrentHashMap<>();
@@ -62,6 +59,8 @@ public class BHArena extends AbstractGameArena implements IForceStartable, Confi
         this.seekersLocation = seekersLocation;
         this.hidersLocation = hidersLocation;
         this.hideBlocks = hideBlocks;
+
+        setState(new WaitingState(this));
     }
 
     @Override
@@ -75,23 +74,8 @@ public class BHArena extends AbstractGameArena implements IForceStartable, Confi
     }
 
     @Override
-    public BHPlayer getGamePlayer(String name) {
-        return this.players.get(name);
-    }
-
-    @Override
-    public Collection<BHPlayer> getAllPlayers() {
-        return this.players.values();
-    }
-
-    @Override
     public BlockHuntManager getManager() {
         return BlockHunt.getInstance().getBlockHuntManager();
-    }
-
-    @Override
-    public IGameState getState() {
-        return this.state;
     }
 
     @Override
@@ -156,86 +140,9 @@ public class BHArena extends AbstractGameArena implements IForceStartable, Confi
         return this.hideBlocks.get(RandomUtils.getRandomNumberRange(0, (this.hideBlocks.size() - 1)));
     }
 
-    public void setState(IGameState state) {
-        //Устанавливаем новое
-        this.state = state;
-
-        //Инициализируем новое
-        this.state.initState();
-    }
-
-    public void addPlayer(BHPlayer player) {
-        this.players.put(player.getName(), player);
-    }
-
-    public void removePlayer(String name) {
-        this.players.remove(name);
-    }
-
-    public void sendMessages(String msg) {
-        sendMessages(msg, null);
-    }
-
-    public void sendMessages(String msg, String ignore) {
-        for (BHPlayer tp : this.players.values()) {
-            if (ignore != null) {
-                if (tp.getName().equals(ignore)) {
-                    continue;
-                }
-            }
-
-            Player pl = tp.getPlayer();
-            if (pl.isOnline()) {
-                pl.sendMessage(msg);
-            }
-        }
-    }
-
-    public void sendLevels(int level) {
-        if (Bukkit.isPrimaryThread()) {
-            handleSendLevels(level);
-        }
-        else {
-            Bukkit.getScheduler().runTask(BlockHunt.getInstance(), () -> {
-                handleSendLevels(level);
-            });
-        }
-    }
-
-    public void sendSounds(Sound sound, float volume, float pitch, Location loc) {
-        for (BHPlayer tp : this.players.values()) {
-            Player pl = tp.getPlayer();
-            if (pl.isOnline()) {
-                pl.playSound((loc != null ? loc : pl.getLocation()), sound, volume, pitch);
-            }
-        }
-    }
-
-    public void sendSounds(Sound sound, float volume, float pitch) {
-        sendSounds(sound, volume, pitch, null);
-    }
-
-    public void sendTitle(String first, String second, int in, int stay, int out) {
-        for (BHPlayer tp : this.players.values()) {
-            Player pl = tp.getPlayer();
-            if (pl.isOnline()) {
-                pl.sendTitle(first, second, in, stay, out);
-            }
-        }
-    }
-
-    private void handleSendLevels(int level) {
-        for (BHPlayer tp : this.players.values()) {
-            Player pl = tp.getPlayer();
-            if (pl.isOnline()) {
-                pl.setLevel(level);
-            }
-        }
-    }
-
     public Collection<BHPlayer> getAllPlayersType(Class<? extends IPlayerType> clazz) {
         Set<BHPlayer> tmp = new HashSet<>();
-        for (BHPlayer tp : this.players.values()) {
+        for (BHPlayer tp : getAllPlayers()) {
             if (tp.getPlayerType().getClass() == clazz) {
                 tmp.add(tp);
             }
