@@ -47,13 +47,13 @@ public class BlockHuntStatistics implements IStatisticsManager {
         BHStatsData data = this.stats.get(type);
         StatsPlayer sp = data.getStatsPlayer(name);
         if (sp == null) {
-            StatsPlayer newSp = new StatsPlayer(name, 1);
+            StatsPlayer newSp = new StatsPlayer(name, 0);
             data.addStatsPlayer(newSp);
-            Sql.getInstance().putStatsData(type, name, 1);
-            return;
+            sp = newSp;
         }
         sp.setValue(sp.getValue() + 1);
-        Sql.getInstance().updateStatsData(type, name, sp.getValue());
+
+        Sql.getInstance().insertOrUpdateStatsData(type, name, sp.getValue());
     }
 
 }
