@@ -46,7 +46,9 @@ public class WaitingState implements IWaitingState, AllowJoin {
             }
 
             tp.setPlayerType(new WaitingPlayer());
+        }
 
+        for (BHPlayer tp : this.arena.getAllPlayers()) {
             tp.getPlayerType().preparePlayer(tp);
         }
 
