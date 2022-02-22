@@ -33,7 +33,7 @@ public class SeekerPlayer implements IPlayerType {
         }
 
         //Ослепляем сикера
-        pl.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20*600, 1));
+        pl.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20*1200, 1));
 
         pl.setFoodLevel(20);
 
@@ -103,9 +103,13 @@ public class SeekerPlayer implements IPlayerType {
                 if (this.count <= 0) {
                     this.sp.setSeekerRespawn(null);
 
+                    //Очищаем все эффекты
                     for (PotionEffect effect : pl.getActivePotionEffects()) {
                         pl.removePotionEffect(effect.getType());
                     }
+
+                    //Делаем сикера быстрее
+                    pl.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20*1200, 1));
 
                     BHArena arena = player.getArena();
                     Location loc = player.getArena().getHidersLocation();
