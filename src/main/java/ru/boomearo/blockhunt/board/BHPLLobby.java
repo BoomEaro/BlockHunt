@@ -3,13 +3,11 @@ package ru.boomearo.blockhunt.board;
 import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.objects.BHPlayer;
-import ru.boomearo.blockhunt.objects.statistics.BHStatsData;
-import ru.boomearo.blockhunt.objects.statistics.BHStatsType;
+import ru.boomearo.blockhunt.objects.BHStatsType;
 import ru.boomearo.board.objects.PlayerBoard;
 import ru.boomearo.board.objects.boards.AbstractHolder;
 import ru.boomearo.board.objects.boards.AbstractPage;
 import ru.boomearo.board.objects.boards.AbstractPageList;
-import ru.boomearo.gamecontrol.objects.statistics.StatsPlayer;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -182,13 +180,8 @@ public class BHPLLobby extends AbstractPageList {
         }
 
         private static String getStatisticData(BHStatsType type, String name) {
-            BHStatsData data = BlockHunt.getInstance().getBlockHuntManager().getStatisticManager().getStatsData(type);
-            StatsPlayer sp = data.getStatsPlayer(name);
-            if (sp == null) {
-                return BlockHuntManager.mainColor + type.getName() + ": " + BlockHuntManager.variableColor + "0";
-            }
-
-            return BlockHuntManager.mainColor + type.getName() + ": " + BlockHuntManager.variableColor + (long) sp.getValue();
+            double value = BlockHunt.getInstance().getBlockHuntManager().getStatisticManager().getStatsValueFromPlayer(type, name);
+            return BlockHuntManager.mainColor + type.getName() + ": " + BlockHuntManager.variableColor + (long) value;
         }
 
     }

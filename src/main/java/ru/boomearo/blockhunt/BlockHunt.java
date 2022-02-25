@@ -1,7 +1,6 @@
 package ru.boomearo.blockhunt;
 
 import java.io.File;
-import java.sql.SQLException;
 
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -9,19 +8,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.comphenix.protocol.ProtocolLibrary;
 
 import ru.boomearo.blockhunt.commands.blockhunt.CmdExecutorBlockHunt;
-import ru.boomearo.blockhunt.database.Sql;
-import ru.boomearo.blockhunt.database.sections.SectionStats;
 import ru.boomearo.blockhunt.listeners.bukkit.PlayerButtonListener;
 import ru.boomearo.blockhunt.listeners.bukkit.PlayerListener;
 import ru.boomearo.blockhunt.listeners.packet.PacketBlockFormAdapter;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
 import ru.boomearo.blockhunt.menu.MenuManager;
 import ru.boomearo.blockhunt.objects.BHArena;
-import ru.boomearo.blockhunt.objects.statistics.BHStatsData;
-import ru.boomearo.blockhunt.objects.statistics.BHStatsType;
 import ru.boomearo.gamecontrol.GameControl;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
-import ru.boomearo.gamecontrol.objects.statistics.StatsPlayer;
 import ru.boomearo.menuinv.MenuInv;
 import ru.boomearo.menuinv.exceptions.MenuInvException;
 
@@ -54,9 +48,6 @@ public class BlockHunt extends JavaPlugin {
             e.printStackTrace();
         }
 
-        loadDataBase();
-        loadDataFromDatabase();
-
         try {
             GameControl.getInstance().getGameManager().registerGame(this.getClass(), this.arenaManager);
         }
@@ -86,16 +77,6 @@ public class BlockHunt extends JavaPlugin {
         ProtocolLibrary.getProtocolManager().removePacketListeners(this);
 
         try {
-            getLogger().info("Отключаюсь от базы данных");
-            Sql.getInstance().disconnect();
-            getLogger().info("Успешно отключился от базы данных");
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            getLogger().info("Не удалось отключиться от базы данных...");
-        }
-
-        try {
             GameControl.getInstance().getGameManager().unregisterGame(this.getClass());
         }
         catch (ConsoleGameException e) {
@@ -109,32 +90,6 @@ public class BlockHunt extends JavaPlugin {
 
     public BlockHuntManager getBlockHuntManager() {
         return this.arenaManager;
-    }
-
-    private void loadDataBase() {
-        if (!getDataFolder().exists()) {
-            getDataFolder().mkdir();
-        }
-        try {
-            Sql.initSql();
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void loadDataFromDatabase() {
-        try {
-            for (BHStatsType type : BHStatsType.values()) {
-                BHStatsData data = this.arenaManager.getStatisticManager().getStatsData(type);
-                for (SectionStats stats : Sql.getInstance().getAllStatsData(type).get()) {
-                    data.addStatsPlayer(new StatsPlayer(stats.name, stats.value));
-                }
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public static BlockHunt getInstance() {

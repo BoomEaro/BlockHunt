@@ -17,7 +17,6 @@ import ru.boomearo.adveco.managers.EcoManager;
 import ru.boomearo.adveco.objects.EcoType;
 import ru.boomearo.blockhunt.BlockHunt;
 import ru.boomearo.blockhunt.managers.BlockHuntManager;
-import ru.boomearo.blockhunt.managers.BlockHuntStatistics;
 import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
 import ru.boomearo.blockhunt.objects.SolidPlayer;
@@ -26,10 +25,11 @@ import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
 import ru.boomearo.blockhunt.objects.playertype.SeekerPlayer;
 import ru.boomearo.blockhunt.objects.playertype.SeekerPlayer.SeekerRespawn;
 import ru.boomearo.blockhunt.objects.playertype.WaitingPlayer;
-import ru.boomearo.blockhunt.objects.statistics.BHStatsType;
+import ru.boomearo.blockhunt.objects.BHStatsType;
 
 import ru.boomearo.gamecontrol.objects.states.game.ICountable;
 import ru.boomearo.gamecontrol.objects.states.game.IRunningState;
+import ru.boomearo.gamecontrol.objects.statistics.DefaultStatsManager;
 import ru.boomearo.langhelper.LangHelper;
 import ru.boomearo.langhelper.versions.LangType;
 import ru.boomearo.serverutils.utils.other.DateUtil;
@@ -158,9 +158,9 @@ public class RunningState implements IRunningState, ICountable {
                 arena.sendTitle(BlockHuntManager.hiderColor + "Хайдеры победили!", "", 20, 20 * 15, 20);
 
                 //Награждаем всех хайдеров
-                BlockHuntStatistics bhs = BlockHunt.getInstance().getBlockHuntManager().getStatisticManager();
+                DefaultStatsManager bhs = BlockHunt.getInstance().getBlockHuntManager().getStatisticManager();
                 for (BHPlayer bh : this.arena.getAllPlayersType(HiderPlayer.class)) {
-                    bhs.addStats(BHStatsType.HidersWin, bh.getName());
+                    bhs.addStatsToPlayer(BHStatsType.HidersWin, bh.getName());
 
                     try {
                         AdvEco.getInstance().getEcoManager().addPlayerEco(bh.getName(), bh.getPlayer(), EcoType.Credit, BlockHuntManager.hiderWinReward);
@@ -251,13 +251,13 @@ public class RunningState implements IRunningState, ICountable {
     }
 
     public void handleDeath(BHPlayer player, BHPlayer killer) {
-        BlockHuntStatistics bhs = BlockHunt.getInstance().getBlockHuntManager().getStatisticManager();
+        DefaultStatsManager bhs = BlockHunt.getInstance().getBlockHuntManager().getStatisticManager();
 
         IPlayerType type = player.getPlayerType();
         if (type instanceof HiderPlayer hp) {
 
             if (killer != null) {
-                bhs.addStats(BHStatsType.HidersKills, killer.getName());
+                bhs.addStatsToPlayer(BHStatsType.HidersKills, killer.getName());
 
                 try {
                     AdvEco.getInstance().getEcoManager().addPlayerEco(killer.getName(), killer.getPlayer(), EcoType.Credit, BlockHuntManager.hiderKillReward);
@@ -299,7 +299,7 @@ public class RunningState implements IRunningState, ICountable {
                     if (bh == player) {
                         continue;
                     }
-                    bhs.addStats(BHStatsType.SeekersWin, bh.getName());
+                    bhs.addStatsToPlayer(BHStatsType.SeekersWin, bh.getName());
 
                     //Vault.addMoney(bh.getName(), BlockHuntManager.hiderWinReward);
                     //bh.getPlayer().sendMessage(BlockHuntManager.prefix + "Вы получили награду за победу: " + GameControl.getFormatedEco(BlockHuntManager.hiderWinReward));
@@ -318,7 +318,7 @@ public class RunningState implements IRunningState, ICountable {
         }
         else if (type instanceof SeekerPlayer sp) {
             if (killer != null) {
-                bhs.addStats(BHStatsType.SeekersKills, killer.getName());
+                bhs.addStatsToPlayer(BHStatsType.SeekersKills, killer.getName());
             }
 
             sp.setSeekerRespawn(new SeekerRespawn(sp));

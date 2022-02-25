@@ -26,12 +26,14 @@ import ru.boomearo.blockhunt.objects.playertype.HiderPlayer;
 import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
 import ru.boomearo.blockhunt.objects.playertype.WaitingPlayer;
 import ru.boomearo.blockhunt.objects.state.AllowJoin;
+import ru.boomearo.blockhunt.objects.BHStatsType;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
 import ru.boomearo.gamecontrol.exceptions.GameControlException;
 import ru.boomearo.gamecontrol.exceptions.PlayerGameException;
 import ru.boomearo.gamecontrol.objects.IGameManager;
 import ru.boomearo.gamecontrol.objects.defactions.IDefaultAction;
 import ru.boomearo.gamecontrol.objects.states.game.IGameState;
+import ru.boomearo.gamecontrol.objects.statistics.DefaultStatsManager;
 
 public final class BlockHuntManager implements IGameManager<BHPlayer> {
 
@@ -39,7 +41,7 @@ public final class BlockHuntManager implements IGameManager<BHPlayer> {
 
     private final ConcurrentMap<String, BHPlayer> players = new ConcurrentHashMap<>();
 
-    private final BlockHuntStatistics stats = new BlockHuntStatistics();
+    private final DefaultStatsManager stats = new DefaultStatsManager(this, BHStatsType.values());
 
     public static final ChatColor mainColor = ChatColor.of(new Color(0, 255, 222));
     public static final ChatColor variableColor = ChatColor.of(new Color(250, 248, 82));
@@ -213,7 +215,7 @@ public final class BlockHuntManager implements IGameManager<BHPlayer> {
     }
 
     @Override
-    public BlockHuntStatistics getStatisticManager() {
+    public DefaultStatsManager getStatisticManager() {
         return this.stats;
     }
 
