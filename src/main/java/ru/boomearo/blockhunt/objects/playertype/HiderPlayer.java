@@ -22,6 +22,7 @@ import ru.boomearo.blockhunt.objects.BHArena;
 import ru.boomearo.blockhunt.objects.BHPlayer;
 import ru.boomearo.blockhunt.objects.ItemButton;
 import ru.boomearo.blockhunt.objects.state.RunningState;
+import ru.boomearo.board.Board;
 import ru.boomearo.serverutils.utils.other.ExpFix;
 
 public class HiderPlayer implements IPlayerType {
@@ -72,7 +73,7 @@ public class HiderPlayer implements IPlayerType {
 
         inv.setHeldItemSlot(0);
 
-        player.sendBoard((playerBoard -> new BHPLGame(playerBoard, player)));
+        Board.getInstance().getBoardManager().sendBoardToPlayer(player.getName(), (playerBoard -> new BHPLGame(playerBoard, player)));
 
         Location loc = player.getArena().getHidersLocation();
         if (loc != null) {

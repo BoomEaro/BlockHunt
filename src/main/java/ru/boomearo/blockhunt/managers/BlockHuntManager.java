@@ -27,6 +27,7 @@ import ru.boomearo.blockhunt.objects.playertype.IPlayerType;
 import ru.boomearo.blockhunt.objects.playertype.WaitingPlayer;
 import ru.boomearo.blockhunt.objects.state.AllowJoin;
 import ru.boomearo.blockhunt.objects.BHStatsType;
+import ru.boomearo.board.Board;
 import ru.boomearo.gamecontrol.exceptions.ConsoleGameException;
 import ru.boomearo.gamecontrol.exceptions.GameControlException;
 import ru.boomearo.gamecontrol.exceptions.PlayerGameException;
@@ -171,7 +172,7 @@ public final class BlockHuntManager implements IGameManager<BHPlayer> {
 
         this.players.remove(pl.getName());
 
-        tmpPlayer.sendBoard(null);
+        Board.getInstance().getBoardManager().sendBoardToPlayer(tmpPlayer.getName(), null);
 
         //Снимаем свою твердую маскировку
         IPlayerType type = tmpPlayer.getPlayerType();
