@@ -90,6 +90,7 @@
             <groupId>com.github.BoomEaro</groupId>
             <artifactId>LangHelper</artifactId>
             <version>v1.1</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>MenuInv</groupId>
