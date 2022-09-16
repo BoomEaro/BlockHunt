@@ -44,6 +44,10 @@
             <id>viaversion-repo</id>
             <url>https://repo.viaversion.com</url>
         </repository>
+        <repository>
+            <id>dmulloy2-repo</id>
+            <url>https://repo.dmulloy2.net/repository/public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -60,18 +64,16 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>GameControl</groupId>
+            <groupId>com.github.BoomEaro</groupId>
             <artifactId>GameControl</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>C:/Users/mm123/git/minecraft/BoomEaro/GameControl/target/GameControl.jar</systemPath>
+            <version>v1.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>Board</groupId>
+            <groupId>com.github.BoomEaro</groupId>
             <artifactId>Board</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>C:/Users/mm123/git/minecraft/BoomEaro/Board/target/Board.jar</systemPath>
+            <version>v1.1</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.BoomEaro</groupId>
@@ -93,25 +95,22 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>MenuInv</groupId>
+            <groupId>com.github.BoomEaro</groupId>
             <artifactId>MenuInv</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>C:/Users/mm123/git/minecraft/BoomEaro/MenuInv/target/MenuInv.jar</systemPath>
+            <version>v1.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>LibsDisguises</groupId>
+            <groupId>com.github.libraryaddict</groupId>
             <artifactId>LibsDisguises</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>C:/Users/mm123/git/minecraft/other/LibsDisguises/target/LibsDisguises.jar</systemPath>
+            <version>v10.0.31</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>ProtocolLib</groupId>
+            <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>C:/Users/mm123/git/minecraft/other/ProtocolLib/target/ProtocolLib.jar</systemPath>
+            <version>4.7.0</version>
+            <scope>provided</scope>
         </dependency>
         <!-- FAWE Core API -->
         <dependency>
@@ -141,5 +140,4 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-    
 </project>
